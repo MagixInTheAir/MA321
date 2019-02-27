@@ -3,8 +3,39 @@
 \section{Méthodes classiques}
 \subsection{Méthode de Jacobi}
 \subsection{Méthode de Gauss-Seidel}
-\section{Une nouvelle méthode}
-Cependant, il est aussi possible pour nous de trouver notre propre méthode de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme : 
+\section{Une nouvelle méthode : Richardson}
+\subsection{Présentation de la méthode}
+Ci-dessus, nous avons exposé les deux principales méthodes que l'on a utilisé lors des cours et TP. Cependant, il est aussi possible pour nous de trouver d'autres méthodes de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme que celles précédemment définies. Ainsi, nous pouvons utiliser la décomposition de la forme :  
 \begin{eqnarray}
-Ax &=& b
+Ax &=& b\\
+Px &=& (P - A)x + b
 \end{eqnarray}
+
+On remarque que peut importe la valeur de la matrice P dans l'équation ci-dessus, les deux équations sont équivalentes. Ainsi, résoudre le premier système revient donc à résoudre le second. La méthode Richardson se base sur cette décomposition. L'idée est de poser : 
+\begin{equation}
+	P = \beta I \text{ avec $I$ la matrice identité}
+\end{equation}
+Ainsi, nous avons notre système qui s'écrit de la manière suivante : 
+\begin{eqnarray}
+\beta Ix &=& (\beta I - A)x + b\\
+x &=& (I - \frac{1}{\beta} A)x + \frac{1}{\beta}b
+\end{eqnarray}
+Pour un soucis d'écriture, nous allons écrire la formule précédente sous la forme : 
+\begin{equation}
+x = (I - \gamma A)x + \gamma b \text{ avec $\gamma = \frac{1}{\beta}$}
+\end{equation}
+Ainsi l'idée est de construire une suite $x^{(k)}$ qui va converger vers la solution exacte du système que l'on notre ici $x^*$. Cette suite est définie de la manière suivante : 
+\begin{equation}
+x^{(k+1)} = (I - \gamma A)x^{k} + \gamma b
+\end{equation}
+Par définition de la suite, la matrice d'itération, notée ici R est : 
+\begin{equation}
+R = I - \gamma A
+\end{equation}
+Nous réécrivons la suite sous la forme : 
+\begin{equation}
+x^{(k+1)} = Rx^{k} + K \text{ avec $K = \gamma b$}
+\end{equation}
+Si cette suite converge, alors nous sommes en mesure de trouver une solution $x^*$ approchant la craie solution du système. Ainsi, l'étude se porte donc sur la convergence de cette suite. Comme pour les autres méthodes itératives, la condition de convergence est la même que précédemment : le rayon spectrale de la matrice d'itération doit être strictement inférieur à 1. L'avantage de cette méthode est que la matrice d'itération dépends de $\gamma$. Ainsi, en jouant sur cette valeur de $\gamma$, il est possible de faire converger la suite en prenant une valeur qui fait que le rayon spectral est inférieur à 1. On peut même produire une étude qui fait que l'on va minimiser cette valeur du rayon spectral pour obtenir une meilleur convergence. Cette démarche sera expliqué dans la suite de l'exposé.
+ 
+\subsection{Étude de convergence et exemples}
