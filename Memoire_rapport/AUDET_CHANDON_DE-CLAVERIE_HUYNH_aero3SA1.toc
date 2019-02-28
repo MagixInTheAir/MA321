@@ -8,13 +8,14 @@
 \contentsline {section}{\numberline {2.3}Une nouvelle m\IeC {\'e}thode : Richardson}{2}{section.2.3}
 \contentsline {subsection}{\numberline {2.3.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode}{2}{subsection.2.3.1}
 \contentsline {subsection}{\numberline {2.3.2}\IeC {\'E}tude de convergence sur un exemple}{3}{subsection.2.3.2}
-\contentsline {chapter}{\numberline {3}Optimisation du choix de la matrice d'it\IeC {\'e}ration}{6}{chapter.3}
-\contentsline {section}{\numberline {3.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode SOR}{6}{section.3.1}
-\contentsline {section}{\numberline {3.2}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{6}{section.3.2}
-\contentsline {section}{\numberline {3.3}Quelques mots sur la m\IeC {\'e}thode SSOR}{6}{section.3.3}
-\contentsline {chapter}{\numberline {4}Optimisation et Comparaison des m\IeC {\'e}thodes}{7}{chapter.4}
-\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{7}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique}{7}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{7}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}Comparaison des m\IeC {\'e}thodes}{7}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{8}{chapter.5}
+\contentsline {subsection}{\numberline {2.3.3}Un peu plus de th\IeC {\'e}orie ...}{5}{subsection.2.3.3}
+\contentsline {chapter}{\numberline {3}Optimisation du choix de la matrice d'it\IeC {\'e}ration}{7}{chapter.3}
+\contentsline {section}{\numberline {3.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode SOR}{7}{section.3.1}
+\contentsline {section}{\numberline {3.2}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{7}{section.3.2}
+\contentsline {section}{\numberline {3.3}Quelques mots sur la m\IeC {\'e}thode SSOR}{7}{section.3.3}
+\contentsline {chapter}{\numberline {4}Optimisation et Comparaison des m\IeC {\'e}thodes}{8}{chapter.4}
+\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{8}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique}{8}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{8}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}Comparaison des m\IeC {\'e}thodes}{8}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{9}{chapter.5}
