@@ -1,0 +1,172 @@
+\chapter{Présentation des méthodes itératives classiques}
+\section{Présentation générale des méthodes}
+\section{Méthodes classiques}
+\subsection{Méthode de Jacobi}
+\subsection{Méthode de Gauss-Seidel}
+\section{Une nouvelle méthode : Richardson}
+\subsection{Présentation de la méthode}
+Ci-dessus, nous avons exposé les deux principales méthodes que l'on a utilisé lors des cours et TP. Cependant, il est aussi possible pour nous de trouver d'autres méthodes de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme que celles précédemment définies. Ainsi, nous pouvons utiliser la décomposition de la forme :  
+\begin{eqnarray}
+Ax &=& b\\
+Px &=& (P - A)x + b
+\end{eqnarray}
+
+On remarque que peut importe la valeur de la matrice P dans l'équation ci-dessus, les deux équations sont équivalentes. Ainsi, résoudre le premier système revient donc à résoudre le second. La méthode Richardson se base sur cette décomposition. L'idée est de poser : 
+\begin{equation}
+	P = \beta I \text{ avec $I$ la matrice identité et $\beta \in \mathbb{R}^*$}
+\end{equation}
+Ainsi, nous avons notre système qui s'écrit de la manière suivante : 
+\begin{eqnarray}
+\beta Ix &=& (\beta I - A)x + b\\
+x &=& (I - \frac{1}{\beta} A)x + \frac{1}{\beta}b
+\end{eqnarray}
+Pour un soucis d'écriture, nous allons écrire la formule précédente sous la forme : 
+\begin{equation}
+x = (I - \gamma A)x + \gamma b \text{ avec $\gamma = \frac{1}{\beta}$}
+\end{equation}
+Ainsi l'idée est de construire une suite $x^{(k)}$ qui va converger vers la solution exacte du système que l'on notre ici $x^*$. Cette suite est définie de la manière suivante : 
+\begin{equation}
+x^{(k+1)} = (I - \gamma A)x^{k} + \gamma b
+\end{equation}
+Par définition de la suite, la matrice d'itération, notée ici R est : 
+\begin{equation}
+R = I - \gamma A \label{R}
+\end{equation}
+Nous réécrivons la suite sous la forme : 
+\begin{equation}
+x^{(k+1)} = Rx^{k} + K \text{ avec $K = \gamma b$}
+\end{equation}
+Si cette suite converge, alors nous sommes en mesure de trouver une solution $x^*$ approchant la craie solution du système. Ainsi, l'étude se porte donc sur la convergence de cette suite. Comme pour les autres méthodes itératives, la condition de convergence est la même que précédemment : le rayon spectrale de la matrice d'itération doit être strictement inférieur à 1. L'avantage de cette méthode est que la matrice d'itération dépends de $\gamma$. Ainsi, en jouant sur cette valeur de $\gamma$, il est possible de faire converger la suite en prenant une valeur qui fait que le rayon spectral est inférieur à 1. On peut même produire une étude qui fait que l'on va minimiser cette valeur du rayon spectral pour obtenir une meilleur convergence. Cette démarche sera expliqué dans la suite de l'exposé.
+ 
+\subsection{Étude de convergence sur un exemple}
+Pour illustrer cette exemple, nous allons prendre un système linéaire quelconque. Dans un premier temps, nous allons trouver sa solution théorique puis appliquer la méthode de Richardson. Cela nous permettra d'étudier la convergence de la suite et la condition d'arrêt de notre algorithme. Pour cela, nous allons prendre le système $2\times 2$ suivant : 
+\begin{equation}
+\begin{cases}
+-3x + 2y = 1\\
+x + -4y = -7
+\end{cases}
+\label{sys}
+\end{equation}
+Ce système de base est peut être résolu assez trivialement et on obtient le couple de solution suivant : \begin{equation}
+(x, y) = (1, 2)
+\end{equation}
+Notre but est maintenant de retrouver ces résultats grâce à la méthode de Richardson. Pour cela nous écrivons le système (\ref{sys}) sous sa forme matricielle : 
+\begin{equation}
+\underbrace{\begin{pmatrix}
+	-3 & 2 \\
+	1 & -4
+	\end{pmatrix}}_{A} 
+\times 
+\underbrace{\begin{pmatrix}
+	x \\ y
+	\end{pmatrix} }_{x} 
+=
+\underbrace{\begin{pmatrix}
+	1 \\ -7
+	\end{pmatrix}}_{b}  
+\end{equation}
+
+On pose, d'après la définition de la méthode, la matrice P : 
+\begin{equation}
+P = \gamma I = 
+\begin{pmatrix}
+\gamma & 0 \\
+0 & \gamma
+\end{pmatrix}
+\end{equation}
+et on rappelle que l'on a : 
+\begin{equation}
+x^{(k+1)} = (I - \gamma A)x^{k} + \gamma b \text{ avec } R = (I - \gamma A)
+\end{equation}
+Dans notre cas, la matrice d'itération est la suivante : 
+\begin{equation}
+R = 
+\begin{pmatrix}
+1 + 3\gamma   & -2\gamma \\
+-\gamma & 1+4\gamma
+\end{pmatrix}
+\end{equation}
+On cherche les valeurs propres de celle-ci grâce son polynôme caractéristique : 
+\begin{eqnarray}
+det(R - \lambda I) &=& \begin{bmatrix}
+1 + 3\gamma - \lambda   & -2\gamma \\
+-\gamma & 1 + 4\gamma - \lambda
+\end{bmatrix} \\
+&=& ((1 + 3\gamma) - \lambda)((1 + 4\gamma) - \lambda) - 2\gamma^2\\
+&=& \lambda^2 - (2 + 7\gamma)\lambda + 1 + 7\gamma + 10\gamma^2\\
+&=& \lambda^2 - (2 + 7\gamma)\lambda + (1 + 2\gamma)(1 + 5\gamma)\\
+&=& (\lambda - (1 + 2\gamma))(\lambda - (1 + 5\gamma))
+\end{eqnarray}
+
+Ainsi, les deux valeurs propres sont : 
+\begin{equation}
+\lambda_1 = 1 + 2\gamma \text{ ou } \lambda_2 = 1 + 5\gamma
+\end{equation}
+Il nous faut donc maintenant étudier le rayon spectral :
+\begin{equation}
+	\rho(R) = max(|1 + 2\gamma|,|1 + 5\gamma|) < 1
+\end{equation}
+Pour trouver le maximum, on cherche quand les quantités sont égales : 
+\begin{equation}
+\begin{cases}
+1 + 2\gamma = 1+5\gamma \Leftrightarrow \gamma = 0\\
+1 + 2\gamma = -1 - 5\gamma \Leftrightarrow \gamma = - \frac{2}{7}
+\end{cases}
+\end{equation}
+
+Il vient de cette étude : 
+\begin{equation}
+\begin{cases}
+\gamma \in [- \frac{2}{7}, 0] \Rightarrow \rho(R) = |1 + 2\gamma|\\
+\text{Sinon } \rho(R) = |1 + 5\gamma|
+\end{cases} 
+\end{equation}
+
+Nous cherchons ensuite les valeurs pour lesquelles le rayon spectral est égal à 1. Comme les deux fonctions sont croissantes, il suffit de trouver les valeurs pour lesquels nous avons $\rho(R) = 1 \text{ ou } -1$.
+\begin{equation}
+\begin{cases}
+	\gamma = 0 \Leftrightarrow \rho(R) = 1
+	\gamma = -0.4 \Leftrightarrow \rho(R) = -1
+\end{cases}
+\end{equation}
+
+Ainsi, pour que la méthode converge sur cet exemple, il faut que : 
+\begin{equation}
+\gamma \in ] -0.4, 0[
+\end{equation}
+Ensuite, il est possible d'optimiser ce résultat. Pour cela, il nus faut trouver la valeur de $\gamma$ telle que le rayon spectral soit minimal. Pour cela, on cherche sur chacun des intervalles le minimum du rayon spectral. Cette valeur est la valeur à la jonction des deux intervalles donc pour $\gamma = \frac{-2}{7}$. Cela se voit simplement en regardant le graph de rho sur l'intervalle ci-dessus. Pour cette valeur de $\gamma$ particulière la méthode possède la meilleur convergence. Si on revient au problème de base, nous avons alors un méthode qui converge de la meilleur façon possible pour : 
+\begin{equation}
+\beta = \frac{1}{\gamma} = - \frac{7}{2}
+\end{equation}
+
+\subsection{Un peu plus de théorie ...}
+Maintenant que nous avons montrer la démarche sur un exemple, nous allons essayer de généraliser aux matrices quelconques que l'on veut étudier grâce à cette méthode. Dans un premier temps, nous allons étudier les valeurs propres de la matrice d'itération R (cf. équation \ref{R}). En notant $\lambda_i$ les valeurs propres de la matrices A et $\mu_i$ les valeurs propres de la matrice R, nous avons : 
+\begin{equation}
+	\mu_i = 1 - \gamma\lambda_i
+\end{equation}
+
+En appliquant la condition de convergence de la suite, nous obtenons les égalités suivantes : 
+\begin{eqnarray}
+-1 &\leq& 1 - \gamma \lambda_i \leq 1\\
+0 &\leq& \gamma \lambda_i \leq 2\\
+0 &\leq& \gamma \leq \frac{2}{\lambda_i}
+\end{eqnarray}
+On remarque que sur notre exemple cela est vrai. En effet, les valeurs propres de la matrice A choisie sont $-5$ et $-2$. Or $\frac{2}{-5} = -0.4$, cela confirme l'intervalle trouvé. La deuxième remarque porte sur le fait qu'il ne faut pas prendre une matrice A avec 0 en valeur propre.\\
+
+Toujours dans le même esprit, nous allons chercher le meilleur $\gamma$ théorique pour avoir la meilleur convergence. Ce problème est équivalent à minimiser le rayon spectral de la matrice d'itération qui dépends de $\gamma$. Or d'après les valeurs propres de cette matrice R, nous avons : 
+\begin{equation}
+	\rho(R) = \underset{i}{max}(|1 - \gamma\lambda_i|) = max(|1 - \gamma\lambda_1|, |1 - \gamma\lambda_n|)
+\end{equation}
+où $\lambda_1, \lambda_n$ sont respectivement la plus grande et la plus petite valeur propre. Maintenant, il nous reste à résoudre : 
+\begin{equation}
+|1 - \gamma\lambda_1| =  |1 - \gamma\lambda_n| \Rightarrow 
+\begin{cases}
+1 - \gamma\lambda_1 = 1 - \gamma\lambda_n \Leftrightarrow \gamma = 0\\
+ou\\
+1 - \gamma\lambda_1 = - 1 + \gamma\lambda_n \Leftrightarrow \gamma = \frac{2}{\lambda_1 + \lambda_n}
+\end{cases}
+\end{equation}
+Une fois que nous avons les valeurs de l'égalité, une simple étude des deux valeurs propres extrêmes nous donne que le meilleur choix de $\gamma$ est : 
+\begin{equation}
+\gamma = \frac{2}{\lambda_1 + \lambda_n}
+\end{equation}
