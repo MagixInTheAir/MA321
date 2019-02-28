@@ -7,13 +7,14 @@
 \BOOKMARK [1][-]{section.2.3}{Une nouvelle m\351thode : Richardson}{chapter.2}% 7
 \BOOKMARK [2][-]{subsection.2.3.1}{Pr\351sentation de la m\351thode}{section.2.3}% 8
 \BOOKMARK [2][-]{subsection.2.3.2}{\311tude de convergence sur un exemple}{section.2.3}% 9
-\BOOKMARK [0][-]{chapter.3}{Optimisation du choix de la matrice d'it\351ration}{}% 10
-\BOOKMARK [1][-]{section.3.1}{Pr\351sentation de la m\351thode SOR}{chapter.3}% 11
-\BOOKMARK [1][-]{section.3.2}{Impl\351mentation num\351rique}{chapter.3}% 12
-\BOOKMARK [1][-]{section.3.3}{Quelques mots sur la m\351thode SSOR}{chapter.3}% 13
-\BOOKMARK [0][-]{chapter.4}{Optimisation et Comparaison des m\351thodes}{}% 14
-\BOOKMARK [1][-]{section.4.1}{Optimisation des m\351thodes}{chapter.4}% 15
-\BOOKMARK [2][-]{subsection.4.1.1}{Optimisation math\351matique}{section.4.1}% 16
-\BOOKMARK [2][-]{subsection.4.1.2}{Optimisation num\351rique}{section.4.1}% 17
-\BOOKMARK [1][-]{section.4.2}{Comparaison des m\351thodes}{chapter.4}% 18
-\BOOKMARK [0][-]{chapter.5}{Conclusion \046 ouverture}{}% 19
+\BOOKMARK [2][-]{subsection.2.3.3}{Un peu plus de th\351orie ...}{section.2.3}% 10
+\BOOKMARK [0][-]{chapter.3}{Optimisation du choix de la matrice d'it\351ration}{}% 11
+\BOOKMARK [1][-]{section.3.1}{Pr\351sentation de la m\351thode SOR}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.2}{Impl\351mentation num\351rique}{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.3}{Quelques mots sur la m\351thode SSOR}{chapter.3}% 14
+\BOOKMARK [0][-]{chapter.4}{Optimisation et Comparaison des m\351thodes}{}% 15
+\BOOKMARK [1][-]{section.4.1}{Optimisation des m\351thodes}{chapter.4}% 16
+\BOOKMARK [2][-]{subsection.4.1.1}{Optimisation math\351matique}{section.4.1}% 17
+\BOOKMARK [2][-]{subsection.4.1.2}{Optimisation num\351rique}{section.4.1}% 18
+\BOOKMARK [1][-]{section.4.2}{Comparaison des m\351thodes}{chapter.4}% 19
+\BOOKMARK [0][-]{chapter.5}{Conclusion \046 ouverture}{}% 20

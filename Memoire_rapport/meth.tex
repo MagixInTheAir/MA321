@@ -30,7 +30,7 @@ x^{(k+1)} = (I - \gamma A)x^{k} + \gamma b
 \end{equation}
 Par définition de la suite, la matrice d'itération, notée ici R est : 
 \begin{equation}
-R = I - \gamma A
+R = I - \gamma A \label{R}
 \end{equation}
 Nous réécrivons la suite sous la forme : 
 \begin{equation}
@@ -137,4 +137,36 @@ Ainsi, pour que la méthode converge sur cet exemple, il faut que :
 Ensuite, il est possible d'optimiser ce résultat. Pour cela, il nus faut trouver la valeur de $\gamma$ telle que le rayon spectral soit minimal. Pour cela, on cherche sur chacun des intervalles le minimum du rayon spectral. Cette valeur est la valeur à la jonction des deux intervalles donc pour $\gamma = \frac{-2}{7}$. Cela se voit simplement en regardant le graph de rho sur l'intervalle ci-dessus. Pour cette valeur de $\gamma$ particulière la méthode possède la meilleur convergence. Si on revient au problème de base, nous avons alors un méthode qui converge de la meilleur façon possible pour : 
 \begin{equation}
 \beta = \frac{1}{\gamma} = - \frac{7}{2}
+\end{equation}
+
+\subsection{Un peu plus de théorie ...}
+Maintenant que nous avons montrer la démarche sur un exemple, nous allons essayer de généraliser aux matrices quelconques que l'on veut étudier grâce à cette méthode. Dans un premier temps, nous allons étudier les valeurs propres de la matrice d'itération R (cf. équation \ref{R}). En notant $\lambda_i$ les valeurs propres de la matrices A et $\mu_i$ les valeurs propres de la matrice R, nous avons : 
+\begin{equation}
+	\mu_i = 1 - \gamma\lambda_i
+\end{equation}
+
+En appliquant la condition de convergence de la suite, nous obtenons les égalités suivantes : 
+\begin{eqnarray}
+-1 &\leq& 1 - \gamma \lambda_i \leq 1\\
+0 &\leq& \gamma \lambda_i \leq 2\\
+0 &\leq& \gamma \leq \frac{2}{\lambda_i}
+\end{eqnarray}
+On remarque que sur notre exemple cela est vrai. En effet, les valeurs propres de la matrice A choisie sont $-5$ et $-2$. Or $\frac{2}{-5} = -0.4$, cela confirme l'intervalle trouvé. La deuxième remarque porte sur le fait qu'il ne faut pas prendre une matrice A avec 0 en valeur propre.\\
+
+Toujours dans le même esprit, nous allons chercher le meilleur $\gamma$ théorique pour avoir la meilleur convergence. Ce problème est équivalent à minimiser le rayon spectral de la matrice d'itération qui dépends de $\gamma$. Or d'après les valeurs propres de cette matrice R, nous avons : 
+\begin{equation}
+	\rho(R) = \underset{i}{max}(|1 - \gamma\lambda_i|) = max(|1 - \gamma\lambda_1|, |1 - \gamma\lambda_n|)
+\end{equation}
+où $\lambda_1, \lambda_n$ sont respectivement la plus grande et la plus petite valeur propre. Maintenant, il nous reste à résoudre : 
+\begin{equation}
+|1 - \gamma\lambda_1| =  |1 - \gamma\lambda_n| \Rightarrow 
+\begin{cases}
+1 - \gamma\lambda_1 = 1 - \gamma\lambda_n \Leftrightarrow \gamma = 0\\
+ou\\
+1 - \gamma\lambda_1 = - 1 + \gamma\lambda_n \Leftrightarrow \gamma = \frac{2}{\lambda_1 + \lambda_n}
+\end{cases}
+\end{equation}
+Une fois que nous avons les valeurs de l'égalité, une simple étude des deux valeurs propres extrêmes nous donne que le meilleur choix de $\gamma$ est : 
+\begin{equation}
+\gamma = \frac{2}{\lambda_1 + \lambda_n}
 \end{equation}
