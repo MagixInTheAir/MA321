@@ -22,11 +22,11 @@ L'avantage de la méthode SOR au niveau de la convergence est mathématiquement 
 \begin{enumerate}
 	\item \textbf{\underline{Théorème de Kahan (1958)}} : Le rayon spectral de la matrice de relaxation, donnée par :
 	$$
-	H(\omega)=(I-\omega L)^{-1}{\omega U +(1-\omega)I}
+	T_\omega=T(\omega)=(I-\omega L)^{-1}{\omega U +(1-\omega)I}
 	$$
 	vérifie que $\forall \omega \neq 0$,
 	$$
-	\rho(H(\omega))\geq|\omega -1|
+	\rho(T_\omega)\geq|\omega -1|
 	$$
 	\item \textbf{\underline{Théorème d'Ostrowski-Reich (??)}} : Si la matrice $A$ est définie positive et que $\omega \in ]0;2[$,la méthode SOR converge pour tout choix de vecteur $x^{(0)}$ initial.
 \end{enumerate}
@@ -38,6 +38,14 @@ Ainsi, nous pouvons déduire du premier théorème, une condition nécessaire no
 \begin{equation}
 	0<\omega<2
 \end{equation}
-Le deuxième théorème (Ostrowski-Reich), permet quant à lui de conclure par rapport à la convergence de la méthode pour $\omega$ dans l'intervalle $]0;2[$. La combinaison de ces deux théorèmes nous montre que la condition donnée à l'équation $(3.4)$ est nécessaire et, est suffisante dans le cas où $A$ est définie positive.
+Le deuxième théorème (Ostrowski-Reich), permet quant à lui de conclure par rapport à la convergence de la méthode pour $\omega$ dans l'intervalle $]0;2[$. La combinaison de ces deux théorèmes nous montre que la condition donnée à l'équation $(3.4)$ est nécessaire et, est suffisante dans le cas où $A$ est définie positive.\\
+
+De plus, dans le cas où la matrice $A$ est tridiagonale (les coefficients qui ne sont ni sur la diagonale principale, ni celle au dessus, ni celle au dessous, sont nuls), le théorème suivant nous donne la forme du coefficient de relaxation optimal :\\
+
+Si $A$ est définie positive et est tridiagonale, alors $\rho(T_g)=[\rho(T_j)]^2<1$ et, le choix optimal pour le coefficient de relaxation $\omega$ est donné par : 
+$$
+\omega_{optimal}=\frac{2}{1+\sqrt{1-[\rho(T_j)]^2}}
+$$
+Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$
 \section{Implémentation numérique}
 \section{Quelques mots sur la méthode SSOR}
