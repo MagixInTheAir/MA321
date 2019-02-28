@@ -1,0 +1,53 @@
+\chapter{Optimisation du choix de la matrice d'itération}
+Nous avons vu dans la partie précédente qu'il existe différentes méthodes pour permettre de résoudre un système linéaire grâce à des méthodes itératives. Ainsi, toujours dans cette idée d'optimisation que nous avons exposé, nous nous sommes posé la question suivante : \og Quelle est la matrice d'itération la plus optimisé pour résoudre un problème \fg. Une méthode est ressortie dans plusieurs ouvrage : Successive Over Relaxation.
+\section{Méthode SOR}
+C'est dans cette optique que nous nous sommes penchés sur la méthode dite "SOR".
+\subsection{Présentation de la méthode SOR}
+La méthode SOR (Successive Over Relaxation) est une méthode itérative dérivée de Gauss-Siedel. En effet, le processus de décoposition de la matrice $A$ en deux matrices $M$ et $N$ telles que $A=M-N$ est similaire à l'algorithme de Gauss-Seidel dans la forme des matrices $M$ et $N$.\\
+
+Si la méthode de Gauss-Seidel, vue précédemment, définie la matrice $M$ par $M=D-E$ avec $D$ une matrice diagonale et $E$ une matrice triangulaire inférieure à diagonale nulle et $N=F$, $F$ étant une matrice triangulaire supérieure à diagonale nulle, la méthode SOR définit ses matrices de la manière suivante, en introduisant un paramètre $\omega \in \mathbb{R}^*$ dit de relaxation.
+\begin{eqnarray}
+M &=& \frac{1}{\omega}D-E\\
+N &=& \bigg(\frac{1}{\omega}-1\bigg)D+F
+\end{eqnarray}
+Par la suite, le procédé est le identique à celui de Gauss-Seidel ou Jacobi et on introduit donc sa matrice d'itération notée $B$.
+\begin{equation}
+B=M^{-1}N=\bigg[\frac{1}{\omega}D-E\bigg]^{-1}\bigg[\bigg(\frac{1}{\omega}-1\bigg)D+F\bigg]
+\end{equation}
+On remarquera que si $\omega=1$, on retrouve la méthode de Gauss-Seidel. De plus, si $\omega<1$, on parle de sous-relaxation et de sur-relaxation dans le cas où $\omega>1$.
+\subsection{Intérêt de la méthode}
+Cette méthode a été développée peu après la Seconde Guerre mondiale afin de proposer une manière de résoudre des systèmes d'équations linéaires, spécifique aux ordinateurs. Si à l'époque, d'autres méthodes avaient été proposées, elles étaient principalement destinées aux êtres humains qui, par des processus non applicables par des ordinateurs, pouvaient assurer la convergence des méthodes. La méthode SOR est donc une méthode qui a fait progresser ce problème en ayant une meilleure vitesse de convergence que les méthodes numériques itératives alors utilisées.\\
+
+L'avantage de la méthode SOR au niveau de la convergence est mathématiquement facilitée par les deux théorèmes suivant:
+\begin{enumerate}
+	\item \textbf{\underline{Théorème de Kahan (1958)}} : Le rayon spectral de la matrice de relaxation, donnée par :
+	$$
+	T_\omega=T(\omega)=(I-\omega L)^{-1}{\omega U +(1-\omega)I}
+	$$
+	vérifie que $\forall \omega \neq 0$,
+	$$
+	\rho(T_\omega)\geq|\omega -1|
+	$$
+	\item \textbf{\underline{Théorème d'Ostrowski-Reich (??)}} : Si la matrice $A$ est définie positive et que $\omega \in ]0;2[$,la méthode SOR converge pour tout choix de vecteur $x^{(0)}$ initial.
+\end{enumerate}
+Afin qu'une méthode itérative converge, il est nécessaire que le rayon spectral de la matrice d'itération soit strictement inférieur à $1$. Donc, pour que la méthode ne converge pas, il faut que le rayon spectral soit supérieur ou égal à 1. Avec le théorème de Kahan, on a :
+$$
+|\omega -1|\geq 1 \Leftrightarrow \omega \geq 2 \text{ ou } \omega \leq 0 
+$$
+Ainsi, nous pouvons déduire du premier théorème, une condition nécessaire non suffisante de la convergence de la méthode SOR qui est :
+\begin{equation}
+0<\omega<2
+\end{equation}
+Le deuxième théorème (Ostrowski-Reich), permet quant à lui de conclure par rapport à la convergence de la méthode pour $\omega$ dans l'intervalle $]0;2[$. La combinaison de ces deux théorèmes nous montre que la condition donnée à l'équation $(3.4)$ est nécessaire et, est suffisante dans le cas où $A$ est définie positive.\\
+
+De plus, dans le cas où la matrice $A$ est tridiagonale (les coefficients qui ne sont ni sur la diagonale principale, ni celle au dessus, ni celle au dessous, sont nuls), le théorème suivant nous donne la forme du coefficient de relaxation optimal :\\
+
+Si $A$ est définie positive et est tridiagonale, alors $\rho(T_g)=[\rho(T_j)]^2<1$ et, le choix optimal pour le coefficient de relaxation $\omega$ est donné par : 
+$$
+\omega_{optimal}=\frac{2}{1+\sqrt{1-[\rho(T_j)]^2}}
+$$
+Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$
+\subsection{Implémentation numérique}
+\section{Les sous-espaces de Krylov}
+\subsection{Présentation théorique}
+\subsection{L'algorithme GMRES}
