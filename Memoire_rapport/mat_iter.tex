@@ -46,7 +46,25 @@ Si $A$ est définie positive et est tridiagonale, alors $\rho(T_g)=[\rho(T_j)]^2
 $$
 \omega_{optimal}=\frac{2}{1+\sqrt{1-[\rho(T_j)]^2}}
 $$
-Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$
+Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$\\
+\underline{\textbf{Preuve du théorème de Kahan}} : On a,
+$$
+\prod\limits_i \lambda_i(T(\omega))=\det(T(\omega))=\frac{\det(\omega U+(1-\omega)I)}{\det(I-\omega L)}=(1-\omega)^n 
+$$
+Or,
+$$
+|\prod\limits_i \lambda_i(T(\omega))|\leq\rho(T(\omega))^n \\
+\rightarrow |\omega-1|^n\leq\rho(T(\omega))^n\\
+$$
+Ainsi,
+$$
+\rho(T(\omega))\geq|\omega-1|
+$$
+\underline{\textbf{Preuve du théorème d'Ostrowski-Reich}} : En utilisant le théorème de Kahan,on sait qu'il est nécessaire que  $0<\omega<2$ est un critère nécessaire et non suffisant de convergence. De plus, pour une méthode SOR, on a 
+$$
+M_{SOR}(\omega)+M_{SOR}^*(\omega)-A=\bigg(\frac{2}{\omega-1}\bigg)D \text{ puisque }L=U^*
+$$
+qui est symétrique définie positive si on est dans l'intervalle donné par le théorème de Kahan. Le théorème de Householder-John nous dit que pour une matrice $A$ hermitienne définie positive, avec $A=M-N$ avec $M$ inversible, la méthode itérative converge pour toute donnée initiale si $M+N^*$ est définie positive. ($N^*$ étant la matrice adjointe ou transconjugée à $N$ soit $N^*=^t\overline{N}=\overline{^tN}$)
 \subsection{Implémentation numérique}
 \section{Les sous-espaces de Krylov}
 \subsection{Présentation théorique}
