@@ -50,4 +50,36 @@ Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$
 \subsection{Implémentation numérique}
 \section{Les sous-espaces de Krylov}
 \subsection{Présentation théorique}
+\subsubsection{De Jacobi à Krylov}
+On rappelle le résultat de la partie précédente sur la méthode de jacobi qui s'écrit : 
+\begin{equation}
+x^{k+1} = -D^{-1}(L+U)x^k + D^{-1}b = (I - D^{-1}A)x^{k} + D^{-1}b
+\end{equation}
+avec la matrice $A$ du système qui se décompose comme : $A = D + L + U$, $L$ une matrice triangulaire inférieur, $U$ un matrice triangulaire supérieur et $D$ diagonale. La matrice A est inversible. On définit ensuite le résidu du système qui est par définition : 
+\begin{equation}
+r^k \triangleq b - Ax^k = -A ( - A^{-1}b + x^k) = -A (- x^* + x^k)
+\end{equation}
+Où $x^*$ est la solution réel du système. En normalisant le système ci-dessus de tel sorte que $D = I$. Alors, nous pouvons écrire la solution au rang k+1, comme celle au rang k plus le résidu : 
+\begin{eqnarray}
+x^{k+1} &=& x^k + r^k\\
+\Leftrightarrow x^{k+1} - x^* &=& x^k - x^* + r^k\\
+\Leftrightarrow -A( x^{k+1} - x^*) &=& -A(x^k - x^*) - Ar^k\\
+\Leftrightarrow r^{k+1} &=& r^k - Ar^k
+\end{eqnarray}
+Dans cette dernière équation récursive, nous pouvons voir que $r^{k+1}$ est une combinaison linéaire des vecteurs précédents. Ainsi :
+\begin{equation}
+r^k \in Vect\{r^0, Ar^0, ..., A^kr^0\}
+\end{equation}
+Cela implique directement : 
+\begin{equation}
+x^k - x^0 = \sum_{i = 0}^{k-1}r^i
+\end{equation}
+Donc il vient que : 
+\begin{equation}
+x^k \in x^0 + Vect\{r^0, Ar^0, ..., A^kr^0\}
+\end{equation}
+Où $Vect\{r^0, Ar^0, ..., A^kr^0\}$ est le k-ème espace de Krylov généré par A à partir de $r^0$ noté $\mathcal{K}_k(A, r^0)$
+\subsubsection{De nouvelles propriétés}
+Maintenant que nous avons une définition de ces espaces, nous allons montrer plusieurs propriétés pour ensuite construire l'algorithme afin de l'implémenter. 
 \subsection{L'algorithme GMRES}
+Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES.
