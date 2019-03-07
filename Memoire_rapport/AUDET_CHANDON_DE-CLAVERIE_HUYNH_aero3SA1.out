@@ -16,9 +16,9 @@
 \BOOKMARK [1][-]{section.3.2}{Les sous-espaces de Krylov}{chapter.3}% 16
 \BOOKMARK [2][-]{subsection.3.2.1}{Pr\351sentation th\351orique}{section.3.2}% 17
 \BOOKMARK [2][-]{subsection.3.2.2}{L'algorithme GMRES}{section.3.2}% 18
-\BOOKMARK [0][-]{chapter.4}{Optimisation et Comparaison des m\351thodes}{}% 19
+\BOOKMARK [0][-]{chapter.4}{Complexit\351}{}% 19
 \BOOKMARK [1][-]{section.4.1}{Optimisation des m\351thodes}{chapter.4}% 20
 \BOOKMARK [2][-]{subsection.4.1.1}{Optimisation math\351matique}{section.4.1}% 21
 \BOOKMARK [2][-]{subsection.4.1.2}{Optimisation num\351rique}{section.4.1}% 22
-\BOOKMARK [1][-]{section.4.2}{Comparaison des m\351thodes}{chapter.4}% 23
+\BOOKMARK [1][-]{section.4.2}{\311tude de la complexit\351}{chapter.4}% 23
 \BOOKMARK [0][-]{chapter.5}{Conclusion \046 ouverture}{}% 24

@@ -1,4 +1,4 @@
-\select@language {french}
+\babel@toc {french}{}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {chapter}{\numberline {2}Pr\IeC {\'e}sentation des m\IeC {\'e}thodes it\IeC {\'e}ratives classiques}{2}{chapter.2}
 \contentsline {section}{\numberline {2.1}Pr\IeC {\'e}sentation g\IeC {\'e}n\IeC {\'e}rale des m\IeC {\'e}thodes}{2}{section.2.1}
@@ -13,13 +13,16 @@
 \contentsline {section}{\numberline {3.1}M\IeC {\'e}thode SOR}{7}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode SOR}{7}{subsection.3.1.1}
 \contentsline {subsection}{\numberline {3.1.2}Int\IeC {\'e}r\IeC {\^e}t de la m\IeC {\'e}thode}{8}{subsection.3.1.2}
-\contentsline {subsection}{\numberline {3.1.3}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{9}{subsection.3.1.3}
-\contentsline {section}{\numberline {3.2}Les sous-espaces de Krylov}{9}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Pr\IeC {\'e}sentation th\IeC {\'e}orique}{9}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES}{9}{subsection.3.2.2}
-\contentsline {chapter}{\numberline {4}Optimisation et Comparaison des m\IeC {\'e}thodes}{10}{chapter.4}
-\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{10}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique}{10}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{10}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}Comparaison des m\IeC {\'e}thodes}{10}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{11}{chapter.5}
+\contentsline {subsubsection}{Aller un peu plus loin : SSOR}{10}{section*.3}
+\contentsline {subsection}{\numberline {3.1.3}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{10}{subsection.3.1.3}
+\contentsline {section}{\numberline {3.2}Les sous-espaces de Krylov}{10}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Pr\IeC {\'e}sentation th\IeC {\'e}orique}{10}{subsection.3.2.1}
+\contentsline {subsubsection}{De Jacobi \IeC {\`a} Krylov}{10}{section*.4}
+\contentsline {subsubsection}{De nouvelles propri\IeC {\'e}t\IeC {\'e}s}{11}{section*.5}
+\contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES}{11}{subsection.3.2.2}
+\contentsline {chapter}{\numberline {4}Complexit\IeC {\'e}}{12}{chapter.4}
+\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{12}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique}{12}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{12}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{12}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{13}{chapter.5}
