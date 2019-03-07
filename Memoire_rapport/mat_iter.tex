@@ -66,6 +66,45 @@ M_{SOR}(\omega)+M_{SOR}^*(\omega)-A=\bigg(\frac{2}{\omega-1}\bigg)D \text{ puisq
 $$
 qui est symétrique définie positive si on est dans l'intervalle donné par le théorème de Kahan. Le théorème de Householder-John nous dit que pour une matrice $A$ hermitienne définie positive, avec $A=M-N$ avec $M$ inversible, la méthode itérative converge pour toute donnée initiale si $M+N^*$ est définie positive. ($N^*$ étant la matrice adjointe ou transconjugée à $N$ soit $N^*=^t\overline{N}=\overline{^tN}$)
 \subsection{Implémentation numérique}
+\begin{minted}
+def SOR(A, B, omega): 
+	M = (1/omega)*diag(diag(A))
+	N = M-A
+	J = dot(inv(M), N)
+	K = dot(inv(M), B)
+	return J,K
+\end{minted}
+	
+\begin{minted}	
+def test_SOR():
+	A = array([[1, 2, -2], [1, 1, 1], [2, 2, 1]])
+	B = array([[-1], [6], [9]])
+	X0 = array([[0], [0], [0]])
+	X = array([[1], [2], [3]])
+	X_SOR, iters = res_iter(SOR, A, B, X0, 1e-6, 1e6, 1/sqrt(pi))
+	assert allclose(X_SOR, X)
+	return
+\end{minted}
+	
+\begin{minted}
+def res_iter(decomp, A, B, X0, epsilon, itermax, omega=1):
+	(J,K) = decomp(A,B,omega)
+	Xprec = 0 
+	X = X0
+	iters = 0
+	
+	test1 = True
+	test2 = True
+	
+	while test1 and iters < itermax:
+	Xprec = X
+	X = J@Xprec+K
+	iters = iters+1
+	
+	test1 = ( norm((A@X)-B) > epsilon )
+	test2 = ( norm(X-Xprec) > epsilon )
+	return X,iters
+\end{minted}
 \section{Les sous-espaces de Krylov}
 \subsection{Présentation théorique}
 \subsubsection{De Jacobi à Krylov}
