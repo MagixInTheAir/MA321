@@ -28,7 +28,7 @@ L'avantage de la méthode SOR au niveau de la convergence est mathématiquement 
 	$$
 	\rho(T_\omega)\geq|\omega -1|
 	$$
-	\item \textbf{\underline{Théorème d'Ostrowski-Reich (1949, 1954)}} : Si la matrice $A$ est définie positive et que $\omega \in ]0;2[$,la méthode SOR converge pour tout choix de vecteur $x^{(0)}$ initial.
+	\item \textbf{\underline{Théorème d'Ostrowski-Reich (1949-1954)}} : Si la matrice $A$ est définie positive et que $\omega \in ]0;2[$,la méthode SOR converge pour tout choix de vecteur $x^{(0)}$ initial.
 \end{enumerate}
 Afin qu'une méthode itérative converge, il est nécessaire que le rayon spectral de la matrice d'itération soit strictement inférieur à $1$. Donc, pour que la méthode ne converge pas, il faut que le rayon spectral soit supérieur ou égal à 1. Avec le théorème de Kahan, on a :
 $$
@@ -47,6 +47,8 @@ $$
 \omega_{optimal}=\frac{2}{1+\sqrt{1-[\rho(T_j)]^2}}
 $$
 Avec ce choix de coefficient de relaxation, on a : $\rho(T_\omega)=\omega-1$\\
+La preuve de ce théorème est dans : Ortega, J. M., Numerical
+Analysis; A Second Course, Academic Press, New York, 1972, 201 pp.\\
 \underline{\textbf{Preuve du théorème de Kahan}} : On a,
 $$
 \prod\limits_i \lambda_i(T(\omega))=\det(T(\omega))=\frac{\det(\omega U+(1-\omega)I)}{\det(I-\omega L)}=(1-\omega)^n 
@@ -64,48 +66,11 @@ $$
 $$
 M_{SOR}(\omega)+M_{SOR}^*(\omega)-A=\bigg(\frac{2}{\omega-1}\bigg)D \text{ puisque }L=U^*
 $$
-qui est symétrique définie positive si on est dans l'intervalle donné par le théorème de Kahan. Le théorème de Householder-John nous dit que pour une matrice $A$ hermitienne définie positive, avec $A=M-N$ avec $M$ inversible, la méthode itérative converge pour toute donnée initiale si $M+N^*$ est définie positive. ($N^*$ étant la matrice adjointe ou transconjugée à $N$ soit $N^*=^t\overline{N}=\overline{^tN}$)
+qui est symétrique définie positive si on est dans l'intervalle donné par le théorème de Kahan. Le théorème de Householder-John nous dit que pour une matrice $A$ hermitienne définie positive, avec $A=M-N$ avec $M$ inversible, la méthode itérative converge pour toute donnée initiale si $M+N^*$ est définie positive. ($N^*$ étant la matrice adjointe ou transconjugée à $N$ soit $N^*=^t\overline{N}=\overline{^tN}$).\\
+
+Afin d'optimiser l'algorithme, on utilise souvent la méthode SSOR (Symetric Successive Over-Relaxation) afin de préconditionner la matrice avant de la traîter, cette méthode sera traîtée ultérieurement dans la partie optimisation.
 \subsection{Implémentation numérique}
-\begin{minted}
-def SOR(A, B, omega): 
-	M = (1/omega)*diag(diag(A))
-	N = M-A
-	J = dot(inv(M), N)
-	K = dot(inv(M), B)
-	return J,K
-\end{minted}
-	
-\begin{minted}	
-def test_SOR():
-	A = array([[1, 2, -2], [1, 1, 1], [2, 2, 1]])
-	B = array([[-1], [6], [9]])
-	X0 = array([[0], [0], [0]])
-	X = array([[1], [2], [3]])
-	X_SOR, iters = res_iter(SOR, A, B, X0, 1e-6, 1e6, 1/sqrt(pi))
-	assert allclose(X_SOR, X)
-	return
-\end{minted}
-	
-\begin{minted}
-def res_iter(decomp, A, B, X0, epsilon, itermax, omega=1):
-	(J,K) = decomp(A,B,omega)
-	Xprec = 0 
-	X = X0
-	iters = 0
-	
-	test1 = True
-	test2 = True
-	
-	while test1 and iters < itermax:
-	Xprec = X
-	X = J@Xprec+K
-	iters = iters+1
-	
-	test1 = ( norm((A@X)-B) > epsilon )
-	test2 = ( norm(X-Xprec) > epsilon )
-	return X,iters
-\end{minted}
-\section{Les sous-espaces de Krylov}
+\section{Les espaces de Krylov}
 \subsection{Présentation théorique}
 \subsubsection{De Jacobi à Krylov}
 On rappelle le résultat de la partie précédente sur la méthode de jacobi qui s'écrit : 
@@ -137,6 +102,73 @@ x^k \in x^0 + Vect\{r^0, Ar^0, ..., A^kr^0\}
 \end{equation}
 Où $Vect\{r^0, Ar^0, ..., A^kr^0\}$ est le k-ème espace de Krylov généré par A à partir de $r^0$ noté $\mathcal{K}_k(A, r^0)$
 \subsubsection{De nouvelles propriétés}
-Maintenant que nous avons une définition de ces espaces, nous allons montrer plusieurs propriétés pour ensuite construire l'algorithme afin de l'implémenter. 
+Maintenant que nous avons une définition de ces espaces, nous allons montrer plusieurs propriétés pour ensuite construire l'algorithme afin de l'implémenter. Le premier fait remarquable des espaces de krylov est que par construction, nous avons :  
+\begin{equation}
+\mathcal{K}_{k - 1}(A, r^0) \in \mathcal{K}_k(A, r^0)
+\end{equation}
+Ensuite, il est important de montrer que la solution que l'on cherche appartient à cet espace. Nous reprenons donc notre système linéaire possédant une unique solution : 
+\begin{equation}
+Ax = b \label{pb}
+\end{equation}
+D'après la définition du problème, la matrice A est inversible. Nous supposons que l'on a le polynôme caractéristique de A :
+\begin{equation}
+P(\lambda) = \sum_{j = 0}^{n} \alpha_j t^j \Rightarrow P(0) = \alpha_0 = det(A) \neq 0
+\end{equation}
+Par le théorème de Cayley-Hamilton, nous pouvons obtenir la valeur de $A^{-1}$ :
+\begin{eqnarray}
+P(A) = \alpha_0 I + \alpha_1 A + ... + \alpha_n A^n &=& 0 \\
+\alpha_0 A^{-1}A + \alpha_1 A + ... + \alpha_n A^n &=& 0 \\
+(\alpha_0 A^{-1} + \alpha_1  + ... + \alpha_n A^{n - 1})A &=& 0 \\
+\alpha_0 A^{-1} + \alpha_1  + ... + \alpha_n A^{n - 1} &=& 0
+\end{eqnarray}
+Ce qui donne finalement :
+\begin{equation}
+ A^{-1} = - \frac{1}{\alpha_0} \times \sum_{j=0}^{n-1} \alpha_{j+1} A^j
+\end{equation}
+Or la solution du problème \ref{pb} est : $x^* = A^{-1}b$. Ce qui peut s'écrire de la façon suivante : 
+\begin{equation}
+x^* = - \frac{1}{\alpha_0} \sum_{j=0}^{n-1} \alpha_{j+1} A^j b
+\end{equation}
+Ce vecteur appartient clairement à l'espace de Krylov défini par : 
+\begin{equation}
+x^* \in \mathcal{K}(A, b)
+\end{equation}
+Ainsi, la solution de notre problème appartient à l'espace de krylov défini par les deux données du problème que sont A et b. 
 \subsection{L'algorithme GMRES}
-Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES.
+Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES qui se trouve ci-dessous en pseudo-code (cf. figure \ref{fig:gmres}) avec l'implémentation de celui-ci en python.
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{gmres}
+	\caption{Algorithme GMRES}
+	\label{fig:gmres}
+\end{figure}
+\begin{minted}[linenos, autogobble, breaklines]{python}
+def GMRES(A, b, espilon):
+	max_iter = A.shape[0] #Number of maxiter
+	mat_q = np.zeros((max_iter, max_iter + 1))
+	mat_h = np.zeros((max_iter + 1, max_iter))
+	norm_b = np.linalg.norm(b)
+	be1 = np.zeros(max_iter + 1)
+	be1[0] = norm_b
+	mat_q[:, 0] = 1 / np.linalg.norm(b) * b.T # On définit ici que l'on a forcément x0 = 0
+	for j in range(max_iter):
+		mat_q[:, j+1] = A @ mat_q[:, j]
+		for i in range(j+1):
+			mat_h[i, j] = mat_q[:, i] @ mat_q[:, j + 1]
+			mat_q[:, j+1] -= mat_h[i, j] * mat_q[:, i]
+		mat_h[j + 1, j] = np.linalg.norm(mat_q[:, j + 1])
+		mat_q[:, j + 1] /= mat_h[j + 1, j]
+		y = np.linalg.lstsq(mat_h, be1, rcond=None)[0]
+		residue = np.linalg.norm(y) / norm_b
+		if residue < espilon:
+			return mat_q[:max_iter, :max_iter] @ y, residue
+	return mat_q[:max_iter, :max_iter] @ y
+\end{minted}
+
+Cette méthode repose sur les espaces de krylov. En effet, dans cet algorithme nous choisissons $x_k \in \mathcal{K}_k(A, b)$ tel que l'on a $||b - Ax_k||_2$. Nous nous reposons sur une méthode de projection. L'algorithme repose aussi sur le procédé d'Arnoldi qui nous permet de créer une base orthonormal sur le sous-espace de krylov. Dans la suite de ce chapitre, nous allons étudier ces composantes permettant d'arriver à l'écriture de notre algorithme.
+
+\subsubsection{Généralité}
+
+\subsubsection{Procédé d'Arnoldi}
+
+\subsubsection{Explication GMRES}

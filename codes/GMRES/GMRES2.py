@@ -24,7 +24,7 @@ def GMRES(A, b, espilon):
     return mat_q[:max_iter, :max_iter] @ y
 
 
-n = 100
+n = 2
 """
 A = np.array([[1., 5, 4, 8, 9, 12], [2, 3, 5, 8, 4, 3], [0, 5, 3, 8, 9, 1], [2, 4, 6, 8, 1, 3], [5, 8, 6, 4, 7, 10], [0, 0, 5, 6, 8, 6]])
 b = np.array([[172], [93], [102], [83], [190], [115]])
@@ -34,6 +34,8 @@ x0 = np.zeros((6, 1))"""
 A = np.random.rand(n, n)
 b = np.random.rand(n, 1)
 x0 = np.zeros((n, 1))
+print(A)
+print(b)
 
 x = GMRES(A, b, 1e-8)
 print(x)
