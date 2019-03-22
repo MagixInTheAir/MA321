@@ -135,4 +135,40 @@ x^* \in \mathcal{K}(A, b)
 \end{equation}
 Ainsi, la solution de notre problème appartient à l'espace de krylov défini par les deux données du problème que sont A et b. 
 \subsection{L'algorithme GMRES}
-Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES. Expliquer le principe général
+Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES qui se trouve ci-dessous en pseudo-code (cf. figure \ref{fig:gmres}) avec l'implémentation de celui-ci en python.
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{gmres}
+	\caption{Algorithme GMRES}
+	\label{fig:gmres}
+\end{figure}
+\begin{minted}[linenos, autogobble, breaklines]{python}
+def GMRES(A, b, espilon):
+	max_iter = A.shape[0] #Number of maxiter
+	mat_q = np.zeros((max_iter, max_iter + 1))
+	mat_h = np.zeros((max_iter + 1, max_iter))
+	norm_b = np.linalg.norm(b)
+	be1 = np.zeros(max_iter + 1)
+	be1[0] = norm_b
+	mat_q[:, 0] = 1 / np.linalg.norm(b) * b.T # On définit ici que l'on a forcément x0 = 0
+	for j in range(max_iter):
+		mat_q[:, j+1] = A @ mat_q[:, j]
+		for i in range(j+1):
+			mat_h[i, j] = mat_q[:, i] @ mat_q[:, j + 1]
+			mat_q[:, j+1] -= mat_h[i, j] * mat_q[:, i]
+		mat_h[j + 1, j] = np.linalg.norm(mat_q[:, j + 1])
+		mat_q[:, j + 1] /= mat_h[j + 1, j]
+		y = np.linalg.lstsq(mat_h, be1, rcond=None)[0]
+		residue = np.linalg.norm(y) / norm_b
+		if residue < espilon:
+			return mat_q[:max_iter, :max_iter] @ y, residue
+	return mat_q[:max_iter, :max_iter] @ y
+\end{minted}
+
+Cette méthode repose sur les espaces de krylov. En effet, dans cet algorithme nous choisissons $x_k \in \mathcal{K}_k(A, b)$ tel que l'on a $||b - Ax_k||_2$. Nous nous reposons sur une méthode de projection. L'algorithme repose aussi sur le procédé d'Arnoldi qui nous permet de créer une base orthonormal sur le sous-espace de krylov. Dans la suite de ce chapitre, nous allons étudier ces composantes permettant d'arriver à l'écriture de notre algorithme.
+
+\subsubsection{Généralité}
+
+\subsubsection{Procédé d'Arnoldi}
+
+\subsubsection{Explication GMRES}
