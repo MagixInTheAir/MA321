@@ -108,3 +108,5 @@ venv.bak/
 *.lof
 *.lot 
 *.out 
+
+.vscode
