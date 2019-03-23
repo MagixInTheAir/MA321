@@ -134,14 +134,117 @@ Ce vecteur appartient clairement à l'espace de Krylov défini par :
 x^* \in \mathcal{K}(A, b)
 \end{equation}
 Ainsi, la solution de notre problème appartient à l'espace de krylov défini par les deux données du problème que sont A et b. 
-\subsection{L'algorithme GMRES}
-Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES qui se trouve ci-dessous en pseudo-code (cf. figure \ref{fig:gmres}) avec l'implémentation de celui-ci en python.
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{gmres}
-	\caption{Algorithme GMRES}
-	\label{fig:gmres}
-\end{figure}
+\subsection{L'algorithme GMRES : Generalized Minimal RESidual method}
+Un des algorithmes utilisant les espaces de Krylov est l'algorithme GMRES qui se trouve ci-dessous en pseudo-code (cf. figure \ref{fig:gmres}) avec l'implémentation de celui-ci en python. Cette méthode repose sur les espaces de krylov. En effet, dans cet algorithme nous choisissons $x_k \in \mathcal{K}_k(A, b)$ tel que l'on a $||b - Ax_k||_2$. Nous nous reposons sur une méthode de projection. L'algorithme repose aussi sur le procédé d'Arnoldi qui nous permet de créer une base orthonormal sur le sous-espace de krylov. Dans la suite de ce chapitre, nous allons étudier ces composantes permettant d'arriver à l'écriture de notre algorithme.
+
+\subsubsection{Généralité}
+Nous avons le système linéaire suivant qui possède une unique solution $x^*$ : 
+\begin{equation}
+	Ax = b
+\end{equation}
+Le résidu initial est  : 
+\begin{equation}
+r_0 = b - A x^{(0)}
+\end{equation}
+L'algorithme GMRES repose sur une méthode de projection. On écrit donc le système sous sa forme résiduelle pour faire apparaître une projection : 
+\begin{equation}
+< b - Ax^*, v > = 0, \forall v \in \mathbb{R}^n \Leftrightarrow b - Ax^* \perp \mathbb{R}^n
+\label{pb_res}
+\end{equation}
+Le but est maintenant de construire des solutions par itérations. On se place dans un sous-espace $\K$ et on essaie de trouver dans ce sous-espace $x$ tel que : 
+\begin{equation}
+b - Ax \perp \K \Leftarrow <Au, v> = <b, v>, v \in \mathbb{K}
+\end{equation}
+On généralise cette méthode grâce à deux sous-espaces : $\K$ et  $\mathbb{L}$. On cherche $x \in u_0 + \K$ avec :
+\begin{equation}
+b - Ax \perp \mathbb{L} \Rightarrow \ <Au, v> = <b, v>, v \in \mathbb{L}
+\label{Petrov-Galerkin}
+\end{equation}
+C'est la condition de Petrov-Galerkin.
+
+Sous la forme matricielle, nous allons créer deux matrices V et W, de taille $n \times m$,  définies par les vecteurs des bases de $\K$ et $\mathbb{L}$ : 
+\begin{eqnarray}
+V &=& (V_1 \ V_2 \ ... \ V_m ) \\
+W &=& (W_1 \ W_2 \ ... \ W_m )
+\end{eqnarray}
+Soit $(y, z) \in (\mathbb{R}^m)^2$. Nous pouvons définir $v \in \K$ et $w \in \mathbb{L}$ :
+\begin{eqnarray}
+v &=& Vy\\
+w &=& Wz
+\end{eqnarray}
+Il nous faut maintenant trouver la solution de $ x = x_0 + Vy \in \K$. Alors, grâce à \ref{pb_res} et \ref{Petrov-Galerkin}, nous écrivons : 
+\begin{eqnarray}
+<Av, w> &=& <r0, w> \forall w \in L\\
+<AVy, Wz> &=& <r0, Wz> \forall z \in \mathbb{R}^m \\
+Avy &=& r0 \\
+y &=& (W^t A V)^{-1} W^tr^0
+\end{eqnarray}
+Nous obtenons donc la solution : 
+\begin{equation}
+x = x_0 + V (W^t A V)^{-1} W^tr^0
+\end{equation}
+Nous pouvons donc maintenant expliqué ce que notre méthode de projection va faire. Il faut savoir qu'une méthode de projection est itérative et va à chaque itération faire deux choses  :
+\begin{itemize}
+	\item construire les sous-espaces K et L
+	\item chercher la nouvelle itération dans $u + K$ par le procédé exposé ci-dessus.
+\end{itemize}
+Voici donc le principe général des méthodes de projection : 
+\begin{enumerate}
+	\item Choisir $\K^m$ et $\mathbb{L}^m$ : deux sous-espaces de $\mathbb{R}^n$ de même dimension m
+	\item Construire $V_m$ et $W_m$
+	\item Calculer le résidu : $r = b - Ax^{(k)}$
+	\item Résoudre le système $y = (W^t_m A V_m)^{-1} W^t_mr$
+	\item Créer la nouvelle solution : $x = x + V_m y$
+\end{enumerate}
+Pour créer le sous-espace L, il y a deux méthodes : 
+\begin{itemize}
+	\item $L = K$ donne lieu à la méthode du gradient conjugué
+	\item $L = AK$ donne lieu à la méthode GMRES.
+\end{itemize}
+La méthode du gradient conjugué ayant été vue en cours, nous avons choisi la deuxième méthode de génération de L. Dans les deux cas cela revient à résoudre le problème des moindres carrés : 
+\begin{equation}
+\begin{cases}
+\text{On cherche $x^(k) \in x_0 + \K_m$ telle que : }\\
+min_{v \in \K_m} \frac{1}{2}||A (x_0 + v) - b||^2_2
+\end{cases}
+ \label{moindrecarre}
+\end{equation}
+Malheureusement nous n'avons pas compris la démonstration liant les deux problèmes. Il faut juste retenir qu'ils sont équivalent. 
+\subsubsection{Explication de l'algorithme GMRES}
+Cet algorithme se base dans un premier temps sur les itérations d'Arnoldi. Ici nous ne présenterons que la version qui est moins sensible aux erreurs d'arrondi car notre but est de justifier l'implémentation numérique de l'algorithme. Ce procédé d'Arnoldi a pour but de créer une base orthonormée du sous-espace de Krylov. Le procédé se résume par : 
+\begin{enumerate}
+	\item $v_1 = \frac{r_0}{||r_0||}$
+	\item Pour j = 1, ..., m ; on calcule : $w = Avj$
+	\item Pour i = 1, ..., j ; on calcule : $w = w - (w, v_i) v_i$
+	\item $\bar{v}_{j+1} = \frac{w}{||w||}$
+\end{enumerate}
+
+Nous introduisons alors un objet : $\overline{H}_m = (h_{ij})$ la matrice de Heissenberg : 
+\begin{equation}
+h_{ij} = \begin{cases}
+<Av_j, v_i>, \ i\leq j \\
+||v_{j+1}||, \ i = j + 1 \\
+0, \ sinon
+\end{cases}
+\end{equation}
+Cet objet permet d'écrire de façon matricielle notre procédé car  : 
+\begin{equation}
+AV_m = V_{m+1}\overline{H}_m
+\end{equation}
+et : 
+\begin{eqnarray}
+\bar{v}_{j+1} &=& Av_j - \sum_{i=1}^{j} h_{i,j} v_i\\
+\Leftrightarrow Av_j &=& \bar{v}_{j+1} + \sum_{i=1}^{j} h_{i,j} v_i \\
+\Leftrightarrow Av_j &=& h_{j+1, j}v_{j+1} + \sum_{i=1}^{j} h_{i,j} v_i
+\end{eqnarray}
+Malheureusement, nous n'avons pas compris les preuves permettant d'en arriver à ce point sur le procédé d'Arnoldi afin de démontrer dans la totalité le procédé. Cependant, ce qu'il faut retenir c'est qu'il construit un base orthonormé du sous-espace de krylov.\\
+
+Maintenant que nous avons cette base, nous pouvons résoudre le problème des moindres carrés exprimés ci-dessus (cf. équation \ref{moindrecarre}). Nous obtenons les propriétés suivantes (qui ne seront pas démontrées)  : 
+\begin{itemize}
+	\item $||r_{m+1}|| \leq ||r_m||$
+	\item L'algorithme converge en n itérations au maximum car $\mathcal{K}_m(A, r0) = \mathbb{R}^n$
+\end{itemize}
+Voici le code et le pseudo-code de l'algorithme : 
 \begin{minted}[linenos, autogobble, breaklines]{python}
 def GMRES(A, b, espilon):
 	max_iter = A.shape[0] #Number of maxiter
@@ -150,25 +253,23 @@ def GMRES(A, b, espilon):
 	norm_b = np.linalg.norm(b)
 	be1 = np.zeros(max_iter + 1)
 	be1[0] = norm_b
-	mat_q[:, 0] = 1 / np.linalg.norm(b) * b.T # On définit ici que l'on a forcément x0 = 0
+	mat_q[:, 0] = 1 / np.linalg.norm(b) * b.T # On définit ici que l'on a forcément x0 = 0 (r0 = b)
 	for j in range(max_iter):
 		mat_q[:, j+1] = A @ mat_q[:, j]
 		for i in range(j+1):
 			mat_h[i, j] = mat_q[:, i] @ mat_q[:, j + 1]
 			mat_q[:, j+1] -= mat_h[i, j] * mat_q[:, i]
-		mat_h[j + 1, j] = np.linalg.norm(mat_q[:, j + 1])
-		mat_q[:, j + 1] /= mat_h[j + 1, j]
-		y = np.linalg.lstsq(mat_h, be1, rcond=None)[0]
-		residue = np.linalg.norm(y) / norm_b
-		if residue < espilon:
-			return mat_q[:max_iter, :max_iter] @ y, residue
+	mat_h[j + 1, j] = np.linalg.norm(mat_q[:, j + 1])
+	mat_q[:, j + 1] /= mat_h[j + 1, j]
+	y = np.linalg.lstsq(mat_h, be1, rcond=None)[0]
+	residue = np.linalg.norm(y) / norm_b
+	if residue < espilon:
+	return mat_q[:max_iter, :max_iter] @ y, residue
 	return mat_q[:max_iter, :max_iter] @ y
 \end{minted}
-
-Cette méthode repose sur les espaces de krylov. En effet, dans cet algorithme nous choisissons $x_k \in \mathcal{K}_k(A, b)$ tel que l'on a $||b - Ax_k||_2$. Nous nous reposons sur une méthode de projection. L'algorithme repose aussi sur le procédé d'Arnoldi qui nous permet de créer une base orthonormal sur le sous-espace de krylov. Dans la suite de ce chapitre, nous allons étudier ces composantes permettant d'arriver à l'écriture de notre algorithme.
-
-\subsubsection{Généralité}
-
-\subsubsection{Procédé d'Arnoldi}
-
-\subsubsection{Explication GMRES}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{gmres}
+	\caption{Algorithme GMRES}
+	\label{fig:gmres}
+\end{figure}
