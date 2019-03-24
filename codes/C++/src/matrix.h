@@ -25,12 +25,12 @@ public :
     std::vector<T> diag();
     
     static Matrix<T> gen_random(long long size); // Implemented
-    static Matrix<T> gen_random(long long lines, long long cols);
+    static Matrix<T> gen_random(long long lines, long long cols); 
     static Matrix<T> gen_diag(long long size, T value = T()); // Implemented
     static Matrix<T> gen_diag(long long lines, long long cols, T value = T()); // Implemented
     static Matrix<T> gen_diag(std::vector<T> values); // Implemented
     static Matrix<T> gen_full(long long size); // Implemented
-    static Matrix<T> gen_full(long long lines, long long cols, T value = T());
+    static Matrix<T> gen_full(long long lines, long long cols, T value = T()); // Implemented
     static Matrix<T> gen_uninitialized(long long size); // Implemented
     static Matrix<T> gen_uninitialized(long long lines, long long cols); // Implemented
 
@@ -156,8 +156,14 @@ Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::gen_full(long long lines, long long cols, long long value = 1){
-
+Matrix<T> Matrix<T>::gen_full(long long lines, long long cols, long long value = T()){
+    for(long long i = 0; i < lines; i++) {
+        std::vector<T> line;
+        for(long long j = 0; j < cols; j++) {
+            line.push_back(value);
+        }
+        this->data.push_back(line);
+    }
 };
 
 template<typename T>
