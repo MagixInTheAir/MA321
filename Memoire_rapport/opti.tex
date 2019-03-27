@@ -1,8 +1,14 @@
 \chapter{Des algorithmes complexes...}
 \section{Optimisation des méthodes}
-\subsection{Optimisation mathématique}
-Bah, préconditionne, fdp
-Il va falloir inclure les préconditionnements https://math-linux.com/mathematiques/resolution-de-systemes-lineaires/article/la-methode-du-gradient-conjugue-preconditionne
+\subsection{Optimisation mathématique : Préconditionnement}
+
+On peut illustrer les problèmes des méthodes itératives à travers de la méthode du gradient conjugué. En effet, les conditionnements des matrices étudiées sont parfois très grands et il est ainsi nécessaire d'effectuer une opération dite de préconditionnement afin de minimiser les résidus des itérations.\\
+
+Afin de préconditionner une matrice, on introduit une matrice de préconditionnement que l'on note $C$. Cette matrice interviendra dans l'algorithme du gradient conjugué afin de l'optimiser. La matrice $C$ diffèrera selon la méthode de préconditionnement choisie. Dans ce mémoire, nous nous focaliserons sur la méthode SSOR. \\
+
+L'objectif mathématique de l'introduction de la matrice $C$ est de mieux répartir les valeurs propres du système linéaire étudié, ce qui va permettre d'accélérer la méthode du gradient conjugué. \\
+
+En effet, une meilleure répartition des valeurs propres de la matrice liée au système étudié permet de faire rapprocher les lignes de niveau de la fonction associée au système vers des cercles. Cela permettra ensuite d'avoir moins d'itérations pour la méthode de descente du gradient conjugué.
 \subsection{Optimisation numérique}
-Bah, fais pas de la merde, fdp
+
 \section{Étude de la complexité}
