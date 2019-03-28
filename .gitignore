@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+*.pdf
+*.gz
+*.toc
+*.xdy
+Memoire_rapport/AUDET_CHANDON_DE-CLAVERIE_HUYNH_aero3SA1.pdf
