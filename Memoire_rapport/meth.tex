@@ -17,24 +17,69 @@ Cette écriture donne l'idée de considérer une suite récurrente de vecteurs $
 $$M x^{(p+1)} = Nx^{(p)} + b$$
 Si $x^{(p)}$ converge vers $x^* \in \mathbb{R}$ pour $p \to \infty$, alors $Mx^* = Nx^*+b$ et donc $x^*$ est solution de $Ax = b$.\\
 
-\noindent \textbf{\underline{Remarques :}}
-\begin{itemize}
-	\item Pour calculer une itération, il faut d'abord calculer $Nx^{(p)} + b$ (calcul assez rapide), puis résoudre le système $Mx^{(p+)} = Nx^{(p)}+b$ où on cherche à calculer $x^{(p+1)}$.\\
-	En général $M$ est choisie de sorte que cette résolution puisse être rapidement calculée.
-	\item Pour l'instant, rien n'assure que la suite $\left(x^{(p)}\right)$ converge rapidement, ni même qu'elle converge.
-\end{itemize}
+\noindent \textbf{\underline{Remarque :}}\\
+Pour calculer une itération, il faut d'abord calculer $Nx^{(p)} + b$ (calcul assez rapide), puis résoudre le système $Mx^{(p+)} = Nx^{(p)}+b$ où on cherche à calculer $x^{(p+1)}$.\\
+En général $M$ est choisie de sorte que cette résolution puisse être rapidement calculée.
+
+Avant de se lancer dans le calcul des itérations, il convient d'étudier la convergence de la suite. Si l'on constate que la suite ne converge pas, cela nous évitera de perdre notre temps. \\
+On a $A = M-N$ avec $A$ et $M$ inversibles. Avec $M$ choisie de sorte qu'elle soit inversible "aisément".\\
+
+$\begin{cases}
+	x^{(0)} \text{ fixé}\\
+	Mx^{(k+1)} = Nx^{(k)}+b
+\end{cases}$\\
+
+
+Soit $x^* = A^{-1}b$. \\
+Notons $e^{(k)} = x^{(k)}-x* \Leftrightarrow x^{(k)} = x^*+e^{(k)}$\\
+\begin{align*}
+	M\left[x^* + e^{(k+1)}\right] &= N\left[x^* + e^{(k)}\right]\\
+	Mx^*+Me^{(k+1)} &= Nx^* + Ne^{(k)} + b\\
+	\text{Or, } \hspace{15pt} Mx^*-Nx^* &= b\\
+	\text{D'ou : } \hspace{19pt} Me^{(k+1)} &= Ne^{(k)}\\
+	\Leftrightarrow \hspace{42pt} e^{(k+1)} &= M^{-1}Ne^{(k)} 
+\end{align*}
 
 
 
+On appelle matrice d'itération la matrice ::
+\begin{align*}
+J = M^{-1}N\\
+e^{(k+1)} = Je^{(k)}\\
+e^{(1)} &= Je^{(0)}\\
+e^{(2)} &= JJe^{(0)} = J^2e^{(0)}\\
+Je^{(3)} &= JJJe^{(0)} = J^3e^{(0)}\\
+k \in \mathbb{N} \hspace{20pt} \vdots \hspace{10pt} &= J^ke^{(0)} 
+\end{align*}
 
+On est amené à étudier $\left(J^k\right)$ lorsque $k \to \infty$\\
 
+Soit $\rho(A) = \underset{\lambda \in sp_{(A)}}{\max}\left|\lambda\right|$ le rayon spectral de A.\\
+\noindent\textbf{\underline{Théorème :}}\\
+Si $\rho(J) < 1$, quelque soit le choix de $x^{(0)}$, la suite $x^{(k)}$ converge vers $x^*$.\_
+Si $\rho(J) \geq 1$, il existe au moins un choix de $x^{(0)}$ pour lequel la suite diverge.
 
+\noindent\textbf{\underline{Preuve :}}\\
+Si $\rho(j) < 1$ \\
+\begin{align*}
+\lim\limits_{k \to +\infty} J^k &= 0 \text{\footnotemark}\\
+\text{Donc } \hspace{15pt} \lim\limits_{k \to +\infty} J^ke^{(0)} &= 0e^{(0)} = 0\\
+\lim\limits_{k \to \infty} e^{(k)} &= 0\\
+\text{Or, } \hspace{15pt} x^{(k)} &= x^* + e^{(k)} \xrightarrow[k\to \infty]{}x^* + 0 
+\end{align*}
+\footnotetext{\url{https://maths.ens2m.fr/Laydi/Enseignement/Matrices.pdf} page 27, théorème 4, preuve P3}
 
-
-
+\noindent\textbf{\underline{Remarque :}}\\
+Plus $\rho(J)$ est proche de 0, plus la suite $x^{(k)}$ converge rapidement.
 
 
 \subsection{Méthode de Jacobi}
+
+
+
+
+
+
 \subsection{Méthode de Gauss-Seidel}
 \section{Une nouvelle méthode : Richardson}
 \subsection{Présentation de la méthode}

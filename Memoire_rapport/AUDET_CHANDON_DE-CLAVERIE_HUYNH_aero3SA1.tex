@@ -72,6 +72,16 @@ urlcolor=black}
   \if@twocolumn\hbox{}\newpage\fi\fi\fi}
 \makeatother
 
+\newcommand{\mycontour}[1]{%
+	\contour{red}{#1}%
+}
+
+\newcommand{\myuline}[1]{%
+	\uline{\phantom{#1}}%
+	\llap{\contour{white}{#1}}%
+}
+
+
 \usepackage{amsthm}
 \usepackage{amssymb,amsmath,bbm}
 \usepackage{array}
