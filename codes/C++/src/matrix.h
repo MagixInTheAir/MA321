@@ -13,9 +13,13 @@
 #include <random>
 #include <functional>
 
+#include "matrix_test.h"
+
 
 template<class T>
 class Matrix {
+	friend class matrix_test;
+
 protected:
 	std::vector<std::vector<T>> data;
 
@@ -65,6 +69,9 @@ public:
 
 	// COMPARATORS
     static bool allclose(std::vector<Matrix<T>> matrices, long double abs_precision, long double rel_precision);
+
+	// MISC
+	static void run_tests();
 };
 
 template<class T>
@@ -382,6 +389,11 @@ template<typename T>
 T Matrix<T>::lowest_eigenval_invIteratedPower(T precision) const {
 	
 };
+
+template<typename T>
+void Matrix<T>::run_tests() {
+	Matrix_test<T>::run_all();
+}
 
 
 
