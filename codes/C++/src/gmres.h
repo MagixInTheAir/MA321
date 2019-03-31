@@ -1,5 +1,6 @@
 #include "matrix.h"
 
-void gmres(Matrix m, long double precision, long long maxiter) {
+template<class T>
+std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> gmres(Matrix<T> const& A, Matrix<T> const& b, long double precision) {
     
 }
