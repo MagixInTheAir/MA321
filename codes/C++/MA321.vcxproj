@@ -122,7 +122,9 @@
     <ClInclude Include="src\iter_generale.h" />
     <ClInclude Include="src\jacobi.h" />
     <ClInclude Include="src\matrix.h" />
+    <ClInclude Include="src\matrix_def.h" />
     <ClInclude Include="src\matrix_test.h" />
+    <ClInclude Include="src\matrix_test_def.h" />
     <ClInclude Include="src\richardson.h" />
     <ClInclude Include="src\sor.h" />
   </ItemGroup>
