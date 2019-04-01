@@ -54,7 +54,7 @@ public:
     Matrix<T> tri_lo(bool include_diag = false) const; // Implemented
     Matrix<T> tri_up(bool include_diag = false) const; // Implemented
 	T highest_eigenval_iteratedPower(T x0, T precision, unsigned long long maxiter) const; // Implemented
-	T lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const;
+	T lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const; // Implemented
     Matrix<T> abs() const; // Implemented
     T norm() const; // Implemented
 	Matrix<T> comatrix() const; // Implemented
@@ -389,13 +389,13 @@ T Matrix<T>::highest_eigenval_iteratedPower(T x0, T precision, unsigned long lon
 	T X(x0);
 	T X_prec(x0);
 	for (unsigned long long i = 0; i < maxiter; i++) {
-		if (norme_m <= epsilon || norme_p <= epsilon) {
+		if (norm_m <= precision || norm_p <= precision) {
 			break;
 		}
 
 		Y = this->dot(X);
 		X_prec = X;
-		X = (1 / Y.norm())*Yn;
+		X = (1 / Y.norm())*Y;
 		norm_m = (X - X_prec).norm();
 		norm_p = (X + X_prec).norm();
 	}
@@ -406,7 +406,7 @@ T Matrix<T>::highest_eigenval_iteratedPower(T x0, T precision, unsigned long lon
 
 template<typename T>
 T Matrix<T>::lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const {
-	
+	return this->inv().highest_eigenval_iteratedPower(x0, precision, maxiter);
 };
 
 template<typename T>
