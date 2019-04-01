@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "matrix.h"
+#include "matrix_test.h"
 #include "gauss-seidel.h"
 #include "jacobi.h"
 #include "richardson.h"
@@ -26,6 +27,8 @@ using T = long double;
 
 
 int main() {
+
+	Matrix<T>::run_tests();
 
     // FOR EACH MATRIX SIZE :
     for(unsigned int size : sizes) {

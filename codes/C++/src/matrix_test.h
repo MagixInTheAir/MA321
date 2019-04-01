@@ -1,28 +1,20 @@
 #ifndef MATRIX_TEST_H
 #define MATRIX_TEST_H
 
-template<typename T>
-class Matrix_test {
-public:
-	void run_all();
-	
-	void test_constructors();
-	void test_operators();
-	void test_utilities();
-	void test_mathematics();
-	void test_generators();
-	void test_comparators();
-};
+#include <stdexcept>
+#include "matrix_def.h"
+#include "matrix_test_def.h"
 
 template<typename T>
 void Matrix_test<T>::run_all() {
-	test_constructors();
-	test_operators();
-	test_utilities();
-	test_mathematics();
-	test_generators();
-	test_comparators();
+	Matrix_test<T>::test_constructors();
+	Matrix_test<T>::test_operators();
+	Matrix_test<T>::test_utilities();
+	Matrix_test<T>::test_mathematics();
+	Matrix_test<T>::test_generators();
+	Matrix_test<T>::test_comparators();
 }
+
 
 template<typename T>
 void Matrix_test<T>::test_constructors() {
@@ -51,6 +43,13 @@ void Matrix_test<T>::test_generators() {
 
 template<typename T>
 void Matrix_test<T>::test_comparators() {
+	{
+		Matrix<T> A({ {1,2,3}, {4,5,6}, {7,8,9} });
+		Matrix<T> B({ {1,2,3}, {4,5,6},{7,8,9} });
 
+		if (!A.allclose(B, 0.001, 0.001)) {
+			throw std::logic_error("Test of Matrix::allclose failed");
+		}
+	}
 }
 #endif
