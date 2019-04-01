@@ -29,7 +29,7 @@ using T = long double;
 int main() {
 
 	Matrix<T>::run_tests();
-
+	
     // FOR EACH MATRIX SIZE :
     for(unsigned int size : sizes) {
 
@@ -42,8 +42,8 @@ int main() {
 
             std::vector<std::tuple<Matrix<T>, Matrix<T>, Matrix<T>>> results;
             // FOR EACH ALGORITHM :
-			for (unsigned int i = 0; i < functs<T>.size(); i++) {
-				auto funct = functs<T>[i];
+			for (unsigned int alg = 0; alg < functs<T>.size(); alg++) {
+				auto funct = functs<T>[alg];
 				Matrix<T> A = Matrix<T>::gen_random(size, min_gen, max_gen);
 				Matrix<T> b = Matrix<T>::gen_random(size, min_gen, max_gen);
 				
@@ -64,6 +64,6 @@ int main() {
             }
         }
     }
-
+	
 	system("pause");
 }
