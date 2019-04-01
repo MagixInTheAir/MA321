@@ -16,7 +16,12 @@ public:
 
 template<typename T>
 void Matrix_test<T>::run_all() {
-
+	test_constructors();
+	test_operators();
+	test_utilities();
+	test_mathematics();
+	test_generators();
+	test_comparators();
 }
 
 template<typename T>

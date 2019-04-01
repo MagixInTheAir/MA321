@@ -12,6 +12,7 @@
 #include <utility>
 #include <random>
 #include <functional>
+#include <stdexcept>
 
 #include "matrix_test.h"
 
@@ -68,7 +69,7 @@ public:
     static Matrix<T> gen_full(unsigned int lines, unsigned int cols, T value = T()); // Implemented
 
 	// COMPARATORS
-    static bool allclose(std::vector<Matrix<T>> matrices, long double abs_precision, long double rel_precision);
+    bool allclose(std::vector<Matrix<T>> other, T abs_precision, T rel_precision) const; // Implemented
 
 	// MISC
 	static void run_tests();
@@ -395,6 +396,22 @@ void Matrix<T>::run_tests() {
 	Matrix_test<T>::run_all();
 }
 
+template<typename T>
+bool Matrix<T>::allclose(std::vector<Matrix<T>> other, T abs_precision, T rel_precision) const {
+	if (this->lines() != other.lines() || this->cols() != other.cols()) {
+		throw std::length_error("Matrix must be the same size");
+	}
+
+	bool close = true;
+	for (unsigned i = 0; i < other.lines(); i++) {
+		for (unsigned j = 0; j < other.cols(); j++) {
+			if (std::abs(this->data[i][j] - other.data[i][j]) > abs_precision + (rel_precision * std::abs(other))) {
+				close = false;
+			}
+		}
+	}
+	return close;
+}
 
 
 #endif
