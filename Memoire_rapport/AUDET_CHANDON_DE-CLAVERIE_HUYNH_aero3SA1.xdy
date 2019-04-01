@@ -1,5 +1,9 @@
 ;; xindy style file created by the glossaries package
+<<<<<<< HEAD
 ;; for document 'AUDET_CHANDON_DE-CLAVERIE_HUYNH_aero3SA1' on 2019-3-30
+=======
+;; for document 'AUDET_CHANDON_DE-CLAVERIE_HUYNH_aero3SA1' on 2019-3-28
+>>>>>>> dev
 
 ; required styles
 
