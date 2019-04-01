@@ -159,13 +159,13 @@ T Matrix<T>::det() const {
 	else {
 		for (unsigned int p = 0; p < this->cols(); p++) {
 
-			std::vector<std::vector<T>> sub_data(this->data.size() - 1);
+			std::vector<std::vector<T>> sub_data;
 			for (unsigned int i = 0; i < this->lines(); i++) {
+				if (i == p) { continue; }
 				std::vector<T> line;
 				for (unsigned int j = 0; j < this->cols(); j++) {
-					if (i != j) {
-						line.push_back(this->data[i][j]);
-					}
+					if (j == p) { continue;  }
+					line.push_back(this->data[i][j]);
 				}
 				sub_data.push_back(line);
 			}
