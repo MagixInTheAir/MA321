@@ -21,9 +21,10 @@
 \contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES : Generalized Minimal RESidual method}{12}{subsection.3.2.2}
 \contentsline {subsubsection}{G\IeC {\'e}n\IeC {\'e}ralit\IeC {\'e}}{12}{section*.5}
 \contentsline {subsubsection}{Explication de l'algorithme GMRES}{14}{section*.6}
-\contentsline {chapter}{\numberline {4}Des algorithmes complexes...}{16}{chapter.4}
-\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{16}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique : Pr\IeC {\'e}conditionnement}{16}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{16}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{16}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{17}{chapter.5}
+\contentsline {subsubsection}{R\IeC {\'e}sultat de l'algorithmes}{16}{section*.8}
+\contentsline {chapter}{\numberline {4}Des algorithmes complexes...}{17}{chapter.4}
+\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{17}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique : Pr\IeC {\'e}conditionnement}{17}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{17}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{17}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{18}{chapter.5}
