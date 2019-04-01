@@ -53,15 +53,15 @@ public:
     Matrix<T> inv() const; // Implemented
     Matrix<T> tri_lo(bool include_diag = false) const; // Implemented
     Matrix<T> tri_up(bool include_diag = false) const; // Implemented
-	T highest_eigenval_iteratedPower(T precision) const;
-	T lowest_eigenval_invIteratedPower(T precision) const;
+	T highest_eigenval_iteratedPower(T x0, T precision, unsigned long long maxiter) const; // Implemented
+	T lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const;
     Matrix<T> abs() const; // Implemented
     T norm() const; // Implemented
 	Matrix<T> comatrix() const; // Implemented
 
     // GENERATORS
     static Matrix<T> gen_random(unsigned int size, T min, T max); // Implemented
-    static Matrix<T> gen_random(unsigned int lines, unsigned int cols, T min, T max); 
+    static Matrix<T> gen_random(unsigned int lines, unsigned int cols, T min, T max); // Implemented
     static Matrix<T> gen_diag(unsigned int size, T value = T()); // Implemented
     static Matrix<T> gen_diag(unsigned int lines, unsigned int cols, T value = T()); // Implemented
     static Matrix<T> gen_diag(std::vector<T> values); // Implemented
@@ -382,12 +382,30 @@ Matrix<T> Matrix<T>::operator=(Matrix<T2> const& other) {
 };
 
 template<typename T>
-T Matrix<T>::highest_eigenval_iteratedPower(T precision) const {
+T Matrix<T>::highest_eigenval_iteratedPower(T x0, T precision, unsigned long long maxiter) const {
+	T Y;
+	T norm_m(1);
+	T norm_p(1);
+	T X(x0);
+	T X_prec(x0);
+	for (unsigned long long i = 0; i < maxiter; i++) {
+		if (norme_m <= epsilon || norme_p <= epsilon) {
+			break;
+		}
+
+		Y = this->dot(X);
+		X_prec = X;
+		X = (1 / Y.norm())*Yn;
+		norm_m = (X - X_prec).norm();
+		norm_p = (X + X_prec).norm();
+	}
+
+	return X;
 
 };
 
 template<typename T>
-T Matrix<T>::lowest_eigenval_invIteratedPower(T precision) const {
+T Matrix<T>::lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const {
 	
 };
 
