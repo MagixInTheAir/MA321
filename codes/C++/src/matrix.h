@@ -69,13 +69,12 @@ Matrix<T> Matrix<T>::gen_random(unsigned int lines, unsigned int cols, T min, T 
 	std::uniform_real_distribution<T> distribution(min, max);
 	auto generate = std::bind(distribution, generator);
 
-	Matrix<T> result;
+	Matrix<T> result(lines, cols);
+
 	for (unsigned int i = 0; i < lines; i++) {
-		std::vector<T> line;
 		for (unsigned int j = 0; j < cols; j++) {
-			line.push_back(generate());
+			result.data[i][j] = generate();
 		}
-		result.data.push_back(line);
 	}
 
 	return result;
@@ -148,8 +147,13 @@ Matrix<T> Matrix<T>::gen_full(unsigned int size, T value) {
 
 template<class T>
 T Matrix<T>::det() const {
-	T det = T();
-	if (this->data[0].size() == 1) {
+	if (this->lines() != this->cols()) {
+		throw std::logic_error("Matrix must be square");
+	}
+
+	T det;
+
+	if (this->lines() == 1 && this->cols() == 1) {
 		det = this->data[0][0];
 	}
 	else {
@@ -167,7 +171,7 @@ T Matrix<T>::det() const {
 			}
 
 			Matrix<T> sub(sub_data);
-			det += std::pow(-1, p+1) * data[0][p] * sub.det();
+			det = std::pow(-1, p+1) * data[0][p] * sub.det();
 		}
 	}
 	return det;
@@ -187,13 +191,14 @@ Matrix<T> Matrix<T>::comatrix() const {
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
 
+
 			std::vector<std::vector<T>> tempdata;
 			for (unsigned int k = 0; k < this->lines(); k++) {
+				if (k == i) { continue; }
 				std::vector<T> line;
 				for (unsigned int l = 0; l < this->cols(); l++) {
-					if (k != l) {
-						line.push_back(this->data[k][l]);
-					}
+					if (l == j) { continue; }
+					line.push_back(this->data[k][l]);
 				}
 				tempdata.push_back(line);
 			}
@@ -213,6 +218,7 @@ Matrix<T> Matrix<T>::inv() const {
 template<class T>
 Matrix<T> Matrix<T>::tri_lo(bool include_diag) const {
 	Matrix<T> res(this->lines(), this->cols());
+
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
 			if (i <= j) {
