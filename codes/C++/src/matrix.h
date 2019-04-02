@@ -24,24 +24,23 @@ unsigned int Matrix<T>::cols() const { return this->data.size(); };
 template<class T>
 unsigned int Matrix<T>::lines() const { return this->data[0].size(); };
 
-template<class T>
-std::vector<T> Matrix<T>::operator[](unsigned int line) const { return this->data[line]; };
 
 template<class T>
 template<class T2>
-auto Matrix<T>::dot(Matrix<T2> const& other) const { // Here, auto is decltype(std::declval<T>() * std::declval<T2>())
-    //static_assert(this->cols() == other.lines());
-	//static_assert(this->lines() == other.cols());
+auto Matrix<T>::dot(Matrix<T2> const& other) const {
+	if (this->cols() != other.lines()) {
+		throw std::logic_error("Dimensions must match for dot product");
+	}
 
     using T3 = decltype(std::declval<T>() * std::declval<T2>());
-    Matrix<T3> result = Matrix<T3>::gen_full(this->lines(), other.cols());
+	Matrix<T3> result(this->lines(), other.cols());
 
-    for(unsigned int i = 0; i < result.lines(); i++) {
-        for(unsigned int j = 0; j < result.cols(); i++) {
+    for(unsigned i = 0; i < result.lines(); i++) {
+        for(unsigned j = 0; j < result.cols(); j++) {
 
             T3 total = 0;
-            for(unsigned int pos = 0; pos < this->cols(); pos++) {
-                total += this->data[i][pos] * other[pos][j];
+            for(unsigned pos = 0; pos < this->cols(); pos++) {
+                total += this->data[i][pos] * other.data[pos][j];
             }
             result.data[i][j] = total;
         }
@@ -108,16 +107,18 @@ Matrix<T> Matrix<T>::gen_diag(unsigned int size, T value) {
 
 template<class T>
 Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
-    Matrix<T> result;
+	auto size = values.size();
+    Matrix<T> result(size, size);
     unsigned int pos = 0;
 
-    for(unsigned int i = 0; i < values.size(); i++) {
-        for(unsigned int j = 0; j < values.size(); j++) {
+    for(unsigned int i = 0; i < size; i++) {
+        for(unsigned int j = 0; j < size; j++) {
             if (i == j) {
-                result[i][j] = values[pos];
+                result.data[i][j] = values[pos];
+				pos++;
                 i++;
             } else {
-                result[i][j] = T(0);
+                result.data[i][j] = T(0);
             }
         }
     }
@@ -151,7 +152,7 @@ T Matrix<T>::det() const {
 		throw std::logic_error("Matrix must be square");
 	}
 
-	T det;
+	T det(0);
 
 	if (this->lines() == 1 && this->cols() == 1) {
 		det = this->data[0][0];
@@ -164,14 +165,14 @@ T Matrix<T>::det() const {
 				if (i == p) { continue; }
 				std::vector<T> line;
 				for (unsigned int j = 0; j < this->cols(); j++) {
-					if (j == p) { continue;  }
+					if (j == p) { continue; }
 					line.push_back(this->data[i][j]);
 				}
 				sub_data.push_back(line);
 			}
 
 			Matrix<T> sub(sub_data);
-			det = std::pow(-1, p+1) * data[0][p] * sub.det();
+			det += std::pow(-1, p) * this->data[0][p] * sub.det();
 		}
 	}
 	return det;
@@ -183,6 +184,7 @@ std::vector<T> Matrix<T>::diag() const {
 	for (unsigned int i = 0; i < std::min(this->lines(), this->cols()); i++) {
 		diag.push_back(this->data[i][i]);
 	}
+	return diag;
 }
 
 template<class T>
@@ -372,7 +374,7 @@ bool Matrix<T>::allclose(Matrix<T> other, T abs_precision, T rel_precision) cons
 	bool close = true;
 	for (unsigned i = 0; i < other.lines(); i++) {
 		for (unsigned j = 0; j < other.cols(); j++) {
-			if (std::abs(this->data[i][j] - other.data[i][j]) > abs_precision + (rel_precision * std::abs(other.data[i][j]))) {
+			if (!Matrix<T>::close(this->data[i][j], other.data[i][j], abs_precision, rel_precision)) {
 				close = false;
 			}
 		}
@@ -380,5 +382,44 @@ bool Matrix<T>::allclose(Matrix<T> other, T abs_precision, T rel_precision) cons
 	return close;
 }
 
+template<class T>
+template<class T2>
+auto Matrix<T>::operator*(T2 const& other) const {
+	using T3 = decltype(std::declval<T>() * std::declval<T2>());
+	Matrix<T3> res(this->lines(), this->cols());
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			res.data[i][j] = this->data[i][j] * other;
+		}
+	}
+
+	return res;
+}
+
+template<class T>
+bool Matrix<T>::close(T lhs, T rhs, T abs_precision, T rel_precision) {
+	if (std::abs(lhs - rhs) <= abs_precision + (rel_precision * std::abs(rhs))) {
+		return true;
+	}
+
+	return false;
+}
+
+template<class T>
+bool Matrix<T>::allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision) {
+	if (lhs.size() != rhs.size()) {
+		return false;
+	}
+
+	bool close = true;
+	for (unsigned i = 0; i < lhs.size(); i++) {
+		if (!Matrix<T>::close(lhs[i], rhs[i], abs_precision, rel_precision)) {
+			close = false;
+			break;
+		}
+	}
+
+	return close;
+}
 
 #endif

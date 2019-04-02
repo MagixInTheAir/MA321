@@ -26,18 +26,18 @@ public:
 	unsigned int lines() const; // Implemented
 
 	// OPERATORS
-	std::vector<T> operator[](unsigned int line) const; // Implemented
 	template<class T2> auto operator+(Matrix<T2> const& other) const; // Implemented
 	template<class T2> auto operator-(Matrix<T2> const& other) const; // Implemented
 	Matrix<T> operator-() const; // Implemented
 	template<class T2> bool operator==(Matrix<T2> const& other) const; // Implemented
 	template<class T2> Matrix<T> operator=(Matrix<T2> const& other); // Implemented
+	template<class T2> auto operator*(T2 const& other) const; // Implemented
 
 	// MATHEMATICS
-	T det() const; // Implemented
-	template<class T2> auto dot(Matrix<T2> const& other) const;  // Implemented
-	Matrix<T> transp() const; // Implemented
-	std::vector<T> diag() const; // Implemented
+	T det() const; // Implemented, tested
+	template<class T2> auto dot(Matrix<T2> const& other) const;  // Implemented, tested
+	Matrix<T> transp() const; // Implemented, tested
+	std::vector<T> diag() const; // Implemented, tested
 	Matrix<T> inv() const; // Implemented
 	Matrix<T> tri_lo(bool include_diag = false) const; // Implemented
 	Matrix<T> tri_up(bool include_diag = false) const; // Implemented
@@ -58,6 +58,8 @@ public:
 
 	// COMPARATORS
 	bool allclose(Matrix<T> other, T abs_precision, T rel_precision) const; // Implemented
+	static bool close(T lhs, T rhs, T abs_precision, T rel_precision); // Implemented
+	static bool allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision); // Implemented
 
 	// MISC
 	static void run_tests(); // Implemented

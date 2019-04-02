@@ -11,8 +11,8 @@
 #include "gmres.h"
 
 
-std::vector<unsigned int> sizes {10, 50, 100, 500, 1000, 5000};
-std::vector<long double> precisions {1e0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8};
+std::vector<unsigned int> sizes {10, 20, 50, 100, 500, 1000, 5000};
+std::vector<long double> precisions {1e-1, 1e-2, 1e-3};
 long double min_gen = -1e9;
 long double max_gen = 1e9;
 
@@ -29,6 +29,8 @@ using T = long double;
 int main() {
 
 	Matrix<T>::run_tests();
+
+	/*
 	
     // FOR EACH MATRIX SIZE :
     for(unsigned int size : sizes) {
@@ -39,6 +41,7 @@ int main() {
 
         // FOR EACH PRECISION :
         for(long double precision : precisions) {
+			std::cout << precision << std::endl;
 
             std::vector<std::tuple<Matrix<T>, Matrix<T>, Matrix<T>>> results;
             // FOR EACH ALGORITHM :
@@ -64,6 +67,8 @@ int main() {
             }
         }
     }
+	
+	*/
 	
 	system("pause");
 }
