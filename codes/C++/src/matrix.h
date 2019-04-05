@@ -13,16 +13,17 @@
 #include <random>
 #include <functional>
 #include <stdexcept>
+#include <complex>
 
 #include "matrix_def.h"
 #include "matrix_test_def.h"
 
 
 template<class T>
-unsigned int Matrix<T>::cols() const { return this->data.size(); };
+unsigned int Matrix<T>::cols() const { return this->data[0].size(); };
 
 template<class T>
-unsigned int Matrix<T>::lines() const { return this->data[0].size(); };
+unsigned int Matrix<T>::lines() const { return this->data.size(); };
 
 
 template<class T>
@@ -159,23 +160,28 @@ T Matrix<T>::det() const {
 	}
 	else {
 		for (unsigned int p = 0; p < this->cols(); p++) {
-
-			std::vector<std::vector<T>> sub_data;
-			for (unsigned int i = 0; i < this->lines(); i++) {
-				if (i == p) { continue; }
-				std::vector<T> line;
-				for (unsigned int j = 0; j < this->cols(); j++) {
-					if (j == p) { continue; }
-					line.push_back(this->data[i][j]);
-				}
-				sub_data.push_back(line);
-			}
-
-			Matrix<T> sub(sub_data);
-			det += std::pow(-1, p) * this->data[0][p] * sub.det();
+			det += std::pow(-1, p) * this->data[0][p] * this->cofactor(0, p);
 		}
 	}
 	return det;
+}
+
+template<class T>
+T Matrix<T>::cofactor(unsigned int const line, unsigned int const col) const {
+	std::vector<std::vector<T>> tempdata;
+	for (unsigned int k = 0; k < this->lines(); k++) {
+		if (k == line) { continue; }
+		std::vector<T> thisline;
+		for (unsigned int l = 0; l < this->cols(); l++) {
+			if (l == col) { continue; }
+
+			thisline.push_back(this->data[k][l]);
+		}
+		tempdata.push_back(thisline);
+	}
+
+	Matrix<T> temp(tempdata);
+	return temp.det();
 }
 
 template<class T>
@@ -188,33 +194,21 @@ std::vector<T> Matrix<T>::diag() const {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::comatrix() const {
+Matrix<T> Matrix<T>::adj() const {
 	Matrix<T> res(this->lines(), this->cols());
-	for (unsigned int i = 0; i < this->lines(); i++) {
-		for (unsigned int j = 0; j < this->cols(); j++) {
-
-
-			std::vector<std::vector<T>> tempdata;
-			for (unsigned int k = 0; k < this->lines(); k++) {
-				if (k == i) { continue; }
-				std::vector<T> line;
-				for (unsigned int l = 0; l < this->cols(); l++) {
-					if (l == j) { continue; }
-					line.push_back(this->data[k][l]);
-				}
-				tempdata.push_back(line);
-			}
-
-			Matrix<T> temp(tempdata);
-			res.data[i][j] = temp.det();
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			res.data[i][j] = std::pow(-1, i+j) * this->cofactor(i, j);
 		}
 	}
+
 	return res;
 }
 
 template<class T>
 Matrix<T> Matrix<T>::inv() const {
-	return this->comatrix().transp();
+	if (this->det() == 0) { throw std::logic_error("Trying to inverse a non-invertible matrix"); }
+	return (this->adj().transp() * (1 / this->det()));
 }
 
 template<class T>
@@ -223,7 +217,7 @@ Matrix<T> Matrix<T>::tri_lo(bool include_diag) const {
 
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
-			if (i <= j) {
+			if (i >= j) {
 				if (i == j && !include_diag) {
 					continue;
 				}
@@ -241,9 +235,9 @@ Matrix<T> Matrix<T>::tri_lo(bool include_diag) const {
 template<class T>
 Matrix<T> Matrix<T>::tri_up(bool include_diag) const {
 	Matrix<T> res(this->lines(), this->cols());
-	for (int i = 0; i < this->lines(); i++) {
-		for (int j = 0; j < this->cols(); j++) {
-			if (i >= j) {
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			if (i <= j) {
 				if (i == j && !include_diag) {
 					continue;
 				}
@@ -262,9 +256,9 @@ template<class T>
 Matrix<T> Matrix<T>::abs() const {
 	Matrix<T> res(*this);
 
-	for (int i = 0; i < res.lines(); i++) {
-		for (int j = 0; j < res.cols(); j++) {
-			res[i][j] = std::abs(res[i][j]);
+	for (unsigned i = 0; i < res.lines(); i++) {
+		for (unsigned j = 0; j < res.cols(); j++) {
+			res.data[i][j] = std::abs(res.data[i][j]);
 		}
 	}
 
@@ -273,8 +267,20 @@ Matrix<T> Matrix<T>::abs() const {
 
 template<class T>
 T Matrix<T>::norm() const {
-	auto eigs = this->eigenvals();
-	return std::max(eigs) / std::min(eigs);
+	if (this->cols() == this->lines()) {
+		//auto eigs = this->eigenvals();
+		//return std::max(eigs) / std::min(eigs);
+		return T();
+	}
+	else if (this->cols() == 1) {
+		T total(0);
+		for (unsigned i = 0; i < this->lines(); i++) {
+			total += std::pow(this->data[i][0], 2);
+		}
+		return std::sqrt(total);
+	}
+
+	throw std::exception("Path not handled");
 };
 
 template<class T>
@@ -302,7 +308,7 @@ auto Matrix<T>::operator-(Matrix<T2> const& other) const {
 
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
-			res[i][j] -= other[i][j];
+			res.data[i][j] -= other.data[i][j];
 		}
 	}
 
@@ -330,15 +336,20 @@ template<class T>
 template<class T2>
 Matrix<T> Matrix<T>::operator=(Matrix<T2> const& other) {
 	this->data = other.data;
+	return *this;
 };
 
 template<typename T>
-T Matrix<T>::highest_eigenval_iteratedPower(T x0, T precision, unsigned long long maxiter) const {
-	T Y;
+T Matrix<T>::highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const {
+	if (x0.size() != this->cols()) {
+		throw std::logic_error("x0 is not a valid vector");
+	}
+
+	Matrix<T> Y;
 	T norm_m(1);
 	T norm_p(1);
-	T X(x0);
-	T X_prec(x0);
+	Matrix<T> X(Matrix<T>::gen_col(x0));
+	Matrix<T> X_prec(X);
 	for (unsigned long long i = 0; i < maxiter; i++) {
 		if (norm_m <= precision || norm_p <= precision) {
 			break;
@@ -346,17 +357,17 @@ T Matrix<T>::highest_eigenval_iteratedPower(T x0, T precision, unsigned long lon
 
 		Y = this->dot(X);
 		X_prec = X;
-		X = (1 / Y.norm())*Y;
+		X = Y*(1 / Y.norm());
 		norm_m = (X - X_prec).norm();
 		norm_p = (X + X_prec).norm();
 	}
-
-	return X;
+	
+	return this->dot(X).norm();
 
 };
 
 template<typename T>
-T Matrix<T>::lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const {
+T Matrix<T>::lowest_eigenval_invIteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const {
 	return this->inv().highest_eigenval_iteratedPower(x0, precision, maxiter);
 };
 
@@ -397,6 +408,18 @@ auto Matrix<T>::operator*(T2 const& other) const {
 }
 
 template<class T>
+auto Matrix<T>::operator*(T const& other) const {
+	Matrix<T> res(this->lines(), this->cols());
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			res.data[i][j] = this->data[i][j] * other;
+		}
+	}
+
+	return res;
+}
+
+template<class T>
 bool Matrix<T>::close(T lhs, T rhs, T abs_precision, T rel_precision) {
 	if (std::abs(lhs - rhs) <= abs_precision + (rel_precision * std::abs(rhs))) {
 		return true;
@@ -420,6 +443,24 @@ bool Matrix<T>::allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision
 	}
 
 	return close;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::gen_col(std::vector<T> values) {
+	Matrix<T> res(values.size(), 1);
+	for (unsigned i = 0; i < values.size(); i++) {
+		res.data[i][0] = values[i];
+	}
+	return res;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::gen_line(std::vector<T> values) {
+	Matrix<T> res(1, values.size());
+	for (unsigned i = 0; i < values.size(); i++) {
+		res.data[0][i] = values[i];
+	}
+	return res;
 }
 
 #endif

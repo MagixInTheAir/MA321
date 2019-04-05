@@ -32,20 +32,23 @@ public:
 	template<class T2> bool operator==(Matrix<T2> const& other) const; // Implemented
 	template<class T2> Matrix<T> operator=(Matrix<T2> const& other); // Implemented
 	template<class T2> auto operator*(T2 const& other) const; // Implemented
+	auto operator*(T const& other) const; // Implemented
 
 	// MATHEMATICS
 	T det() const; // Implemented, tested
 	template<class T2> auto dot(Matrix<T2> const& other) const;  // Implemented, tested
 	Matrix<T> transp() const; // Implemented, tested
 	std::vector<T> diag() const; // Implemented, tested
-	Matrix<T> inv() const; // Implemented
-	Matrix<T> tri_lo(bool include_diag = false) const; // Implemented
-	Matrix<T> tri_up(bool include_diag = false) const; // Implemented
-	T highest_eigenval_iteratedPower(T x0, T precision, unsigned long long maxiter) const; // Implemented
-	T lowest_eigenval_invIteratedPower(T x0, T precision, unsigned long long maxiter) const; // Implemented
-	Matrix<T> abs() const; // Implemented
+	Matrix<T> inv() const; // Implemented, tested
+	Matrix<T> tri_lo(bool include_diag = false) const; // Implemented, tested
+	Matrix<T> tri_up(bool include_diag = false) const; // Implemented, tested
+	T highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const; // Implemented, tested
+	T lowest_eigenval_invIteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const; // Implemented, tested
+	Matrix<T> abs() const; // Implemented, tested
 	T norm() const; // Implemented
-	Matrix<T> comatrix() const; // Implemented
+	Matrix<T> adj() const; // Implemented, tested
+	T cofactor(unsigned int const line, unsigned int const col) const; // Implemented, tested
+	// TODO : trace, rank, eigenvectors, diagonalization, decompositions (LU, QR)
 
 	// GENERATORS
 	static Matrix<T> gen_random(unsigned int size, T min, T max); // Implemented
@@ -55,6 +58,8 @@ public:
 	static Matrix<T> gen_diag(std::vector<T> values); // Implemented
 	static Matrix<T> gen_full(unsigned int size, T value = T()); // Implemented
 	static Matrix<T> gen_full(unsigned int lines, unsigned int cols, T value = T()); // Implemented
+	static Matrix<T> gen_col(std::vector<T> values); // Implemented
+	static Matrix<T> gen_line(std::vector<T> values); // Implemented
 
 	// COMPARATORS
 	bool allclose(Matrix<T> other, T abs_precision, T rel_precision) const; // Implemented
