@@ -20,23 +20,23 @@ void Matrix_test<T>::run_all() {
 	catch (std::exception const& err) {
 		std::cout << err.what() << std::endl;
 	}
-}
+};
 
 
 template<typename T>
 void Matrix_test<T>::test_constructors() {
 
-}
+};
 
 template<typename T>
 void Matrix_test<T>::test_operators() {
 
-}
+};
 
 template<typename T>
 void Matrix_test<T>::test_utilities() {
 
-}
+};
 
 template<typename T>
 void Matrix_test<T>::test_mathematics() {
@@ -101,6 +101,16 @@ void Matrix_test<T>::test_mathematics() {
 
 		if (!A.adj().allclose(conf, 1e-3, 1e-3)) {
 			throw std::logic_error("Test of Matrix::adj failed");
+		}
+	}
+
+	{
+		Matrix<T> A({ {3,4,3}, {4,8,6}, {3,6,9} });
+		Matrix<T> conf({ {1.732051, 0, 0}, {2.309401, 1.632993, 0}, {1.7320508, 1.224745, 2.12132} });
+
+
+		if (!A.decomp_cholesky().allclose(conf, 1e-3, 1e-3)) {
+			throw std::logic_error("Test of Matrix::decomp_cholesky failed");
 		}
 	}
 
@@ -185,12 +195,12 @@ void Matrix_test<T>::test_mathematics() {
 	}
 
 
-}
+};
 
 template<typename T>
 void Matrix_test<T>::test_generators() {
 
-}
+};
 
 template<typename T>
 void Matrix_test<T>::test_comparators() {
@@ -204,5 +214,7 @@ void Matrix_test<T>::test_comparators() {
 			}
 		}
 	}
-}
+};
+
+
 #endif

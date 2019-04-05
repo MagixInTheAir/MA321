@@ -154,18 +154,28 @@ T Matrix<T>::det() const {
 		throw std::logic_error("Matrix must be square");
 	}
 
-	std::tuple<Matrix<T>, Matrix<T>> LU = this->decomp_LU();
-	Matrix<T> L(std::get<0>(LU));
-	Matrix<T> U(std::get<1>(LU));
-	/*
-	if (L.lines() != L.cols() ||U.lines != U.cols()) {
-		throw std::logic_error("L or U not square");
+	// HOT PATH : SMALL MATRICES
+	if (this->lines() == 1) {
+		return this->data[0][0];
+	} else if (this->lines() == 2) {
+		return ((this->data[0][0] * this->data[1][1]) - (this->data[0][1] * this->data[1][0]));
 	}
-	*/
+
+	// HOT PATH : DIAGONAL MATRICES
+	if (this->isDiagonal()) {
+		T det(1);
+		for (unsigned p = 0; p < this->lines(); p++) {
+			det *= this->data[p][p];
+		}
+		return det;
+	}
+
+	// OTHER CASES
+	Matrix<T> L = this->decomp_cholesky();
 
 	T det(1);
-	for (unsigned i = 0; i < U.lines(); i++) {
-		det *= U.data[i][i] * L.data[i][i];
+	for (unsigned i = 0; i < L.lines(); i++) {
+		det *= L.data[i][i];
 	}
 	return det;
 }
@@ -495,5 +505,57 @@ std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::decomp_LU() const {
 
 	return std::make_tuple(L, U);
 }
+
+template<class T>
+bool Matrix<T>::isDiagonal() const {
+	bool diagonal = true;
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			if (i == j) { continue; }
+			if (this->data[i][j] != 0) {
+				diagonal = false;
+				break;
+			}
+		}
+	}
+	return diagonal;
+}
+
+template<class T>
+T Matrix<T>::trace() const {
+	T res(0);
+	for (unsigned i = 0; i < std::min(this->lines(), this->cols()); i++) {
+		res += this->data[i][i];
+	}
+
+	return res;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::decomp_cholesky() const {
+	Matrix<T> L(this->lines(), this->cols());
+	L.data[0][0] = std::sqrt(this->data[0][0]);
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = i; j < this->lines(); j++) {
+			if (i == j) {
+				T S(0);
+				for (unsigned k = 0; k < i; k++) {
+					S += std::pow(L.data[i][k], 2);
+				}
+				L.data[i][j] = std::sqrt(this->data[i][j] - S);
+			}
+			else {
+				T S(0);
+				for (unsigned k = 0; k < i; k++) {
+					S += L.data[i][k] * L.data[j][k];
+				}
+				L.data[j][i] = (this->data[i][j] - S) / L.data[i][i];
+			}
+		}
+	}
+
+	return L;
+};
+
 
 #endif

@@ -31,7 +31,7 @@ int main() {
 	Matrix<T>::run_tests();
 
 	
-	
+	/*
     // FOR EACH MATRIX SIZE :
     for(unsigned int size : sizes) {
 
@@ -69,6 +69,8 @@ int main() {
             }
         }
     }
+
+	*/
 	
 	
 	

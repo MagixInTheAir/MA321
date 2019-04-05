@@ -13,13 +13,9 @@ protected:
 public:
 	// CONSTRUCTORS & DESTRUCTORS
 	Matrix() : data{ {T{}} } {}; // Implemented
-	Matrix(std::vector<std::vector<T>> _data) : data{ _data } {}; // Implemented
-	Matrix(unsigned int const lines, unsigned int const cols) { // Implemented
-		for (unsigned int i = 0; i < lines; i++) {
-			this->data.push_back(std::vector<T>(cols, T()));
-		};
-	}
-	template<class T2> Matrix(Matrix<T2> const& other) : data{ other.data } {}; // Implemented
+	Matrix(std::vector<std::vector<T>> _data) : data(_data) {}; // Implemented
+	Matrix(unsigned int const lines, unsigned int const cols) : data(lines, std::vector<T>(cols, T())) {}; // Implemented
+	template<class T2> Matrix(Matrix<T2> const& other) : data(other.data) {}; // Implemented
 
 	// UTILITIES
 	unsigned int cols() const; // Implemented
@@ -48,8 +44,15 @@ public:
 	T norm() const; // Implemented
 	Matrix<T> adj() const; // Implemented, tested
 	T cofactor(unsigned int const line, unsigned int const col) const; // Implemented, tested
-	std::tuple<Matrix<T>, Matrix<T>> decomp_LU() const;
-	// TODO : trace, rank, eigenvectors, diagonalization, decompositions (LU, QR)
+	std::tuple<Matrix<T>, Matrix<T>> decomp_LU() const; // Implemented
+	Matrix<T> decomp_cholesky() const;
+	std::tuple<Matrix<T>, Matrix<T>> decomp_QR() const;
+	bool isDiagonal() const;
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> diagonalize() const;
+	Matrix<T> eigenvects() const;
+	std::vector<T> eigenvals() const;	
+	T rank() const;
+	T trace() const; // Implemented
 
 	// GENERATORS
 	static Matrix<T> gen_random(unsigned int size, T min, T max); // Implemented
