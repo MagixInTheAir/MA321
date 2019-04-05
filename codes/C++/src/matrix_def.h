@@ -48,6 +48,7 @@ public:
 	T norm() const; // Implemented
 	Matrix<T> adj() const; // Implemented, tested
 	T cofactor(unsigned int const line, unsigned int const col) const; // Implemented, tested
+	std::tuple<Matrix<T>, Matrix<T>> decomp_LU() const;
 	// TODO : trace, rank, eigenvectors, diagonalization, decompositions (LU, QR)
 
 	// GENERATORS

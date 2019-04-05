@@ -46,6 +46,7 @@ int main() {
             std::vector<std::tuple<Matrix<T>, Matrix<T>, Matrix<T>>> results;
             // FOR EACH ALGORITHM :
 			for (unsigned int alg = 0; alg < functs<T>.size(); alg++) {
+				std::cout << "+" << std::endl;
 				auto funct = functs<T>[alg];
 				Matrix<T> A = Matrix<T>::gen_random(size, min_gen, max_gen);
 				Matrix<T> b = Matrix<T>::gen_random(size, min_gen, max_gen);
@@ -55,6 +56,7 @@ int main() {
 
                 // CALL FUNCTION (MATRIX_A, MATRIX_B, PRECISION)
 				auto result = funct(A, b, precision);
+				std::cout << "here" << std::endl;
 
                 // END MEASURE TIME
                 //auto end = end_cycles_measure();

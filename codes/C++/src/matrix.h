@@ -14,6 +14,7 @@
 #include <functional>
 #include <stdexcept>
 #include <complex>
+#include <tuple>
 
 #include "matrix_def.h"
 #include "matrix_test_def.h"
@@ -85,15 +86,15 @@ Matrix<T> Matrix<T>::gen_random(unsigned int size, T min, T max) { return Matrix
 
 template<class T>
 Matrix<T> Matrix<T>::gen_diag(unsigned int lines, unsigned int cols, T value) {
-    Matrix<T> result;
+    Matrix<T> result(lines, cols);
     
     for(unsigned int i = 0; i < lines; i++) {
         for(unsigned int j = 0; j < cols; j++) {
-			long l;
+			long l(0);
             if (i == j) {
-                result[i][j] = value;
+                result.data[i][j] = value;
             } else {
-                result[i][j] = T();
+                result.data[i][j] = T();
             }
         }
     }
@@ -153,15 +154,18 @@ T Matrix<T>::det() const {
 		throw std::logic_error("Matrix must be square");
 	}
 
-	T det(0);
-
-	if (this->lines() == 1 && this->cols() == 1) {
-		det = this->data[0][0];
+	std::tuple<Matrix<T>, Matrix<T>> LU = this->decomp_LU();
+	Matrix<T> L(std::get<0>(LU));
+	Matrix<T> U(std::get<1>(LU));
+	/*
+	if (L.lines() != L.cols() ||U.lines != U.cols()) {
+		throw std::logic_error("L or U not square");
 	}
-	else {
-		for (unsigned int p = 0; p < this->cols(); p++) {
-			det += std::pow(-1, p) * this->data[0][p] * this->cofactor(0, p);
-		}
+	*/
+
+	T det(1);
+	for (unsigned i = 0; i < U.lines(); i++) {
+		det *= U.data[i][i] * L.data[i][i];
 	}
 	return det;
 }
@@ -208,7 +212,10 @@ Matrix<T> Matrix<T>::adj() const {
 template<class T>
 Matrix<T> Matrix<T>::inv() const {
 	if (this->det() == 0) { throw std::logic_error("Trying to inverse a non-invertible matrix"); }
-	return (this->adj().transp() * (1 / this->det()));
+	auto fac = (1 / this->det());
+	auto adj = this->adj();
+	auto transp = adj.transp();
+	return transp*fac;
 }
 
 template<class T>
@@ -461,6 +468,32 @@ Matrix<T> Matrix<T>::gen_line(std::vector<T> values) {
 		res.data[0][i] = values[i];
 	}
 	return res;
+}
+
+template<class T>
+std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::decomp_LU() const {
+	if (this->lines() != this->cols()) {
+		throw std::logic_error("LU decomposition impossible on non-square matrix");
+	}
+
+	Matrix<T> L(Matrix<T>::gen_diag(this->lines(), T(1)));
+	Matrix<T> U(*this);
+
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = i+1; j < this->lines(); j++) {
+			L.data[j][i] = U.data[j][i] / U.data[i][i];
+			if (L.data[j][i] == 0) {
+				throw std::logic_error("null pivot");
+			}
+
+			for (unsigned p = 0; p < U.cols(); p++) {
+				U.data[j][p] -= U.data[i][p];
+			}
+
+		}
+	}
+
+	return std::make_tuple(L, U);
 }
 
 #endif
