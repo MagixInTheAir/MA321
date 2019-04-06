@@ -14,22 +14,7 @@ Nous aborderons dans ce mémoire, deux méthode de préconditionnement, celle de
 \subsubsection{Préconditionnement de Jacobi}
 Le préconditionnement de Jacobi est le plus simple pour le gradient conjugué. Cette méthode est donc intéressante lorsqu'une grande précision n'est pas requise. Étant moins précise, elle est plus facile à  implémenter numériquement mais n'améliore pas autant la résolution du problème par méthode du gradient conjugué que la SSOR par exemple.\\
 
-Le préconditionnement de Jacobi consiste à prendre pour matrice de préconditionnement $C$ suivante. Soit $K=\min(m,n)$. On a donc :
-$$
-(C_{i,j})=
-\begin{cases}
-A_{i,i}\text{ si }i=j\\
-0\text{ sinon }
-\end{cases}
-\text{ et }
-C^{-1}
-\begin{pmatrix}
-\frac{1}{a_{1,1}}&0&...&0&0\\
-0&\frac{1}{a_{2,2}}&...&0&0\\
-:&0&...&:&0\\
-0&...&...&0&\frac{1}{a_{K,K}}
-\end{pmatrix}
-$$
+Le préconditionnement de Jacobi consiste à prendre pour matrice de préconditionnement $C$ :
 $$
 C_{i,j}
 \begin{cases}

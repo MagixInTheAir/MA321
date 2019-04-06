@@ -1,0 +1,45 @@
+\chapter{Des algorithmes complexes...}
+\section{Optimisation des méthodes}
+\subsection{Optimisation mathématique : Préconditionnement}
+
+On peut illustrer les problèmes des méthodes itératives à travers de la méthode du gradient conjugué. En effet, les conditionnements des matrices étudiées sont parfois très grands et il est ainsi nécessaire d'effectuer une opération dite de préconditionnement afin de minimiser les résidus des itérations.\\
+
+Afin de préconditionner une matrice, on introduit une matrice inversible de préconditionnement que l'on note $C$. Cette matrice interviendra dans l'algorithme du gradient conjugué afin de l'optimiser. La matrice $C$ diffèrera selon la méthode de préconditionnement choisie. Dans ce mémoire, nous étudierons deux méthodes de préconditionnement, celle de Jacobi et la SSOR. \\
+
+L'objectif mathématique de l'introduction de la matrice $C$ est de mieux répartir les valeurs propres du système linéaire étudié, ce qui va permettre d'accélérer la méthode du gradient conjugué. Cela se fait par l'introduction d'une suite $z$ dans l'algorithme du gradient conjugué. Ses termes correspondront au produit entre la matrice $C^{-1}$ et le résidu à l'ordre $k$, noté $r_k$. Les différents calculs des coefficients $\rho$ et $\beta$ seront ensuite influencés puisque l'on combinera le résidu et le résidu conditionné. \\
+
+En effet, une meilleure répartition des valeurs propres de la matrice liée au système étudié permet de faire rapprocher les lignes de niveau de la fonction associée au système vers des cercles. Cela permettra ensuite d'avoir moins d'itérations pour la méthode de descente du gradient conjugué.\\
+
+\subsubsection{Préconditionnement de Jacobi}
+
+Une méthode de préconditionnement pour le gradient conjugué est celle dite de Jacobi. Celle-ci est intéressante puisque la matrice $C$ est dans ce cas, très intéressant. En effet, pour cette méthode, la matrice $C$ considérée correspond à la diagonale de la matrice $A\in\mathcal{M}_{m,n}$ de départ. Soit $K=\min(m,n)$. On a donc :
+$$
+(C_{i,j})=
+\begin{cases}
+A_{i,i}\text{ si }i=j\\
+0\text{ sinon }
+\end{cases}
+\text{ et }
+C^{-1}
+\begin{pmatrix}
+\frac{1}{a_{1,1}}&0&...&0&0\\
+0&\frac{1}{a_{2,2}}&...&0&0\\
+:&0&...&:&0\\
+0&...&...&0&\frac{1}{a_{K,K}}
+\end{pmatrix}
+$$
+Si cette méthode est facile à réaliser et implémenter, elle ,n'est pas adaptée aux situations où l'on cherche à obtenir de grandes améliorations dans la résolution du système $Ax=b$. Dans ce cas là, il est possible d'utiliser la méthode SSOR, plus coûteuse mais offrant des résultats plus satisfaisants.
+\subsubsection{Préconditionnement SSOR}
+La méthode de préconditionnement SSOR (Symetric Successive Over Relaxation) consiste à effectuer deux méthodes SOR successives en sens inverses. La première application de la SOR est une descente permettant de préconditionner tandis que la deuxième permet de résoudre le système $Sx=b$ pour une matrice $S$ symétrique (il suffit de transformer le système en $Sx=A^TAx=A^Tb$).\\
+
+Ce méthode admet donc pour matrice de préconditionnement :
+
+$$
+C=(D+L)D^{-1}(D+L)^T\Leftrightarrow C(\omega)=\frac{\omega}{2-\omega}(\frac{1}{\omega}D+L)D^{-1}(\frac{1}{\omega}D+L)^T
+$$
+Avec $D$ une matrice contenant la diagonale de A, et $L$ une matrice contenant le triangle inférieur de $A$.\\
+
+Les deux méthodes de préconditionnement présentées permettent d'optimiser mathématiquement le problème. Cependant, il est également intéressant de l'intéresser à l'optimisation numérique, c'est-à-dire, de l'implémentation de la méthode de résolution du problème.
+\subsection{Optimisation numérique}
+
+\section{Étude de la complexité}

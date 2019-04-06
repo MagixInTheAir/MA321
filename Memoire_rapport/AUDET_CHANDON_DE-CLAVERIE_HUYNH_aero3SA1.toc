@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 \babel@toc {french}{}
-=======
-\select@language {french}
->>>>>>> dev
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {chapter}{\numberline {2}Pr\IeC {\'e}sentation des m\IeC {\'e}thodes it\IeC {\'e}ratives classiques}{2}{chapter.2}
 \contentsline {section}{\numberline {2.1}Pr\IeC {\'e}sentation g\IeC {\'e}n\IeC {\'e}rale des m\IeC {\'e}thodes}{2}{section.2.1}
@@ -25,27 +21,13 @@
 \contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES : Generalized Minimal RESidual method}{12}{subsection.3.2.2}
 \contentsline {subsubsection}{G\IeC {\'e}n\IeC {\'e}ralit\IeC {\'e}}{12}{section*.5}
 \contentsline {subsubsection}{Explication de l'algorithme GMRES}{14}{section*.6}
-<<<<<<< HEAD
-\contentsline {chapter}{\numberline {4}Des algorithmes complexes...}{16}{chapter.4}
-\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{16}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique : Pr\IeC {\'e}conditionnement}{16}{subsection.4.1.1}
-<<<<<<< HEAD
-\contentsline {subsubsection}{Pr\IeC {\'e}conditionnement de Jacobi}{17}{section*.8}
-\contentsline {subsubsection}{Pr\IeC {\'e}conditionnement SSOR}{17}{section*.9}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{17}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{17}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{18}{chapter.5}
-=======
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{16}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{16}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{17}{chapter.5}
->>>>>>> dev
-=======
 \contentsline {subsubsection}{R\IeC {\'e}sultat de l'algorithmes}{16}{section*.8}
 \contentsline {chapter}{\numberline {4}Des algorithmes complexes...}{17}{chapter.4}
 \contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{17}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique : Pr\IeC {\'e}conditionnement}{17}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{17}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{17}{section.4.2}
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{18}{chapter.5}
->>>>>>> dev
+\contentsline {subsubsection}{Pr\IeC {\'e}conditionnement de Jacobi}{18}{section*.9}
+\contentsline {subsubsection}{Pr\IeC {\'e}conditionnement SSOR}{18}{section*.10}
+\contentsline {subsubsection}{Les limites de l'optimisation math\IeC {\'e}matique}{19}{section*.11}
+\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{19}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{19}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{20}{chapter.5}
