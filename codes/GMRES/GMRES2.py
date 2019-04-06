@@ -32,9 +32,9 @@ b = np.array([[172], [93], [102], [83], [190], [115]])
 x0 = np.zeros((6, 1))"""
 l_r = list()
 l_n = list()
-for n in np.arange(50, 100, 25):
-    A = np.random.rand(n, n)
-    b = np.random.rand(n, 1)
+for n in np.arange(5, 1000, 100):
+    A = 100 * np.random.rand(n, n)
+    b = 100 * np.random.rand(n, 1)
     x0 = np.zeros((n, 1))
 
     x = GMRES(A, b, 1e-8)
@@ -48,5 +48,7 @@ for n in np.arange(50, 100, 25):
 
 plt.plot(l_n, l_r)
 plt.yscale('log')
+plt.xlabel('Taille de la matrice')
+plt.ylabel('Erreur sur le calcul de Ax - b')
 plt.show()
 plt.savefig('fig.png')
