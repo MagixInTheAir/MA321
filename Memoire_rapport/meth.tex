@@ -1,8 +1,94 @@
 \chapter{Présentation des méthodes itératives classiques}
 \section{Présentation générale des méthodes}
+Les méthodes itératives sont des méthodes qui permettent de résoudre un problème par la construction d'une suite convergeant vers la solution. À chaque itération, on calcule un nouvelle approximation de la solution. Le but est ici d'obtenir une approximation la plus proche possible de la solution exacte en un nombre d'itérations le plus petit possible. Ces méthodes s'opposent donc aux méthodes directes qui permettent en un nombre fini de calcul d'obtenir la solution exacte.\\
+
+Dans notre cas, pour la résolution de systèmes linéaires, une méthode directe telle que les méthodes de Gauss, Cholesky ou Householder, permet d'obtenir la solution exacte du système. C'est là le point fort de ces méthodes. Cependant, nos programmes python travaillent avec des flottants et non des réels. Cela force l'ordinateur à faire des approximations à chaque étape. Ainsi, même avec une méthode directe, on ne trouve pas toujours la solution exacte du système. Plus la taille du système est élevée, plus le nombre d'opérations est important, entrainant un impact plus fort des erreurs de calcul. Il faudrait donc tenir compte de ces erreurs mais cela est difficile et demande des algorithmes plus lourds et plus lents. Les méthodes directes sont donc peu adaptées à la résolution de grands systèmes.
+
 \section{Méthodes classiques}
-\subsection{Méthode de Jacobi}
-\subsection{Méthode de Gauss-Seidel}
+La plupart des méthodes itératives se basent sur une décomposition $A = M-N$ suivant ce principe général : \\
+On suppose $A = M-N$ avec $M$ une matrice choisie "simple".\\
+On a :
+\begin{align*}
+Ax = b &\Leftrightarrow \left(M-N\right)x = b\\
+		 &\Leftrightarrow Mx = Nx + b
+\end{align*}
+
+Cette écriture donne l'idée de considérer une suite récurrente de vecteurs $\left(x^{(p)}\right) \hspace{15pt} \forall p \in \mathbb{N}, x^{(p)} \in \mathbb{R}$ définie par
+$$M x^{(p+1)} = Nx^{(p)} + b$$
+Si $x^{(p)}$ converge vers $x^* \in \mathbb{R}$ pour $p \to \infty$, alors $Mx^* = Nx^*+b$ et donc $x^*$ est solution de $Ax = b$.\\
+
+\noindent \textbf{\underline{Remarque :}}\\
+Pour calculer une itération, il faut d'abord calculer $Nx^{(p)} + b$ (calcul assez rapide), puis résoudre le système $Mx^{(p+)} = Nx^{(p)}+b$ où on cherche à calculer $x^{(p+1)}$.\\
+En général $M$ est choisie de sorte que cette résolution puisse être rapidement calculée.
+
+Avant de se lancer dans le calcul des itérations, il convient d'étudier la convergence de la suite. Si l'on constate que la suite ne converge pas, cela nous évitera de perdre notre temps. \\
+On a $A = M-N$ avec $A$ et $M$ inversibles. Avec $M$ choisie de sorte qu'elle soit inversible "aisément".\\
+
+$\begin{cases}
+	x^{(0)} \text{ fixé}\\
+	Mx^{(k+1)} = Nx^{(k)}+b
+\end{cases}$\\
+
+
+Soit $x^* = A^{-1}b$. \\
+Notons $e^{(k)} = x^{(k)}-x* \Leftrightarrow x^{(k)} = x^*+e^{(k)}$\\
+\begin{align*}
+	M\left[x^* + e^{(k+1)}\right] &= N\left[x^* + e^{(k)}\right]\\
+	Mx^*+Me^{(k+1)} &= Nx^* + Ne^{(k)} + b\\
+	\text{Or, } \hspace{15pt} Mx^*-Nx^* &= b\\
+	\text{D'ou : } \hspace{19pt} Me^{(k+1)} &= Ne^{(k)}\\
+	\Leftrightarrow \hspace{42pt} e^{(k+1)} &= M^{-1}Ne^{(k)} 
+\end{align*}
+
+
+
+On appelle matrice d'itération la matrice ::
+\begin{align*}
+J = M^{-1}N\\
+e^{(k+1)} = Je^{(k)}\\
+e^{(1)} &= Je^{(0)}\\
+e^{(2)} &= JJe^{(0)} = J^2e^{(0)}\\
+Je^{(3)} &= JJJe^{(0)} = J^3e^{(0)}\\
+k \in \mathbb{N} \hspace{20pt} \vdots \hspace{10pt} &= J^ke^{(0)} 
+\end{align*}
+
+On est amené à étudier $\left(J^k\right)$ lorsque $k \to \infty$\\
+
+Soit $\rho(A) = \underset{\lambda \in sp_{(A)}}{\max}\left|\lambda\right|$ le rayon spectral de A.\\
+\noindent\textbf{\underline{Théorème :}}\\
+Si $\rho(J) < 1$, quelque soit le choix de $x^{(0)}$, la suite $x^{(k)}$ converge vers $x^*$.\_
+Si $\rho(J) \geq 1$, il existe au moins un choix de $x^{(0)}$ pour lequel la suite diverge.
+
+\noindent\textbf{\underline{Preuve :}}\\
+Si $\rho(j) < 1$ \\
+\begin{align*}
+\lim\limits_{k \to +\infty} J^k &= 0 \text{\footnotemark}\\
+\text{Donc } \hspace{15pt} \lim\limits_{k \to +\infty} J^ke^{(0)} &= 0e^{(0)} = 0\\
+\lim\limits_{k \to \infty} e^{(k)} &= 0\\
+\text{Or, } \hspace{65pt} x^{(k)} &= x^* + e^{(k)} \xrightarrow[k\to \infty]{}x^* + 0 
+\end{align*}
+\footnotetext{\url{https://maths.ens2m.fr/Laydi/Enseignement/Matrices.pdf} page 27, théorème 4, preuve P3}
+
+\noindent\textbf{\underline{Remarque :}}\\
+Plus $\rho(J)$ est proche de 0, plus la suite $x^{(k)}$ converge rapidement.\\
+
+
+\subsection{Méthodes de Jacobi et de Gauss-Seidel}
+Parmi les méthodes itératives classiques, nous pouvons citer les méthodes de Jacobi et de Gauss-Seidel, assez semblables entre elles. Dans les deux cas, on considère une matrice $A \in \mathcal{M}_n(\mathbb{K})$ inversible et on pose : $$A = D-E-F$$
+où on choisit $\begin{cases}
+	D \text{ une matrice diagonale}\\
+	E \text{ une matrice triangulaire inférieure à diagonale nulle}\\
+	F \text{ une matrice triangulaire supérieure à diagonale nulle}
+\end{cases}$\\
+
+Lorsque l'on utilise la méthode de Jacobi, on pose $M = D$ et $N = E+F$. La matrice d'itération est donc $J = M^{-1}N = D^{-1}(E+F)$.\\
+
+La méthode de Gauss-Seidel consiste à poser $M = D-E$ et $N = F$, ce qui implique que la matrice d'itération est $J = (D-E)^{-1}F$.\\
+
+Bien que très similaires dans leur approche, dans certains cas, une méthode convergera tandis que l'autre non. Il faut donc étudier le spectre de la matrice $M$ avant de se lancer dans le calcul des itérations successives. De plus, la vitesse de convergence de chaque méthode dépend de la matrice A donnée.
+
+
+
 \section{Une nouvelle méthode : Richardson}
 \subsection{Présentation de la méthode}
 Ci-dessus, nous avons exposé les deux principales méthodes que l'on a utilisé lors des cours et TP. Cependant, il est aussi possible pour nous de trouver d'autres méthodes de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme que celles précédemment définies. Ainsi, nous pouvons utiliser la décomposition de la forme :  

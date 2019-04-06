@@ -106,8 +106,8 @@ venv.bak/
 *.glo
 *.idx
 *.lof
-*.lot 
-*.out 
+*.lot
+*.out
 
 .vscode
 .vs
