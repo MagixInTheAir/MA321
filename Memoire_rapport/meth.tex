@@ -1,8 +1,8 @@
 \chapter{Présentation des méthodes itératives classiques}
 \section{Présentation générale des méthodes}
-Les méthodes itératives sont des méthodes qui permettent de résoudre un problème par la construction d'une suite convergeant vers la solution. À chaque itération, on calcule un nouvelle approximation de la solution. Le but est ici d'obtenir une approximation la plus proche possible de la solution exacte en un nombre d'itérations le plus petit possible. Ces méthodes s'opposent donc aux méthodes directes qui permettent en un nombre fini de calcul d'obtenir la solution exacte.\\
+Les méthodes itératives sont des méthodes qui permettent de résoudre un problème par la construction d'une suite convergeant vers la solution. À chaque itération, on calcule un nouvelle approximation de la solution. Le but est ici d'obtenir une approximation la plus proche possible de la solution exacte en un nombre d'itérations le plus petit possible. Ces méthodes s'opposent donc aux méthodes directes qui permettent, en un nombre fini de calcul, d'obtenir la solution exacte.\\
 
-Dans notre cas, pour la résolution de systèmes linéaires, une méthode directe telle que les méthodes de Gauss, Cholesky ou Householder, permet d'obtenir la solution exacte du système. C'est là le point fort de ces méthodes. Cependant, nos programmes python travaillent avec des flottants et non des réels. Cela force l'ordinateur à faire des approximations à chaque étape. Ainsi, même avec une méthode directe, on ne trouve pas toujours la solution exacte du système. Plus la taille du système est élevée, plus le nombre d'opérations est important, entrainant un impact plus fort des erreurs de calcul. Il faudrait donc tenir compte de ces erreurs mais cela est difficile et demande des algorithmes plus lourds et plus lents. Les méthodes directes sont donc peu adaptées à la résolution de grands systèmes.
+Dans notre cas, pour la résolution de systèmes linéaires, une méthode directe telle que la méthode de Gauss, Cholesky ou Householder, permet d'obtenir la solution exacte du système. C'est là le point fort de ces méthodes. Cependant, nos programmes python travaillent avec des flottants et non des réels. Cela force l'ordinateur à faire des approximations à chaque étape. Ainsi, même avec une méthode directe, on ne trouve pas toujours la solution exacte du système. Plus la taille du système est élevée, plus le nombre d'opérations est important, entrainant un impact plus fort des erreurs de calcul. Il faudrait donc tenir compte de ces erreurs mais cela est difficile et demande des algorithmes plus lourds et plus lents. Les méthodes directes sont donc peu adaptées à la résolution de grands systèmes.
 
 \section{Méthodes classiques}
 La plupart des méthodes itératives se basent sur une décomposition $A = M-N$ suivant ce principe général : \\
@@ -13,27 +13,26 @@ Ax = b &\Leftrightarrow \left(M-N\right)x = b\\
 		 &\Leftrightarrow Mx = Nx + b
 \end{align*}
 
-Cette écriture donne l'idée de considérer une suite récurrente de vecteurs $\left(x^{(p)}\right) \hspace{15pt} \forall p \in \mathbb{N}, x^{(p)} \in \mathbb{R}$ définie par
+Cette écriture donne l'idée de considérer une suite récurrente de vecteurs $\left(x^{(p)}\right),  \forall p \in \mathbb{N}, x^{(p)} \in \mathbb{R}$ définie par
 $$M x^{(p+1)} = Nx^{(p)} + b$$
 Si $x^{(p)}$ converge vers $x^* \in \mathbb{R}$ pour $p \to \infty$, alors $Mx^* = Nx^*+b$ et donc $x^*$ est solution de $Ax = b$.\\
 
 \noindent \textbf{\underline{Remarque :}}\\
-Pour calculer une itération, il faut d'abord calculer $Nx^{(p)} + b$ (calcul assez rapide), puis résoudre le système $Mx^{(p+)} = Nx^{(p)}+b$ où on cherche à calculer $x^{(p+1)}$.\\
+\indent Pour calculer une itération, il faut d'abord calculer $Nx^{(p)} + b$ (calcul assez rapide), puis résoudre le système $Mx^{(p+1)} = Nx^{(p)}+b$ où on cherche à calculer $x^{(p+1)}$.\\
 En général $M$ est choisie de sorte que cette résolution puisse être rapidement calculée.
 
 Avant de se lancer dans le calcul des itérations, il convient d'étudier la convergence de la suite. Si l'on constate que la suite ne converge pas, cela nous évitera de perdre notre temps. \\
-On a $A = M-N$ avec $A$ et $M$ inversibles. Avec $M$ choisie de sorte qu'elle soit inversible "aisément".\\
+On a $A = M-N$ avec $A$ et $M$ inversibles, $M$ choisie de sorte qu'elle soit inversible "aisément".
 
 $\begin{cases}
 	x^{(0)} \text{ fixé}\\
 	Mx^{(k+1)} = Nx^{(k)}+b
-\end{cases}$\\
-
+\end{cases}$
 
 Soit $x^* = A^{-1}b$. \\
-Notons $e^{(k)} = x^{(k)}-x* \Leftrightarrow x^{(k)} = x^*+e^{(k)}$\\
+Notons $e^{(k)} = x^{(k)}-x^* \Leftrightarrow x^{(k)} = x^*+e^{(k)}$\\
 \begin{align*}
-	M\left[x^* + e^{(k+1)}\right] &= N\left[x^* + e^{(k)}\right]\\
+	M\left[x^* + e^{(k+1)}\right] &= N\left[x^* + e^{(k)}\right] + b\\
 	Mx^*+Me^{(k+1)} &= Nx^* + Ne^{(k)} + b\\
 	\text{Or, } \hspace{15pt} Mx^*-Nx^* &= b\\
 	\text{D'ou : } \hspace{19pt} Me^{(k+1)} &= Ne^{(k)}\\
@@ -55,12 +54,13 @@ k \in \mathbb{N} \hspace{20pt} \vdots \hspace{10pt} &= J^ke^{(0)}
 On est amené à étudier $\left(J^k\right)$ lorsque $k \to \infty$\\
 
 Soit $\rho(A) = \underset{\lambda \in sp_{(A)}}{\max}\left|\lambda\right|$ le rayon spectral de A.\\
+
 \noindent\textbf{\underline{Théorème :}}\\
-Si $\rho(J) < 1$, quelque soit le choix de $x^{(0)}$, la suite $x^{(k)}$ converge vers $x^*$.\_
-Si $\rho(J) \geq 1$, il existe au moins un choix de $x^{(0)}$ pour lequel la suite diverge.
+\indent Si $\rho(J) < 1$, quelque soit le choix de $x^{(0)}$, la suite $x^{(k)}$ converge vers $x^*$.\\
+Si $\rho(J) \geq 1$, il existe au moins un choix de $x^{(0)}$ pour lequel la suite diverge.\\
 
 \noindent\textbf{\underline{Preuve :}}\\
-Si $\rho(j) < 1$ \\
+\indent Si $\rho(j) < 1$ \\
 \begin{align*}
 \lim\limits_{k \to +\infty} J^k &= 0 \text{\footnotemark}\\
 \text{Donc } \hspace{15pt} \lim\limits_{k \to +\infty} J^ke^{(0)} &= 0e^{(0)} = 0\\
@@ -70,7 +70,7 @@ Si $\rho(j) < 1$ \\
 \footnotetext{\url{https://maths.ens2m.fr/Laydi/Enseignement/Matrices.pdf} page 27, théorème 4, preuve P3}
 
 \noindent\textbf{\underline{Remarque :}}\\
-Plus $\rho(J)$ est proche de 0, plus la suite $x^{(k)}$ converge rapidement.\\
+\indent Plus $\rho(J)$ est proche de 0, plus la suite $x^{(k)}$ converge rapidement.\\
 
 
 \subsection{Méthodes de Jacobi et de Gauss-Seidel}
@@ -91,30 +91,30 @@ Bien que très similaires dans leur approche, dans certains cas, une méthode co
 
 \section{Une nouvelle méthode : Richardson}
 \subsection{Présentation de la méthode}
-Ci-dessus, nous avons exposé les deux principales méthodes que l'on a utilisé lors des cours et TP. Cependant, il est aussi possible pour nous de trouver d'autres méthodes de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme que celles précédemment définies. Ainsi, nous pouvons utiliser la décomposition de la forme :  
+Ci-dessus, nous avons exposé les deux principales méthodes que l'on a utilisées lors des cours et TP. Cependant, il est aussi possible pour nous de trouver d'autres méthodes de résolution. Pour cela, il nous faut juste réécrire le problème sous une autre forme que celles précédemment définies. Ainsi, nous pouvons utiliser la décomposition de la forme :  
 \begin{eqnarray}
 Ax &=& b\\
 Px &=& (P - A)x + b
 \end{eqnarray}
 
-On remarque que peut importe la valeur de la matrice P dans l'équation ci-dessus, les deux équations sont équivalentes. Ainsi, résoudre le premier système revient donc à résoudre le second. La méthode Richardson se base sur cette décomposition. L'idée est de poser : 
+On remarque que peu importe la valeur de la matrice P dans l'équation ci-dessus, les deux équations sont équivalentes. Ainsi, résoudre le premier système revient à résoudre le second. La méthode de Richardson se base sur cette décomposition. L'idée est de poser : 
 \begin{equation}
 	P = \beta I \text{ avec $I$ la matrice identité et $\beta \in \mathbb{R}^*$}
 \end{equation}
-Ainsi, nous avons notre système qui s'écrit de la manière suivante : 
+Notre système s'écrit alors de la manière suivante : 
 \begin{eqnarray}
 \beta Ix &=& (\beta I - A)x + b\\
 x &=& (I - \frac{1}{\beta} A)x + \frac{1}{\beta}b
 \end{eqnarray}
-Pour un soucis d'écriture, nous allons écrire la formule précédente sous la forme : 
+Pour faciliter son écriture, on redéfinit la formule précédente sous la forme : 
 \begin{equation}
 x = (I - \gamma A)x + \gamma b \text{ avec $\gamma = \frac{1}{\beta}$}
 \end{equation}
-Ainsi l'idée est de construire une suite $x^{(k)}$ qui va converger vers la solution exacte du système que l'on notre ici $x^*$. Cette suite est définie de la manière suivante : 
+Ainsi, l'idée est de construire une suite $x^{(k)}$ qui va converger vers la solution exacte du système que l'on note ici $x^*$. Cette suite est définie de la manière suivante : 
 \begin{equation}
 x^{(k+1)} = (I - \gamma A)x^{k} + \gamma b
 \end{equation}
-Par définition de la suite, la matrice d'itération, notée ici R est : 
+Par définition de la suite, la matrice d'itération, notée ici R, est : 
 \begin{equation}
 R = I - \gamma A \label{R}
 \end{equation}
@@ -122,7 +122,7 @@ Nous réécrivons la suite sous la forme :
 \begin{equation}
 x^{(k+1)} = Rx^{k} + K \text{ avec $K = \gamma b$}
 \end{equation}
-Si cette suite converge, alors nous sommes en mesure de trouver une solution $x^*$ approchant la vraie solution du système. Ainsi, l'étude se porte donc sur la convergence de cette suite. Comme pour les autres méthodes itératives, la condition de convergence est la même que précédemment : le rayon spectrale de la matrice d'itération doit être strictement inférieur à 1. L'avantage de cette méthode est que la matrice d'itération dépends de $\gamma$. Ainsi, en jouant sur cette valeur de $\gamma$, il est possible de faire converger la suite en prenant une valeur qui fait que le rayon spectral est inférieur à 1. On peut même produire une étude qui fait que l'on va minimiser cette valeur du rayon spectral pour obtenir une meilleur convergence. Cette démarche sera expliqué dans la suite de l'exposé.
+Si cette suite converge, alors nous sommes en mesure de trouver une solution $x^*$ approchant la vraie solution du système. L'étude porte donc sur la convergence de cette suite. Comme pour les autres méthodes itératives, la condition de convergence est la même que précédemment : le rayon spectrale de la matrice d'itération doit être strictement inférieur à 1. L'avantage de cette méthode est que la matrice d'itération dépend de $\gamma$. Ainsi, en jouant sur cette valeur de $\gamma$, il est possible de faire converger la suite en prenant une valeur pour laquelle le rayon spectral est inférieur à 1. On peut même produire une étude qui fait que l'on va minimiser cette valeur du rayon spectral pour obtenir une meilleur convergence. Cette démarche sera expliquée dans la suite de l'exposé.
  
 \subsection{Étude de convergence sur un exemple}
 Pour illustrer cette exemple, nous allons prendre un système linéaire quelconque. Dans un premier temps, nous allons trouver sa solution théorique puis appliquer la méthode de Richardson. Cela nous permettra d'étudier la convergence de la suite et la condition d'arrêt de notre algorithme. Pour cela, nous allons prendre le système $2\times 2$ suivant : 
@@ -133,7 +133,7 @@ x + -4y = -7
 \end{cases}
 \label{sys}
 \end{equation}
-Ce système de base est peut être résolu assez trivialement et on obtient le couple de solution suivant : \begin{equation}
+Ce système peut être résolu assez trivialement et on obtient le couple de solution suivant : \begin{equation}
 (x, y) = (1, 2)
 \end{equation}
 Notre but est maintenant de retrouver ces résultats grâce à la méthode de Richardson. Pour cela nous écrivons le système (\ref{sys}) sous sa forme matricielle : 
@@ -151,7 +151,6 @@ Notre but est maintenant de retrouver ces résultats grâce à la méthode de Ri
 	1 \\ -7
 	\end{pmatrix}}_{b}  
 \end{equation}
-
 On pose, d'après la définition de la méthode, la matrice P : 
 \begin{equation}
 P = \gamma I = 
@@ -203,15 +202,15 @@ Pour trouver le maximum, on cherche quand les quantités sont égales :
 Il vient de cette étude : 
 \begin{equation}
 \begin{cases}
-\gamma \in [- \frac{2}{7}, 0] \Rightarrow \rho(R) = |1 + 2\gamma|\\
-\text{Sinon } \rho(R) = |1 + 5\gamma|
+\rho(R) = |1 + 2\gamma| \hspace{10pt} si \ \gamma \in [- \frac{2}{7}, 0]\\
+\rho(R) = |1 + 5\gamma| \hspace{10pt} sinon
 \end{cases} 
 \end{equation}
 
-Nous cherchons ensuite les valeurs pour lesquelles le rayon spectral est égal à 1. Comme les deux fonctions sont croissantes, il suffit de trouver les valeurs pour lesquels nous avons $\rho(R) = 1 \text{ ou } -1$.
+Nous cherchons ensuite les valeurs pour lesquelles le rayon spectral est égal à 1. Comme les deux fonctions sont croissantes, il suffit de trouver les valeurs pour lesquelles nous avons $\rho(R) = 1 \text{ ou } -1$.
 \begin{equation}
 \begin{cases}
-	\gamma = 0 \Leftrightarrow \rho(R) = 1
+	\gamma = 0 \Leftrightarrow \rho(R) = 1\\
 	\gamma = -0.4 \Leftrightarrow \rho(R) = -1
 \end{cases}
 \end{equation}
@@ -220,13 +219,14 @@ Ainsi, pour que la méthode converge sur cet exemple, il faut que :
 \begin{equation}
 \gamma \in ] -0.4, 0[
 \end{equation}
-Ensuite, il est possible d'optimiser ce résultat. Pour cela, il nus faut trouver la valeur de $\gamma$ telle que le rayon spectral soit minimal. Pour cela, on cherche sur chacun des intervalles le minimum du rayon spectral. Cette valeur est la valeur à la jonction des deux intervalles donc pour $\gamma = \frac{-2}{7}$. Cela se voit simplement en regardant le graph de rho sur l'intervalle ci-dessus. Pour cette valeur de $\gamma$ particulière la méthode possède la meilleur convergence. Si on revient au problème de base, nous avons alors un méthode qui converge de la meilleur façon possible pour : 
+
+Ensuite, il est possible d'optimiser ce résultat. Pour cela, il nus faut trouver la valeur de $\gamma$ telle que le rayon spectral soit minimal. On cherche sur chacun des intervalles le minimum du rayon spectral. Cette valeur est à l'intersection des deux intervalles donc pour $\gamma = \frac{-2}{7}$. Cela se voit simplement en regardant le graphe de rho sur l'intervalle ci-dessus. Pour cette valeur de $\gamma$ particulière la méthode possède la meilleur convergence. Si on revient au problème de base, nous avons alors une méthode qui converge le plus rapidement possible pour : 
 \begin{equation}
 \beta = \frac{1}{\gamma} = - \frac{7}{2}
 \end{equation}
 
-\subsection{Un peu plus de théorie ...}
-Maintenant que nous avons montrer la démarche sur un exemple, nous allons essayer de généraliser aux matrices quelconques que l'on veut étudier grâce à cette méthode. Dans un premier temps, nous allons étudier les valeurs propres de la matrice d'itération R (cf. équation \ref{R}). En notant $\lambda_i$ les valeurs propres de la matrices A et $\mu_i$ les valeurs propres de la matrice R, nous avons : 
+\subsection{Un peu plus de théorie...}
+Maintenant que nous avons montré la démarche sur un exemple, nous allons essayer de la généraliser aux matrices quelconques, que l'on veut étudier grâce à cette méthode. Dans un premier temps, nous allons étudier les valeurs propres de la matrice d'itération R (cf. équation \ref{R}). En notant $\lambda_i$ les valeurs propres de la matrices A et $\mu_i$ les valeurs propres de la matrice R, nous avons : 
 \begin{equation}
 	\mu_i = 1 - \gamma\lambda_i
 \end{equation}
@@ -239,9 +239,9 @@ En appliquant la condition de convergence de la suite, nous obtenons les égalit
 \end{eqnarray}
 On remarque que sur notre exemple cela est vrai. En effet, les valeurs propres de la matrice A choisie sont $-5$ et $-2$. Or $\frac{2}{-5} = -0.4$, cela confirme l'intervalle trouvé. La deuxième remarque porte sur le fait qu'il ne faut pas prendre une matrice A avec 0 en valeur propre.\\
 
-Toujours dans le même esprit, nous allons chercher le meilleur $\gamma$ théorique pour avoir la meilleur convergence. Ce problème est équivalent à minimiser le rayon spectral de la matrice d'itération qui dépends de $\gamma$. Or d'après les valeurs propres de cette matrice R, nous avons : 
+Toujours dans le même esprit, nous allons chercher le meilleur $\gamma$ théorique pour avoir la convergence la plus rapide. Ce problème est équivalent à minimiser le rayon spectral de la matrice d'itération qui dépend de $\gamma$. Or d'après les valeurs propres de cette matrice R, nous avons : 
 \begin{equation}
-	\rho(R) = \underset{i}{max}(|1 - \gamma\lambda_i|) = max(|1 - \gamma\lambda_1|, |1 - \gamma\lambda_n|)
+	\rho(R) = \underset{1<i<n}{max}(|1 - \gamma\lambda_i|) = \underset{1<i<n}{max}(|1 - \gamma\lambda_1|, |1 - \gamma\lambda_n|)
 \end{equation}
 où $\lambda_1, \lambda_n$ sont respectivement la plus grande et la plus petite valeur propre. Maintenant, il nous reste à résoudre : 
 \begin{equation}
