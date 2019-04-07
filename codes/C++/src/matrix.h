@@ -171,13 +171,9 @@ T Matrix<T>::det() const {
 	}
 
 	// OTHER CASES
-	Matrix<T> L = this->decomp_cholesky();
+	
+	throw std::exception("Path not handled for det computation");
 
-	T det(1);
-	for (unsigned i = 0; i < L.lines(); i++) {
-		det *= L.data[i][i];
-	}
-	return det;
 }
 
 template<class T>
@@ -481,29 +477,65 @@ Matrix<T> Matrix<T>::gen_line(std::vector<T> values) {
 }
 
 template<class T>
-std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::decomp_LU() const {
+std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 	if (this->lines() != this->cols()) {
-		throw std::logic_error("LU decomposition impossible on non-square matrix");
+		throw std::logic_error("LUP decomposition impossible on non-square matrix");
 	}
 
-	Matrix<T> L(Matrix<T>::gen_diag(this->lines(), T(1)));
-	Matrix<T> U(*this);
 
-	for (unsigned i = 0; i < this->lines(); i++) {
-		for (unsigned j = i+1; j < this->lines(); j++) {
-			L.data[j][i] = U.data[j][i] / U.data[i][i];
-			if (L.data[j][i] == 0) {
-				throw std::logic_error("null pivot");
+	Matrix<T> A(*this);
+	unsigned N = A.lines();
+
+	// row swapping permutations, start with identity
+	std::vector<T> P(N, 0);
+	for (unsigned i = 0; i < N; i++) {
+		P[i] = i;
+	}
+
+	// outer loop over diagonal pivots
+	for (unsigned i = 0; i < N - 1; i++) {
+
+		// inner loop to find the largest pivot
+		// (dividing by small numbers is bad so want largest one)
+		int maxPivot = i;
+		for (unsigned k = i + 1; k < N; k++) {
+			if (std::abs(A[k][i]) > std::abs(A[i][i])) {
+				maxPivot = k;
 			}
+		}
 
-			for (unsigned p = 0; p < U.cols(); p++) {
-				U.data[j][p] -= U.data[i][p];
+		// check for singularity
+		if (A[maxPivot][i] == 0) {
+			throw std::logic_error("matrix is singular");
+		}
+
+		// swap rows
+		if (maxPivot != i) {
+			std::swap(P[maxPivot], P[i]);
+
+			for (int k = i; k < N; k++) {
+				std::swap(A[i][k], A[maxPivot][k]);
 			}
+		}
 
+		// Gaussian elimination
+		for (unsigned k = i + 1; k < N; k++) { // iterate down rows
+		  // lower triangle factor is not zeroed out, keep it for L
+			A[k][i] /= A[i][i]; // denominator is really for the pivot row elements
+
+			for (unsigned j = i + 1; j < N; j++) { // iterate across rows
+			  // subtract off lower triangle factor times pivot row
+				A[k][j] = A[k][j] - A[i][j] * A[k][i];
+			}
 		}
 	}
 
-	return std::make_tuple(L, U);
+	// Construct final matrices
+	Matrix<T> U(A.tri_up(true));
+	Matrix<T> L(A.tri_lo(true));
+	for (unsigned i = 0; i < L.cols(); i++) { L.data[i][i] = 1; }
+
+	return std::make_tuple(L, U, P);
 }
 
 template<class T>

@@ -44,10 +44,10 @@ public:
 	T norm() const; // Implemented
 	Matrix<T> adj() const; // Implemented, tested
 	T cofactor(unsigned int const line, unsigned int const col) const; // Implemented, tested
-	std::tuple<Matrix<T>, Matrix<T>> decomp_LU() const; // Implemented
-	Matrix<T> decomp_cholesky() const;
+	std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> decomp_LUP() const; // Implemented
+	Matrix<T> decomp_cholesky() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>> decomp_QR() const;
-	bool isDiagonal() const;
+	bool isDiagonal() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> diagonalize() const;
 	Matrix<T> eigenvects() const;
 	std::vector<T> eigenvals() const;	
