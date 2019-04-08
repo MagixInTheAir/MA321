@@ -217,11 +217,15 @@ Matrix<T> Matrix<T>::adj() const {
 
 template<class T>
 Matrix<T> Matrix<T>::inv() const {
-	if (this->det() == 0) { throw std::logic_error("Trying to inverse a non-invertible matrix"); }
-	auto fac = (1 / this->det());
-	auto adj = this->adj();
-	auto transp = adj.transp();
-	return transp*fac;
+	std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> LUP(this->decomp_LUP());
+	Matrix<T> L(std::get<0>(LUP));
+	Matrix<T> U(std::get<1>(LUP));
+	Matrix<T> P(Matrix<T>::gen_col(std::get<2>(LUP)));
+
+	Matrix<T> Y(Matrix<T>::solve_descent(L, P));
+	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
+
+	return X;
 }
 
 template<class T>
@@ -499,13 +503,13 @@ std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 		// (dividing by small numbers is bad so want largest one)
 		int maxPivot = i;
 		for (unsigned k = i + 1; k < N; k++) {
-			if (std::abs(A[k][i]) > std::abs(A[i][i])) {
+			if (std::abs(A.data[k][i]) > std::abs(A.data[i][i])) {
 				maxPivot = k;
 			}
 		}
 
 		// check for singularity
-		if (A[maxPivot][i] == 0) {
+		if (A.data[maxPivot][i] == 0) {
 			throw std::logic_error("matrix is singular");
 		}
 
@@ -513,19 +517,19 @@ std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 		if (maxPivot != i) {
 			std::swap(P[maxPivot], P[i]);
 
-			for (int k = i; k < N; k++) {
-				std::swap(A[i][k], A[maxPivot][k]);
+			for (unsigned k = i; k < N; k++) {
+				std::swap(A.data[i][k], A.data[maxPivot][k]);
 			}
 		}
 
 		// Gaussian elimination
 		for (unsigned k = i + 1; k < N; k++) { // iterate down rows
 		  // lower triangle factor is not zeroed out, keep it for L
-			A[k][i] /= A[i][i]; // denominator is really for the pivot row elements
+			A.data[k][i] /= A.data[i][i]; // denominator is really for the pivot row elements
 
 			for (unsigned j = i + 1; j < N; j++) { // iterate across rows
 			  // subtract off lower triangle factor times pivot row
-				A[k][j] = A[k][j] - A[i][j] * A[k][i];
+				A.data[k][j] = A.data[k][j] - A.data[i][j] * A.data[k][i];
 			}
 		}
 	}
@@ -588,6 +592,97 @@ Matrix<T> Matrix<T>::decomp_cholesky() const {
 
 	return L;
 };
+
+template<class T>
+Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
+	if (A.lines() != A.cols() || B.lines() != A.lines() || B.cols() != 1) {
+		throw std::logic_error("Matrix dimensions failed for solve_descent");
+	}
+
+	// Creating Taug 
+	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
+	for (unsigned i = 0; i < A.lines(); i++) {
+		for (unsigned j = 0; j < A.cols(); i++) {
+			Taug.data[i][j] = A.data[i][j];
+		}
+	}
+	for (unsigned k = 0; k < B.lines(); k++) {
+		for (unsigned l = 0; k < B.cols(); l++) {
+			Taug.data[k][A.cols() + l] = B.data[k][l];
+		}
+	}
+
+	// Solving
+	std::vector<T> X(Taug.lines(), 0);
+	for (unsigned i = 0; i < Taug.lines(); i++) {
+		T somme(0);
+		for (unsigned k = 0; k < i; k++) {
+			somme += X[k] * Taug[i][k];
+		}
+		X[i] = (Taug[i][Taug.cols() - 1] - somme) / Taug[i][i];
+	}
+
+	return Matrix<T>::gen_line(X);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
+	if (A.lines() != A.cols() || B.lines() != A.lines()) {
+		throw std::logic_error("Matrix dimensions failed for solve_descent");
+	}
+
+	// Creating Taug 
+	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
+	for (unsigned i = 0; i < A.lines(); i++) {
+		for (unsigned j = 0; j < A.cols(); i++) {
+			Taug.data[i][j] = A.data[i][j];
+		}
+	}
+	for (unsigned k = 0; k < B.lines(); k++) {
+		for (unsigned l = 0; k < B.cols(); l++) {
+			Taug.data[k][A.cols() + l] = B.data[k][l];
+		}
+	}
+
+	// Solving
+	std::vector<T> X(Taug.lines(), 0);
+	for (unsigned ip = Taug.lines(); ip > 0; ip--) { // VA BOUCLER A L'INFINI
+		unsigned i = ip - 1;
+		T somme(0);
+		for (unsigned k = i; k < Taug.lines(); k++) {
+			somme += X[k] * Taug[i][k];
+		}
+		X[i] = (Taug[i][-1] - somme) / Taug[i][i];
+	}
+
+	return Matrix<T>::gen_line(X);
+}
+
+template<class T>
+std::string Matrix<T>::str() const {
+	std::string str;
+	str += "}";
+	for (unsigned i = 0; i < this->lines(); i++) {
+		str += "{";
+		for (unsigned j = 0; j < this->cols(); j++) {
+			str += std::to_string(this->data[i][j]);
+			if (j != this->cols() - 1) {
+				str += ",";
+			}
+		}
+		str += "}";
+		if (i != this->lines() - 1) {
+			str += ",";
+		}
+	}
+	str += "}";
+	return str;
+}
+
+template<class T>
+std::vector<T>& Matrix<T>::operator[](unsigned pos) {
+	return this->data[pos];
+}
 
 
 #endif

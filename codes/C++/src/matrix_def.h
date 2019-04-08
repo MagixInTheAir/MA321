@@ -20,6 +20,7 @@ public:
 	// UTILITIES
 	unsigned int cols() const; // Implemented
 	unsigned int lines() const; // Implemented
+	std::string str() const;
 
 	// OPERATORS
 	template<class T2> auto operator+(Matrix<T2> const& other) const; // Implemented
@@ -29,6 +30,7 @@ public:
 	template<class T2> Matrix<T> operator=(Matrix<T2> const& other); // Implemented
 	template<class T2> auto operator*(T2 const& other) const; // Implemented
 	auto operator*(T const& other) const; // Implemented
+	std::vector<T>& operator[](unsigned pos); // Implemented
 
 	// MATHEMATICS
 	T det() const; // Implemented, tested
@@ -69,6 +71,10 @@ public:
 	bool allclose(Matrix<T> other, T abs_precision, T rel_precision) const; // Implemented
 	static bool close(T lhs, T rhs, T abs_precision, T rel_precision); // Implemented
 	static bool allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision); // Implemented
+
+	// SOLVERS
+	static Matrix<T> solve_descent(Matrix<T> A, Matrix<T> B);
+	static Matrix<T> solve_climb(Matrix<T> A, Matrix<T> B);
 
 	// MISC
 	static void run_tests(); // Implemented

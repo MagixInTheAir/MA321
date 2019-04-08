@@ -115,6 +115,26 @@ void Matrix_test<T>::test_mathematics() {
 	}
 
 	{
+		unsigned N = 1000;
+		for (unsigned i = 0; i < N; i++) {
+			Matrix<T> A(Matrix<T>::gen_random(20, -100, 100));
+			std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> res(A.decomp_LUP());
+			Matrix<T> L(std::get<0>(res));
+			Matrix<T> U(std::get<1>(res));
+			Matrix<T> P(Matrix<T>::gen_col(std::get<2>(res)));
+
+			if (!P.dot(A).allclose(L.dot(U), 1e-3, 1e-3)) {
+				std::string msg("Matrices :\n A :"
+					+ A.str() + "\nL : "
+					+ L.str() + "\nU : "
+					+ U.str() + "\n P : "
+					+ P.str());
+				throw std::logic_error("Test of Matrix::decomp_LUP failed\n" + msg);
+			}
+		}
+	}
+
+	{
 		Matrix<T> A({ {1,2,3},{3,2,1},{2,1,3} });
 		Matrix<T> conf({ {-5./12., 3./12., 4./12.}, {7./12., 3./12., -8./12.}, {1./12., -3./12., 4./12.} });
 
