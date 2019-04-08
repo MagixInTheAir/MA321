@@ -8,18 +8,13 @@
 
 template<typename T>
 void Matrix_test<T>::run_all() {
-	try {
-		Matrix_test<T>::test_constructors();
-		Matrix_test<T>::test_operators();
-		Matrix_test<T>::test_utilities();
-		Matrix_test<T>::test_mathematics();
-		Matrix_test<T>::test_generators();
-		Matrix_test<T>::test_comparators();
-		std::cout << "Tests successful" << std::endl;
-	}
-	catch (std::exception const& err) {
-		std::cout << err.what() << std::endl;
-	}
+	Matrix_test<T>::test_constructors();
+	Matrix_test<T>::test_operators();
+	Matrix_test<T>::test_utilities();
+	Matrix_test<T>::test_mathematics();
+	Matrix_test<T>::test_generators();
+	Matrix_test<T>::test_comparators();
+	std::cout << "Tests successful" << std::endl;
 };
 
 
@@ -117,18 +112,45 @@ void Matrix_test<T>::test_mathematics() {
 	{
 		unsigned N = 1000;
 		for (unsigned i = 0; i < N; i++) {
-			Matrix<T> A(Matrix<T>::gen_random(20, -100, 100));
-			std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> res(A.decomp_LUP());
+			Matrix<T> A(Matrix<T>::gen_random(10, 10, -100, 100).tri_lo(true));
+			Matrix<T> B(Matrix<T>::gen_random(10, 1, -100, 100));
+			Matrix<T> X(Matrix<T>::solve_descent(A, B));
+
+
+			if (!Matrix<T>::close(((A.dot(X)) - B).norm(), 0, 1e-3, 1e-3)) {
+				throw std::logic_error("Test of Matrix::solve_descent failed");
+			}
+		}
+	}
+
+	{
+
+		unsigned N = 1000;
+		for (unsigned i = 0; i < N; i++) {
+			Matrix<T> A(Matrix<T>::gen_random(10, 10, -100, 100).tri_up(true));
+			Matrix<T> B(Matrix<T>::gen_random(10, 1, -100, 100));
+			Matrix<T> X(Matrix<T>::solve_climb(A, B));
+
+
+			if (!Matrix<T>::close(((A.dot(X)) - B).norm(), 0, 1e-3, 1e-3)) {
+				throw std::logic_error("Test of Matrix::solve_descent failed");
+			}
+		}
+	}
+
+	{
+		unsigned N = 1000;
+		for (unsigned i = 0; i < N; i++) {
+			Matrix<T> A(Matrix<T>::gen_random(3, 3, -100, 100));
+			std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res(A.decomp_LUP());
 			Matrix<T> L(std::get<0>(res));
 			Matrix<T> U(std::get<1>(res));
-			Matrix<T> P(Matrix<T>::gen_col(std::get<2>(res)));
+			Matrix<T> P(std::get<2>(res));
+			Matrix<T> PA(P.dot(A));
+			Matrix<T> LU(L.dot(U));
 
-			if (!P.dot(A).allclose(L.dot(U), 1e-3, 1e-3)) {
-				std::string msg("Matrices :\n A :"
-					+ A.str() + "\nL : "
-					+ L.str() + "\nU : "
-					+ U.str() + "\n P : "
-					+ P.str());
+			if (!PA.allclose(LU, 1e-3, 1e-3)) {
+				std::string msg("Matrices :\n PA : " + PA.str() + "\nLU : " + LU.str());
 				throw std::logic_error("Test of Matrix::decomp_LUP failed\n" + msg);
 			}
 		}

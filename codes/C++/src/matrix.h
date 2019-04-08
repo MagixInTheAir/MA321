@@ -217,10 +217,10 @@ Matrix<T> Matrix<T>::adj() const {
 
 template<class T>
 Matrix<T> Matrix<T>::inv() const {
-	std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> LUP(this->decomp_LUP());
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> LUP(this->decomp_LUP());
 	Matrix<T> L(std::get<0>(LUP));
 	Matrix<T> U(std::get<1>(LUP));
-	Matrix<T> P(Matrix<T>::gen_col(std::get<2>(LUP)));
+	Matrix<T> P(std::get<2>(LUP));
 
 	Matrix<T> Y(Matrix<T>::solve_descent(L, P));
 	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
@@ -481,7 +481,7 @@ Matrix<T> Matrix<T>::gen_line(std::vector<T> values) {
 }
 
 template<class T>
-std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
+std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::decomp_LUP() const {
 	if (this->lines() != this->cols()) {
 		throw std::logic_error("LUP decomposition impossible on non-square matrix");
 	}
@@ -491,7 +491,7 @@ std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 	unsigned N = A.lines();
 
 	// row swapping permutations, start with identity
-	std::vector<T> P(N, 0);
+	std::vector<unsigned> P(N, 0);
 	for (unsigned i = 0; i < N; i++) {
 		P[i] = i;
 	}
@@ -522,7 +522,7 @@ std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 			}
 		}
 
-		// Gaussian elimination
+		// Gaussian elimination	
 		for (unsigned k = i + 1; k < N; k++) { // iterate down rows
 		  // lower triangle factor is not zeroed out, keep it for L
 			A.data[k][i] /= A.data[i][i]; // denominator is really for the pivot row elements
@@ -537,9 +537,14 @@ std::tuple<Matrix<T>, Matrix<T>, std::vector<T>> Matrix<T>::decomp_LUP() const {
 	// Construct final matrices
 	Matrix<T> U(A.tri_up(true));
 	Matrix<T> L(A.tri_lo(true));
-	for (unsigned i = 0; i < L.cols(); i++) { L.data[i][i] = 1; }
+	for (unsigned i = 0; i < L.cols(); i++) { L.data[i][i] = T(1); }
 
-	return std::make_tuple(L, U, P);
+	Matrix<T> P_ret(P.size(), P.size());
+	for (unsigned p = 0; p < P.size(); p++) {
+		P_ret.data[p][P[p]] = T(1);
+	}
+
+	return std::make_tuple(L, U, P_ret);
 }
 
 template<class T>
@@ -602,12 +607,12 @@ Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
 	// Creating Taug 
 	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
 	for (unsigned i = 0; i < A.lines(); i++) {
-		for (unsigned j = 0; j < A.cols(); i++) {
+		for (unsigned j = 0; j < A.cols(); j++) {
 			Taug.data[i][j] = A.data[i][j];
 		}
 	}
 	for (unsigned k = 0; k < B.lines(); k++) {
-		for (unsigned l = 0; k < B.cols(); l++) {
+		for (unsigned l = 0; l < B.cols(); l++) {
 			Taug.data[k][A.cols() + l] = B.data[k][l];
 		}
 	}
@@ -622,24 +627,24 @@ Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
 		X[i] = (Taug[i][Taug.cols() - 1] - somme) / Taug[i][i];
 	}
 
-	return Matrix<T>::gen_line(X);
+	return Matrix<T>::gen_col(X);
 }
 
 template<class T>
 Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
 	if (A.lines() != A.cols() || B.lines() != A.lines()) {
-		throw std::logic_error("Matrix dimensions failed for solve_descent");
+		throw std::logic_error("Matrix dimensions failed for solve_climb");
 	}
 
 	// Creating Taug 
 	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
 	for (unsigned i = 0; i < A.lines(); i++) {
-		for (unsigned j = 0; j < A.cols(); i++) {
+		for (unsigned j = 0; j < A.cols(); j++) {
 			Taug.data[i][j] = A.data[i][j];
 		}
 	}
 	for (unsigned k = 0; k < B.lines(); k++) {
-		for (unsigned l = 0; k < B.cols(); l++) {
+		for (unsigned l = 0; l < B.cols(); l++) {
 			Taug.data[k][A.cols() + l] = B.data[k][l];
 		}
 	}
@@ -652,16 +657,16 @@ Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
 		for (unsigned k = i; k < Taug.lines(); k++) {
 			somme += X[k] * Taug[i][k];
 		}
-		X[i] = (Taug[i][-1] - somme) / Taug[i][i];
+		X[i] = (Taug[i][Taug.cols()-1] - somme) / Taug[i][i];
 	}
 
-	return Matrix<T>::gen_line(X);
+	return Matrix<T>::gen_col(X);
 }
 
 template<class T>
 std::string Matrix<T>::str() const {
 	std::string str;
-	str += "}";
+	str += "{";
 	for (unsigned i = 0; i < this->lines(); i++) {
 		str += "{";
 		for (unsigned j = 0; j < this->cols(); j++) {
