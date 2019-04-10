@@ -44,7 +44,7 @@ auto Matrix<T>::dot(Matrix<T2> const& other) const {
             for(unsigned pos = 0; pos < this->cols(); pos++) {
                 total += this->data[i][pos] * other.data[pos][j];
             }
-            result.data[i][j] = total;
+            result[i][j] = total;
         }
     }
 
@@ -57,7 +57,7 @@ Matrix<T> Matrix<T>::transp() const {
 
     for(unsigned int i = 0; i < this->lines(); i++) {
         for(unsigned int j = 0; j < this->cols(); j++) {
-            result.data[i][j] = this->data[j][i];
+            result[i][j] = this->data[j][i];
         }
     }
 
@@ -74,7 +74,7 @@ Matrix<T> Matrix<T>::gen_random(unsigned int lines, unsigned int cols, T min, T 
 
 	for (unsigned int i = 0; i < lines; i++) {
 		for (unsigned int j = 0; j < cols; j++) {
-			result.data[i][j] = generate();
+			result[i][j] = generate();
 		}
 	}
 
@@ -92,9 +92,9 @@ Matrix<T> Matrix<T>::gen_diag(unsigned int lines, unsigned int cols, T value) {
         for(unsigned int j = 0; j < cols; j++) {
 			long l(0);
             if (i == j) {
-                result.data[i][j] = value;
+                result[i][j] = value;
             } else {
-                result.data[i][j] = T();
+                result[i][j] = T();
             }
         }
     }
@@ -116,11 +116,11 @@ Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
     for(unsigned int i = 0; i < size; i++) {
         for(unsigned int j = 0; j < size; j++) {
             if (i == j) {
-                result.data[i][j] = values[pos];
+                result[i][j] = values[pos];
 				pos++;
                 i++;
             } else {
-                result.data[i][j] = T(0);
+                result[i][j] = T(0);
             }
         }
     }
@@ -208,7 +208,7 @@ Matrix<T> Matrix<T>::adj() const {
 	Matrix<T> res(this->lines(), this->cols());
 	for (unsigned i = 0; i < this->lines(); i++) {
 		for (unsigned j = 0; j < this->cols(); j++) {
-			res.data[i][j] = std::pow(-1, i+j) * this->cofactor(i, j);
+			res[i][j] = std::pow(-1, i+j) * this->cofactor(i, j);
 		}
 	}
 
@@ -217,13 +217,13 @@ Matrix<T> Matrix<T>::adj() const {
 
 template<class T>
 Matrix<T> Matrix<T>::inv() const {
-	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> LUP(this->decomp_LUP());
-	Matrix<T> L(std::get<0>(LUP));
-	Matrix<T> U(std::get<1>(LUP));
-	Matrix<T> P(std::get<2>(LUP));
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> PLU(this->decomp_PLU());
+	Matrix<T> P(std::get<0>(PLU));
+	Matrix<T> L(std::get<1>(PLU));
+	Matrix<T> U(std::get<2>(PLU));
 
-	Matrix<T> Y(Matrix<T>::solve_descent(L, P));
-	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
+	Matrix<T> Y(Matrix<T>::solve_climb(L, P));
+	Matrix<T> X(Matrix<T>::solve_descent(U, Y));
 
 	return X;
 }
@@ -238,10 +238,10 @@ Matrix<T> Matrix<T>::tri_lo(bool include_diag) const {
 				if (i == j && !include_diag) {
 					continue;
 				}
-				res.data[i][j] = this->data[i][j];
+				res[i][j] = this->data[i][j];
 			}
 			else {
-				res.data[i][j] = T();
+				res[i][j] = T();
 			}
 		}
 	}
@@ -258,10 +258,10 @@ Matrix<T> Matrix<T>::tri_up(bool include_diag) const {
 				if (i == j && !include_diag) {
 					continue;
 				}
-				res.data[i][j] = this->data[i][j];
+				res[i][j] = this->data[i][j];
 			}
 			else {
-				res.data[i][j] = T();
+				res[i][j] = T();
 			}
 		}
 	}
@@ -275,7 +275,7 @@ Matrix<T> Matrix<T>::abs() const {
 
 	for (unsigned i = 0; i < res.lines(); i++) {
 		for (unsigned j = 0; j < res.cols(); j++) {
-			res.data[i][j] = std::abs(res.data[i][j]);
+			res[i][j] = std::abs(res[i][j]);
 		}
 	}
 
@@ -307,7 +307,7 @@ auto Matrix<T>::operator+(Matrix<T2> const& other) const {
 
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
-			res.data[i][j] = this->data[i][j] + other.data[i][j];
+			res[i][j] = this->data[i][j] + other.data[i][j];
 		}
 	}
 	return res;
@@ -316,8 +316,9 @@ auto Matrix<T>::operator+(Matrix<T2> const& other) const {
 template<class T>
 template<class T2>
 auto Matrix<T>::operator-(Matrix<T2> const& other) const {
-	// static_assert(this->lines() == other.lines(), "The two matrices are not the same size");
-	// static_assert(this->cols() == other.cols(), "The two matrices are not the same size");
+	if (this->lines() != other.lines() || this->cols() != other.cols()) {
+		throw std::logic_error("The two matrices are not the same size");
+	}
 
 	using T3 = decltype(std::declval<T>() - std::declval<T2>());
 
@@ -325,7 +326,7 @@ auto Matrix<T>::operator-(Matrix<T2> const& other) const {
 
 	for (unsigned int i = 0; i < this->lines(); i++) {
 		for (unsigned int j = 0; j < this->cols(); j++) {
-			res.data[i][j] -= other.data[i][j];
+			res[i][j] -= other.data[i][j];
 		}
 	}
 
@@ -337,7 +338,7 @@ Matrix<T> Matrix<T>::operator-() const {
 	Matrix<T> res(*this);
 	for (unsigned int const i = 0; i < this->lines(); i++) {
 		for (unsigned int const j = 0; j < this->cols(); j++) {
-			res.data[i][j] *= -1;
+			res[i][j] *= -1;
 		}
 	}
 	return res;
@@ -346,13 +347,13 @@ Matrix<T> Matrix<T>::operator-() const {
 template<class T>
 template<class T2>
 bool Matrix<T>::operator==(Matrix<T2> const& other) const {
-	return this->data == other.data;
+	return this->data == other;
 }
 
 template<class T>
 template<class T2>
 Matrix<T> Matrix<T>::operator=(Matrix<T2> const& other) {
-	this->data = other.data;
+	this->data = other;
 	return *this;
 };
 
@@ -402,7 +403,7 @@ bool Matrix<T>::allclose(Matrix<T> other, T abs_precision, T rel_precision) cons
 	bool close = true;
 	for (unsigned i = 0; i < other.lines(); i++) {
 		for (unsigned j = 0; j < other.cols(); j++) {
-			if (!Matrix<T>::close(this->data[i][j], other.data[i][j], abs_precision, rel_precision)) {
+			if (!Matrix<T>::close(this->data[i][j], other[i][j], abs_precision, rel_precision)) {
 				close = false;
 			}
 		}
@@ -417,7 +418,7 @@ auto Matrix<T>::operator*(T2 const& other) const {
 	Matrix<T3> res(this->lines(), this->cols());
 	for (unsigned i = 0; i < this->lines(); i++) {
 		for (unsigned j = 0; j < this->cols(); j++) {
-			res.data[i][j] = this->data[i][j] * other;
+			res[i][j] = this->data[i][j] * other;
 		}
 	}
 
@@ -429,7 +430,7 @@ auto Matrix<T>::operator*(T const& other) const {
 	Matrix<T> res(this->lines(), this->cols());
 	for (unsigned i = 0; i < this->lines(); i++) {
 		for (unsigned j = 0; j < this->cols(); j++) {
-			res.data[i][j] = this->data[i][j] * other;
+			res[i][j] = this->data[i][j] * other;
 		}
 	}
 
@@ -466,7 +467,7 @@ template<class T>
 Matrix<T> Matrix<T>::gen_col(std::vector<T> values) {
 	Matrix<T> res(values.size(), 1);
 	for (unsigned i = 0; i < values.size(); i++) {
-		res.data[i][0] = values[i];
+		res[i][0] = values[i];
 	}
 	return res;
 }
@@ -475,76 +476,52 @@ template<class T>
 Matrix<T> Matrix<T>::gen_line(std::vector<T> values) {
 	Matrix<T> res(1, values.size());
 	for (unsigned i = 0; i < values.size(); i++) {
-		res.data[0][i] = values[i];
+		res[0][i] = values[i];
 	}
 	return res;
 }
 
 template<class T>
-std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::decomp_LUP() const {
+std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::decomp_PLU() const {
+	// https://www.quantstart.com/articles/LU-Decomposition-in-Python-and-NumPy
+
 	if (this->lines() != this->cols()) {
 		throw std::logic_error("LUP decomposition impossible on non-square matrix");
 	}
 
+	unsigned n = this->lines();
 
-	Matrix<T> A(*this);
-	unsigned N = A.lines();
+	Matrix<T> L(Matrix<T>::gen_full(n, T(0)));
+	Matrix<T> U(Matrix<T>::gen_full(n, T(0)));
+	Matrix<T> P = this->pivot();
+	auto PA = P.dot(*this);
 
-	// row swapping permutations, start with identity
-	std::vector<unsigned> P(N, 0);
-	for (unsigned i = 0; i < N; i++) {
-		P[i] = i;
-	}
 
-	// outer loop over diagonal pivots
-	for (unsigned i = 0; i < N - 1; i++) {
+	for (unsigned j = 0; j < n; j++) {
+		L[j][j] = T(1);
 
-		// inner loop to find the largest pivot
-		// (dividing by small numbers is bad so want largest one)
-		int maxPivot = i;
-		for (unsigned k = i + 1; k < N; k++) {
-			if (std::abs(A.data[k][i]) > std::abs(A.data[i][i])) {
-				maxPivot = k;
+		for (unsigned i = 0; i < j + 1; i++) {
+			T sum(0);
+			for (unsigned k = 0; k < i; k++) {
+				sum += (U[k][j] * L[i][k]);
 			}
+
+			U[i][j] = PA[i][j] - sum;
 		}
 
-		// check for singularity
-		if (A.data[maxPivot][i] == 0) {
-			throw std::logic_error("matrix is singular");
-		}
-
-		// swap rows
-		if (maxPivot != i) {
-			std::swap(P[maxPivot], P[i]);
-
-			for (unsigned k = i; k < N; k++) {
-				std::swap(A.data[i][k], A.data[maxPivot][k]);
+		for (unsigned i = j;  i < n; i++) {
+			T sum(0);
+			for (unsigned k = 0; k < j; k++) {
+				sum += U[k][j] * L[i][k];
 			}
-		}
 
-		// Gaussian elimination	
-		for (unsigned k = i + 1; k < N; k++) { // iterate down rows
-		  // lower triangle factor is not zeroed out, keep it for L
-			A.data[k][i] /= A.data[i][i]; // denominator is really for the pivot row elements
-
-			for (unsigned j = i + 1; j < N; j++) { // iterate across rows
-			  // subtract off lower triangle factor times pivot row
-				A.data[k][j] = A.data[k][j] - A.data[i][j] * A.data[k][i];
-			}
+			L[i][j] = (PA[i][j] - sum) / U[j][j];
 		}
 	}
 
-	// Construct final matrices
-	Matrix<T> U(A.tri_up(true));
-	Matrix<T> L(A.tri_lo(true));
-	for (unsigned i = 0; i < L.cols(); i++) { L.data[i][i] = T(1); }
 
-	Matrix<T> P_ret(P.size(), P.size());
-	for (unsigned p = 0; p < P.size(); p++) {
-		P_ret.data[p][P[p]] = T(1);
-	}
 
-	return std::make_tuple(L, U, P_ret);
+	return std::make_tuple(P, L, U);
 }
 
 template<class T>
@@ -575,22 +552,22 @@ T Matrix<T>::trace() const {
 template<class T>
 Matrix<T> Matrix<T>::decomp_cholesky() const {
 	Matrix<T> L(this->lines(), this->cols());
-	L.data[0][0] = std::sqrt(this->data[0][0]);
+	L[0][0] = std::sqrt(this->data[0][0]);
 	for (unsigned i = 0; i < this->lines(); i++) {
 		for (unsigned j = i; j < this->lines(); j++) {
 			if (i == j) {
 				T S(0);
 				for (unsigned k = 0; k < i; k++) {
-					S += std::pow(L.data[i][k], 2);
+					S += std::pow(L[i][k], 2);
 				}
-				L.data[i][j] = std::sqrt(this->data[i][j] - S);
+				L[i][j] = std::sqrt(this->data[i][j] - S);
 			}
 			else {
 				T S(0);
 				for (unsigned k = 0; k < i; k++) {
-					S += L.data[i][k] * L.data[j][k];
+					S += L[i][k] * L[j][k];
 				}
-				L.data[j][i] = (this->data[i][j] - S) / L.data[i][i];
+				L[j][i] = (this->data[i][j] - S) / L[i][i];
 			}
 		}
 	}
@@ -604,16 +581,16 @@ Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
 		throw std::logic_error("Matrix dimensions failed for solve_descent");
 	}
 
-	// Creating Taug 
+	// Creating Tiaug 
 	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
-			Taug.data[i][j] = A.data[i][j];
+			Taug[i][j] = A[i][j];
 		}
 	}
 	for (unsigned k = 0; k < B.lines(); k++) {
 		for (unsigned l = 0; l < B.cols(); l++) {
-			Taug.data[k][A.cols() + l] = B.data[k][l];
+			Taug[k][A.cols() + l] = B[k][l];
 		}
 	}
 
@@ -640,12 +617,12 @@ Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
 	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
-			Taug.data[i][j] = A.data[i][j];
+			Taug[i][j] = A[i][j];
 		}
 	}
 	for (unsigned k = 0; k < B.lines(); k++) {
 		for (unsigned l = 0; l < B.cols(); l++) {
-			Taug.data[k][A.cols() + l] = B.data[k][l];
+			Taug[k][A.cols() + l] = B[k][l];
 		}
 	}
 
@@ -689,5 +666,30 @@ std::vector<T>& Matrix<T>::operator[](unsigned pos) {
 	return this->data[pos];
 }
 
+template<class T>
+Matrix<T> Matrix<T>::pivot() const {
+	if (this->lines() != this->cols()) {
+		throw std::logic_error("Matrix must be square");
+	}
+	unsigned m = this->lines();
+	Matrix<T> Id_mat(Matrix<T>::gen_diag(m, T(1)));
+
+	for (unsigned j = 0; j < m; j++) {
+		T maxval(this->data[0][j]);
+		unsigned maxline(0);
+		for (unsigned i = 0; i < m; i++) {
+			if (std::abs(this->data[i][j]) > maxval) {
+				maxval = this->data[i][j];
+				maxline = i;
+			}
+		}
+
+		if (j != maxline) {
+			std::swap(Id_mat[j], Id_mat[maxline]);
+		}
+	}
+
+	return Id_mat;
+}
 
 #endif

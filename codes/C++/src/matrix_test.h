@@ -133,27 +133,27 @@ void Matrix_test<T>::test_mathematics() {
 
 
 			if (!Matrix<T>::close(((A.dot(X)) - B).norm(), 0, 1e-3, 1e-3)) {
-				throw std::logic_error("Test of Matrix::solve_descent failed");
+				throw std::logic_error("Test of Matrix::solve_climb failed");
 			}
 		}
 	}
 
 	{
-		unsigned N = 1000;
-		for (unsigned i = 0; i < N; i++) {
-			Matrix<T> A(Matrix<T>::gen_random(3, 3, -100, 100));
-			std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res(A.decomp_LUP());
-			Matrix<T> L(std::get<0>(res));
-			Matrix<T> U(std::get<1>(res));
-			Matrix<T> P(std::get<2>(res));
+		//unsigned N = 1000;
+		//for (unsigned i = 0; i < N; i++) {
+			Matrix<T> A(Matrix<T>::gen_random(4, 4, -100, 100));
+			std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res(A.decomp_PLU());
+			Matrix<T> P(std::get<0>(res));
+			Matrix<T> L(std::get<1>(res));
+			Matrix<T> U(std::get<2>(res));
 			Matrix<T> PA(P.dot(A));
 			Matrix<T> LU(L.dot(U));
 
 			if (!PA.allclose(LU, 1e-3, 1e-3)) {
-				std::string msg("Matrices :\n PA : " + PA.str() + "\nLU : " + LU.str());
+				std::string msg("Matrices :\n PA : " + P.str() + ", " + A.str() + "\nLU : " + L.str() + "," + U.str());
 				throw std::logic_error("Test of Matrix::decomp_LUP failed\n" + msg);
 			}
-		}
+		//}
 	}
 
 	{

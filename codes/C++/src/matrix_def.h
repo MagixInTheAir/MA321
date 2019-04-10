@@ -46,15 +46,17 @@ public:
 	T norm() const; // Implemented
 	Matrix<T> adj() const; // Implemented, tested
 	T cofactor(unsigned int const line, unsigned int const col) const; // Implemented, tested
-	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> decomp_LUP() const; // Implemented
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> decomp_PLU() const; // Implemented, tested
 	Matrix<T> decomp_cholesky() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>> decomp_QR() const;
+	// TODO : ?? decomp_SVD() const;
 	bool isDiagonal() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> diagonalize() const;
 	Matrix<T> eigenvects() const;
 	std::vector<T> eigenvals() const;	
 	T rank() const;
 	T trace() const; // Implemented
+	Matrix<T> pivot() const; // Implemented
 
 	// GENERATORS
 	static Matrix<T> gen_random(unsigned int size, T min, T max); // Implemented
