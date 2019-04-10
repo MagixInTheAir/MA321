@@ -22,11 +22,10 @@
 \contentsline {subsubsection}{Explication de l'algorithme GMRES}{17}{section*.6}
 \contentsline {subsubsection}{R\IeC {\'e}sultat de l'algorithmes}{18}{section*.8}
 \contentsline {chapter}{\numberline {4}Des algorithmes complexes...}{21}{chapter.4}
-\contentsline {section}{\numberline {4.1}Optimisation des m\IeC {\'e}thodes}{21}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Optimisation math\IeC {\'e}matique : Pr\IeC {\'e}conditionnement}{21}{subsection.4.1.1}
+\contentsline {section}{\numberline {4.1}Optimisation th\IeC {\'e}orique des m\IeC {\'e}thodes}{21}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Pr\IeC {\'e}conditionnement pour une m\IeC {\'e}thode it\IeC {\'e}rative}{21}{subsection.4.1.1}
 \contentsline {subsubsection}{Pr\IeC {\'e}conditionnement de Jacobi}{22}{section*.10}
 \contentsline {subsubsection}{Pr\IeC {\'e}conditionnement SSOR}{22}{section*.11}
-\contentsline {subsubsection}{Les limites de l'optimisation math\IeC {\'e}matique}{23}{section*.12}
-\contentsline {subsection}{\numberline {4.1.2}Optimisation num\IeC {\'e}rique}{23}{subsection.4.1.2}
-\contentsline {section}{\numberline {4.2}\IeC {\'E}tude de la complexit\IeC {\'e}}{23}{section.4.2}
+\contentsline {subsection}{\numberline {4.1.2}Les limites de l'optimisation math\IeC {\'e}matique}{23}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}\IeC {\'E}tude des performances}{23}{section.4.2}
 \contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{24}{chapter.5}

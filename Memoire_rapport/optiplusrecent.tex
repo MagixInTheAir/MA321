@@ -1,6 +1,6 @@
 \chapter{Des algorithmes complexes...}
-\section{Optimisation des méthodes}
-\subsection{Optimisation mathématique : Préconditionnement}
+\section{Optimisation théorique des méthodes}
+\subsection{Préconditionnement pour une méthode itérative}
 
 On peut illustrer les problèmes des méthodes itératives à travers la méthode du gradient conjugué. En effet, les conditionnements des matrices étudiées sont parfois très grands et il est ainsi nécessaire d'effectuer une opération dite de préconditionnement afin de minimiser les résidus des itérations.\\
 
@@ -23,7 +23,7 @@ A_{i,i}\text{ si } i=j\\
 \end{cases}
 $$
 
-La matrice $C$ correspond donc à la diagonale de $A$ et le produit entre $C$ et le résidu se fait aisément puisque tous les termes extradiagonaux sont nuls. Cependant, si l'on souhaite avoir une méthode de préconditionnement améliorant grandement les performances de l'algorithme du gradient conjugué, le préconditionnement de Jacobi n'est pas adapté. Pour ces cas de figure, nous pouvons utiliser la méthode SSOR.
+La matrice $C$ correspond donc à la diagonale de $A$. Le produit entre $C$ et le résidu se fait aisément puisque tous les termes extradiagonaux sont nuls. Cependant, si l'on souhaite avoir une méthode de préconditionnement améliorant grandement les performances de l'algorithme du gradient conjugué, le préconditionnement de Jacobi n'est pas adapté. Pour ces cas de figure, nous pouvons utiliser la méthode SSOR.
 \subsubsection{Préconditionnement SSOR}
 La méthode SSOR (Symetric Successive Over Relaxation) permet d'améliorer le gradient conjugué de meilleure manière que la méthode de Jacobi mais elle est plus difficile à mettre en place. En effet, la matrice $A$ du système $Ax=b$ doit être symétrique.\\
 
@@ -40,9 +40,9 @@ $$
 
 Étant donné que cette méthode consiste en deux SOR successives, la condition nécessaire et suffisante de convergence de la méthode est identique à celle de la SOR. Il suffit que le paramètre de relaxation $\omega$ soit dans l'intervalle $]0;2[$.\\
 
-\subsubsection{Les limites de l'optimisation mathématique}
+\subsection{Les limites de l'optimisation mathématique}
 
 Bien que les méthodes d'optimisation numérique vues précédemment permettent d'améliorer de manière significative les performances d'un algorithme (plus particulièrement celui du gradient conjugué dans le cas précédent), cela peut ne pas être suffisant lorsque nous avons affaire à des systèmes de grande taille avec des coefficients élevés dans la matrice liée au système. Il est donc nécessaire de coupler l'optimisation mathématique (par les méthodes de préconditionnement), à des études de performances numériques avec des méthodes d'optimisation lors de l'implémentation de ces algorithmes sur nos machines.
-\subsection{Optimisation numérique}
 
-\section{Étude de la complexité}
+
+\section{Étude des performances}
