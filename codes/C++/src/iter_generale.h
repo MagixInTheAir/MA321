@@ -3,26 +3,25 @@
 #include <cmath>
 
 template<typename T>
-void iter_generale(Matrix<T> const& m, Matrix<T> const& iter, Matrix<T> const& b, 
-                    T x0, T epsilon, long long maxiter) {
+std::tuple<Matrix<T>, long long, T> iter_generale(Matrix<T> const& m_inv, Matrix<T> const& iter, Matrix<T> const& b, 
+                    Matrix<T> const& x0, T const& epsilon, long long maxiter) {
 
-    rho = iter.highest_eigen();
-    if(rho >= 1) {
-        throw std::logic_error("La méthode ne converge pas");
-    }
-
-	Matrix<T> m_inv = m.inv();
-    auto xs = x0;
-    auto xp = iter.dot(xs) + m_inv.dot(b);
-    long long iter = 1;
-    T err = (xp - xs).norm();
+    Matrix<T> xs(x0);
+    Matrix<T> xp(iter.dot(xs) + m_inv.dot(b));
+    long long nb_iter = 1;
+	T errp(0);
+    T err((xp - xs).norm());
     
-    while(err > epsilon && iter < maxiter) {
+    while(err > epsilon && nb_iter < maxiter) {
         xs = xp;
-        xo = iter.dot(xs) + m_inv.dot(b);
-        iter++;
+        xp = iter.dot(xs) + m_inv.dot(b);
+        nb_iter++;
+		errp = err;
         err = (xp - xs).norm();
+		if (err > errp) {
+			throw std::logic_error("Method is not convergent");
+		}
     }
 
-    return std::make_tuple(xp, iter, err);
+    return std::make_tuple(xp, nb_iter, err);
 }

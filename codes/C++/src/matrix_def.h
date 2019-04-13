@@ -75,8 +75,11 @@ public:
 	static bool allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision); // Implemented
 
 	// SOLVERS
+	static std::vector<T> solve_descent_col(Matrix<T> A, std::vector<T> B);
+	static std::vector<T> solve_climb_col(Matrix<T> A, std::vector<T> B);
 	static Matrix<T> solve_descent(Matrix<T> A, Matrix<T> B);
 	static Matrix<T> solve_climb(Matrix<T> A, Matrix<T> B);
+	static Matrix<T> solve_LU(Matrix<T> A, Matrix<T> B);
 
 	// MISC
 	static void run_tests(); // Implemented
