@@ -66,9 +66,10 @@ Matrix<T> Matrix<T>::transp() const {
 
 template<class T>
 Matrix<T> Matrix<T>::gen_random(unsigned int lines, unsigned int cols, T min, T max) {
-	std::default_random_engine generator;
+	std::random_device dev;
+	std::mt19937 rng(dev());
 	std::uniform_real_distribution<T> distribution(min, max);
-	auto generate = std::bind(distribution, generator);
+	auto generate = std::bind(distribution, rng);
 
 	Matrix<T> result(lines, cols);
 
