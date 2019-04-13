@@ -53,11 +53,11 @@ auto Matrix<T>::dot(Matrix<T2> const& other) const {
 
 template<class T>
 Matrix<T> Matrix<T>::transp() const {
-	Matrix<T> result(*this);
+	Matrix<T> result(this->cols(), this->lines());
 
     for(unsigned int i = 0; i < this->lines(); i++) {
         for(unsigned int j = 0; j < this->cols(); j++) {
-            result[i][j] = this->data[j][i];
+            result[j][i] = this->data[i][j];
         }
     }
 
@@ -90,7 +90,6 @@ Matrix<T> Matrix<T>::gen_diag(unsigned int lines, unsigned int cols, T value) {
     
     for(unsigned int i = 0; i < lines; i++) {
         for(unsigned int j = 0; j < cols; j++) {
-			long l(0);
             if (i == j) {
                 result[i][j] = value;
             } else {
@@ -222,10 +221,37 @@ Matrix<T> Matrix<T>::inv() const {
 	Matrix<T> L(std::get<1>(PLU));
 	Matrix<T> U(std::get<2>(PLU));
 
-	Matrix<T> Y(Matrix<T>::solve_climb(L, P));
-	Matrix<T> X(Matrix<T>::solve_descent(U, Y));
+	if (this->lines() != this->cols()) { throw std::logic_error("Matrix must be square"); }
+
+	Matrix<T> Y(Matrix<T>::solve_descent(L, P));
+	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
 
 	return X;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
+	if (A.lines() != A.cols()) { throw std::logic_error("Matrix must be square"); }
+
+	Matrix<T> X(B.cols(), B.lines());
+	for (unsigned i = 0; i < B.cols(); i++) {
+		X[i] = Matrix<T>::solve_climb_col(A, B.transp().data[i]); // Compute UX=Y for each column vector
+	}
+	return X.transp();
+}
+
+template<class T>
+Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
+	if (A.lines() != A.cols() || B.lines() != B.lines() || A.lines() != B.lines()) {
+		throw std::logic_error("Matrices must be square and have the same dimension for solve_descent"); 
+	}
+
+	Matrix<T> X(B.cols(), B.lines());
+	Matrix<T> B_trsp(B.transp());
+	for (unsigned i = 0; i < B.cols(); i++) {
+		X[i] = Matrix<T>::solve_descent_col(A, B_trsp.data[i]); // Compute UX=Y for each column vector
+	}
+	return X.transp();
 }
 
 template<class T>
@@ -400,15 +426,14 @@ bool Matrix<T>::allclose(Matrix<T> other, T abs_precision, T rel_precision) cons
 		throw std::length_error("Matrix must be the same size");
 	}
 
-	bool close = true;
 	for (unsigned i = 0; i < other.lines(); i++) {
 		for (unsigned j = 0; j < other.cols(); j++) {
 			if (!Matrix<T>::close(this->data[i][j], other[i][j], abs_precision, rel_precision)) {
-				close = false;
+				return false;
 			}
 		}
 	}
-	return close;
+	return true;
 }
 
 template<class T>
@@ -509,12 +534,15 @@ std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::decomp_PLU() const {
 			U[i][j] = PA[i][j] - sum;
 		}
 
-		for (unsigned i = j;  i < n; i++) {
+		for (unsigned i = j+1;  i < n; i++) {
 			T sum(0);
 			for (unsigned k = 0; k < j; k++) {
 				sum += U[k][j] * L[i][k];
 			}
 
+			if (U[j][j] == 0) {
+				throw std::logic_error("Cannot decompose PLU, matrix is singular");
+			}
 			L[i][j] = (PA[i][j] - sum) / U[j][j];
 		}
 	}
@@ -576,22 +604,20 @@ Matrix<T> Matrix<T>::decomp_cholesky() const {
 };
 
 template<class T>
-Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
-	if (A.lines() != A.cols() || B.lines() != A.lines() || B.cols() != 1) {
-		throw std::logic_error("Matrix dimensions failed for solve_descent");
+std::vector<T> Matrix<T>::solve_descent_col(Matrix<T> A, std::vector<T> B) {
+	if (A.lines() != A.cols() || B.size() != A.lines()) {
+		throw std::logic_error("Matrix dimensions failed for solve_descent_col");
 	}
 
 	// Creating Tiaug 
-	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
+	Matrix<T> Taug(A.lines(), A.cols() + 1);
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
 			Taug[i][j] = A[i][j];
 		}
 	}
-	for (unsigned k = 0; k < B.lines(); k++) {
-		for (unsigned l = 0; l < B.cols(); l++) {
-			Taug[k][A.cols() + l] = B[k][l];
-		}
+	for (unsigned k = 0; k < A.lines(); k++) {
+		Taug[k][A.cols()] = B[k];
 	}
 
 	// Solving
@@ -604,31 +630,29 @@ Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
 		X[i] = (Taug[i][Taug.cols() - 1] - somme) / Taug[i][i];
 	}
 
-	return Matrix<T>::gen_col(X);
+	return X;
 }
 
 template<class T>
-Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
-	if (A.lines() != A.cols() || B.lines() != A.lines()) {
-		throw std::logic_error("Matrix dimensions failed for solve_climb");
+std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> A, std::vector<T> B) {
+	if (A.lines() != A.cols() || B.size() != A.lines()) {
+		throw std::logic_error("Matrix dimensions failed for solve_climb_col");
 	}
 
 	// Creating Taug 
-	Matrix<T> Taug(A.lines(), A.cols() + B.cols());
+	Matrix<T> Taug(A.lines(), A.cols() + 1);
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
 			Taug[i][j] = A[i][j];
 		}
 	}
-	for (unsigned k = 0; k < B.lines(); k++) {
-		for (unsigned l = 0; l < B.cols(); l++) {
-			Taug[k][A.cols() + l] = B[k][l];
-		}
+	for (unsigned k = 0; k < A.lines(); k++) {
+		Taug[k][A.cols()] = B[k];
 	}
 
 	// Solving
 	std::vector<T> X(Taug.lines(), 0);
-	for (unsigned ip = Taug.lines(); ip > 0; ip--) { // VA BOUCLER A L'INFINI
+	for (long int ip = Taug.lines(); ip > 0; ip--) {
 		unsigned i = ip - 1;
 		T somme(0);
 		for (unsigned k = i; k < Taug.lines(); k++) {
@@ -637,7 +661,7 @@ Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
 		X[i] = (Taug[i][Taug.cols()-1] - somme) / Taug[i][i];
 	}
 
-	return Matrix<T>::gen_col(X);
+	return X;
 }
 
 template<class T>
