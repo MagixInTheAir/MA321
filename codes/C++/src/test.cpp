@@ -33,7 +33,7 @@ void run_gaussSeidel_bench() {
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
-				Matrix<T> b = Matrix<T>::gen_random(cursize, min_gen, max_gen);
+				Matrix<T> b = Matrix<T>::gen_random(cursize, 1, min_gen, max_gen);
 				Matrix<T> x0 = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 
 

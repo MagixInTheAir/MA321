@@ -10,7 +10,8 @@ std::tuple<Matrix<T>, long long, T> iter_generale(Matrix<T> const& m_inv, Matrix
     Matrix<T> xp(iter.dot(xs) + m_inv.dot(b));
     long long nb_iter = 1;
 	T errp(0);
-    T err((xp - xs).norm());
+	Matrix<T> err_m(xp - xs);
+    T err(err_m.norm());
     
     while(err > epsilon && nb_iter < maxiter) {
         xs = xp;
@@ -18,6 +19,7 @@ std::tuple<Matrix<T>, long long, T> iter_generale(Matrix<T> const& m_inv, Matrix
         nb_iter++;
 		errp = err;
         err = (xp - xs).norm();
+
 		if (err > errp) {
 			throw std::logic_error("Method is not convergent");
 		}

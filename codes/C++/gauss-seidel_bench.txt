@@ -1,0 +1,1 @@
+index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val

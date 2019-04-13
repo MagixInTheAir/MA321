@@ -313,7 +313,8 @@ T Matrix<T>::norm() const {
 	if (this->cols() == this->lines()) {
 		//auto eigs = this->eigenvals();
 		//return std::max(eigs) / std::min(eigs);
-		return T();
+		// return T();
+		throw std::logic_error("Not implemented");
 	}
 	else if (this->cols() == 1) {
 		T total(0);
