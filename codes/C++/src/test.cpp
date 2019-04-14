@@ -4,6 +4,7 @@
 #include <chrono>
 #include <tuple>
 #include <fstream>
+#include <thread>
 
 #include "matrix.h"
 #include "matrix_test.h"
@@ -27,10 +28,10 @@ void run_gaussSeidel_bench() {
 
 	for (unsigned s = 0; s < sizes.size(); s++) {
 		unsigned int cursize(sizes[s]);
-		std::cout << "TESTING SIZE " << cursize << std::endl;
+		std::cout << "GS : TESTING SIZE " << cursize << std::endl;
 		for (unsigned p = 0; p < precisions.size(); p++) {
 			T curprec(precisions[p]);
-			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			std::cout << "GS : TESTING PRECISION " << curprec << std::endl;
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
@@ -55,7 +56,6 @@ void run_gaussSeidel_bench() {
 				auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
 
 				// index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val
-				std::cout << i << std::endl;
 				file << i << ", "
 					<< cursize << ", "
 					<< curprec << ", "
@@ -84,10 +84,10 @@ void run_jacobi_bench() {
 
 	for (unsigned s = 0; s < sizes.size(); s++) {
 		unsigned int cursize(sizes[s]);
-		std::cout << "TESTING SIZE " << cursize << std::endl;
+		std::cout << "JB : TESTING SIZE " << cursize << std::endl;
 		for (unsigned p = 0; p < precisions.size(); p++) {
 			T curprec(precisions[p]);
-			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			std::cout << "JB : TESTING PRECISION " << curprec << std::endl;
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
@@ -112,7 +112,6 @@ void run_jacobi_bench() {
 				auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
 
 				// index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val
-				std::cout << i << std::endl;
 				file << i << ", "
 					<< cursize << ", "
 					<< curprec << ", "
@@ -141,10 +140,10 @@ void run_richardson_bench() {
 
 	for (unsigned s = 0; s < sizes.size(); s++) {
 		unsigned int cursize(sizes[s]);
-		std::cout << "TESTING SIZE " << cursize << std::endl;
+		std::cout << "RD : TESTING SIZE " << cursize << std::endl;
 		for (unsigned p = 0; p < precisions.size(); p++) {
 			T curprec(precisions[p]);
-			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			std::cout << "RD : TESTING PRECISION " << curprec << std::endl;
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
@@ -170,7 +169,6 @@ void run_richardson_bench() {
 				auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
 
 				// index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val
-				std::cout << i << std::endl;
 				file << i << ", "
 					<< cursize << ", "
 					<< curprec << ", "
@@ -199,10 +197,10 @@ void run_sor_bench() {
 
 	for (unsigned s = 0; s < sizes.size(); s++) {
 		unsigned int cursize(sizes[s]);
-		std::cout << "TESTING SIZE " << cursize << std::endl;
+		std::cout << "SR : TESTING SIZE " << cursize << std::endl;
 		for (unsigned p = 0; p < precisions.size(); p++) {
 			T curprec(precisions[p]);
-			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			std::cout << "SR : TESTING PRECISION " << curprec << std::endl;
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
@@ -227,7 +225,6 @@ void run_sor_bench() {
 				auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
 
 				// index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val
-				std::cout << i << std::endl;
 				file << i << ", "
 					<< cursize << ", "
 					<< curprec << ", "
@@ -256,10 +253,10 @@ void run_gmres_bench() {
 
 	for (unsigned s = 0; s < sizes.size(); s++) {
 		unsigned int cursize(sizes[s]);
-		std::cout << "TESTING SIZE " << cursize << std::endl;
+		std::cout << "GR : TESTING SIZE " << cursize << std::endl;
 		for (unsigned p = 0; p < precisions.size(); p++) {
 			T curprec(precisions[p]);
-			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			std::cout << "GR : TESTING PRECISION " << curprec << std::endl;
 			for (unsigned i = 0; i < tries; i++) {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
@@ -314,12 +311,18 @@ int main() {
 	test_algos<T>();
 	
 	
-	run_gaussSeidel_bench();
-	//run_jacobi_bench();
+	std::vector<std::thread> vect;
+
+
+	vect.push_back(std::thread(run_gaussSeidel_bench));
+	vect.push_back(std::thread(run_jacobi_bench));
 	//run_richardson_bench();
 	//run_sor_bench();
 	//run_gmres_bench();
 
+	for (size_t i = 0; i < vect.size(); i++) {
+		vect[i].join();
+	}
 	
 	system("pause");
 }
