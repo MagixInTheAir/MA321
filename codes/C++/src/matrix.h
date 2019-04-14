@@ -242,6 +242,21 @@ Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
 }
 
 template<class T>
+inline Matrix<T> Matrix<T>::solve_LU(Matrix<T> A, Matrix<T> B) {
+	// Ax = b
+	// PAx = Pb
+	// LUx = Pb
+	// { LY = Pb, Ux = Y
+
+
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> PLU(A.decomp_PLU());
+	Matrix<T> Y(Matrix<T>::solve_descent(L, P.dot(B));
+	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
+
+	return X;
+}
+
+template<class T>
 Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
 	if (A.lines() != A.cols() || B.lines() != B.lines() || A.lines() != B.lines()) {
 		throw std::logic_error("Matrices must be square and have the same dimension for solve_descent"); 

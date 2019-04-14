@@ -20,7 +20,7 @@ public:
 	// UTILITIES
 	unsigned int cols() const; // Implemented
 	unsigned int lines() const; // Implemented
-	std::string str() const;
+	std::string str() const; // Implemented
 
 	// OPERATORS
 	template<class T2> auto operator+(Matrix<T2> const& other) const; // Implemented
@@ -75,11 +75,11 @@ public:
 	static bool allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision); // Implemented
 
 	// SOLVERS
-	static std::vector<T> solve_descent_col(Matrix<T> A, std::vector<T> B);
-	static std::vector<T> solve_climb_col(Matrix<T> A, std::vector<T> B);
-	static Matrix<T> solve_descent(Matrix<T> A, Matrix<T> B);
-	static Matrix<T> solve_climb(Matrix<T> A, Matrix<T> B);
-	static Matrix<T> solve_LU(Matrix<T> A, Matrix<T> B);
+	static std::vector<T> solve_descent_col(Matrix<T> A, std::vector<T> B); // Implemented, NEEDS OPTIMIZATION (MOVE INTO SOLVE_DESCENT ?)
+	static std::vector<T> solve_climb_col(Matrix<T> A, std::vector<T> B); // Implemented, NEEDS OPTIMIZATION (MOVE INTO SOLVE_CLIMB ?)
+	static Matrix<T> solve_descent(Matrix<T> A, Matrix<T> B); // Implemented
+	static Matrix<T> solve_climb(Matrix<T> A, Matrix<T> B); // Implemented
+	static Matrix<T> solve_LU(Matrix<T> A, Matrix<T> B); // Implemented
 
 	// MISC
 	static void run_tests(); // Implemented
