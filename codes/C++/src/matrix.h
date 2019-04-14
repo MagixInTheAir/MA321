@@ -331,6 +331,10 @@ T Matrix<T>::norm() const {
 template<class T>
 template<class T2>
 auto Matrix<T>::operator+(Matrix<T2> const& other) const {
+	if (this->lines() != other.lines() || this->cols() != other.cols()) {
+		throw std::logic_error("Matrix must be the same size for addition");
+	}
+
 	Matrix<T> res(this->lines(), this->cols());
 
 	for (unsigned int i = 0; i < this->lines(); i++) {

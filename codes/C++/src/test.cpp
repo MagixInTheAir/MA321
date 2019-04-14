@@ -34,15 +34,19 @@ void run_gaussSeidel_bench() {
 				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
 				Matrix<T> b = Matrix<T>::gen_random(cursize, 1, min_gen, max_gen);
-				Matrix<T> x0 = Matrix<T>::gen_random(cursize, min_gen, max_gen);
+				Matrix<T> x0 = Matrix<T>::gen_random(cursize, 1, min_gen, max_gen);
 
+				// DOMINANT DIAGONAL
+				for (unsigned i = 0; i < cursize; i++) {
+					A[i][i] *= max_gen;
+				}
 
 				// START MEASURE TIME
 				auto begin(std::chrono::high_resolution_clock::now());
 
 				// CALL FUNCTION
 				std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res0(gaussSeidel(A));
-				std::tuple<Matrix<T>, long long, T> result(iter_generale(std::get<1>(res0), std::get<2>(res0), b, x0, curprec, 1e9));
+				std::tuple<Matrix<T>, long long, T> result(iter_generale(std::get<1>(res0), std::get<2>(res0), b, x0, curprec, (long long)1e9));
 
 				// END MEASURE TIME
 				auto end(std::chrono::high_resolution_clock::now());
@@ -54,12 +58,69 @@ void run_gaussSeidel_bench() {
 				file << i << ", "
 					<< cursize << ", "
 					<< curprec << ", "
+					<< std::get<2>(result) << ", "
 					<< duration << ", "
 					<< A.str() << ", "
 					<< b.str() << ", "
 					<< std::get<0>(result).str() << ", "
 					<< std::get<1>(result) << ", "
+					<< min_gen << ", "
+					<< max_gen << ", "
+					<< std::endl;
+			}
+		}
+	}
+
+	file.close();
+}
+
+void run_jacobi_bench() {
+
+	std::ofstream file;
+	file.open("jacobi_bench.txt", std::ios::out | std::ios::trunc);
+
+	file << "index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val" << std::endl;
+
+	for (unsigned s = 0; s < sizes.size(); s++) {
+		unsigned int cursize(sizes[s]);
+		std::cout << "TESTING SIZE " << cursize << std::endl;
+		for (unsigned p = 0; p < precisions.size(); p++) {
+			T curprec(precisions[p]);
+			std::cout << "TESTING PRECISION " << curprec << std::endl;
+			for (unsigned i = 0; i < tries; i++) {
+				auto m = Matrix<T>::gen_random(cursize, min_gen, max_gen);
+				Matrix<T> A = Matrix<T>::gen_random(cursize, min_gen, max_gen);
+				Matrix<T> b = Matrix<T>::gen_random(cursize, 1, min_gen, max_gen);
+				Matrix<T> x0 = Matrix<T>::gen_random(cursize, 1, min_gen, max_gen);
+
+				// DOMINANT DIAGONAL
+				for (unsigned i = 0; i < cursize; i++) {
+					A[i][i] *= max_gen;
+				}
+
+				// START MEASURE TIME
+				auto begin(std::chrono::high_resolution_clock::now());
+
+				// CALL FUNCTION
+				std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res0(jacobi(A));
+				std::tuple<Matrix<T>, long long, T> result(iter_generale(std::get<1>(res0), std::get<2>(res0), b, x0, curprec, (long long)1e9));
+
+				// END MEASURE TIME
+				auto end(std::chrono::high_resolution_clock::now());
+
+				auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
+
+				// index, matrix_size, precision, error, time, A, b, x, iterations, min_val, max_val
+				std::cout << i << std::endl;
+				file << i << ", "
+					<< cursize << ", "
+					<< curprec << ", "
 					<< std::get<2>(result) << ", "
+					<< duration << ", "
+					<< A.str() << ", "
+					<< b.str() << ", "
+					<< std::get<0>(result).str() << ", "
+					<< std::get<1>(result) << ", "
 					<< min_gen << ", "
 					<< max_gen << ", "
 					<< std::endl;
@@ -78,6 +139,7 @@ int main() {
 	
 	
 	run_gaussSeidel_bench();
+	//run_jacobi_bench();
 
 	
 	system("pause");

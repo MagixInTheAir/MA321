@@ -4,6 +4,7 @@
 
 #include "iter_generale.h"
 #include "gauss-seidel.h"
+#include "jacobi.h"
 
 template<typename T>
 void test_gaussSeidel() {
