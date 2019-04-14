@@ -37,12 +37,15 @@ auto Matrix<T>::dot(Matrix<T2> const& other) const {
     using T3 = decltype(std::declval<T>() * std::declval<T2>());
 	Matrix<T3> result(this->lines(), other.cols());
 
+
+	Matrix<T> other_transp(other.transp()); // for optimization
+
     for(unsigned i = 0; i < result.lines(); i++) {
         for(unsigned j = 0; j < result.cols(); j++) {
 
-            T3 total = 0;
+            T3 total(0);
             for(unsigned pos = 0; pos < this->cols(); pos++) {
-                total += this->data[i][pos] * other.data[pos][j];
+                total += this->data[i][pos] * other_transp[j][pos];
             }
             result[i][j] = total;
         }
