@@ -1,0 +1,155 @@
+\documentclass[12pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{pifont}
+\usepackage{url}
+\usepackage{color}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\setbeamertemplate{blocks}[rounded]%
+[shadow=true]
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\begin{document}
+	\author{AUDET Yoann}
+	\title{Krylov}
+	%\subtitle{Extrapolation of PYTHIA and SHERPA samples to predict a signal at low-mass}
+	%\logo{}
+	%\institute{}
+	\date{Avril 2019}
+	%\subject{}
+	%\setbeamercovered{transparent}
+	%\setbeamertemplate{navigation symbols}{}
+\begin{frame}[plain]
+	\maketitle
+\end{frame}
+\begin{frame}
+    Les sous-espaces de krylov, introduit en 1931 par le mathématicien du même nom, englobe un ensemble de méthode permettant de résoudre différents problèmes de mathématiques. 
+    \begin{itemize}
+        \item Résoultion de systèmes linéaires
+        \item Minimisation
+        \item Problème de valeurs propres
+        \item ...
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{De Jacobi à krylov : }
+    On introduit les sous espaces de kylov grâce à la méthode de Jacobi :
+    \begin{equation}
+        x^{k+1} = -D^{-1}(L+U)x^k + D^{-1}b = (I - D^{-1}A)x^{k} + D^{-1}b
+    \end{equation}
+    avec $A = D + L + U$, $L$ une matrice triangulaire inférieure, $U$ une matrice triangulaire supérieure et $D$ diagonale
+    \begin{equation}
+        r^k \triangleq b - Ax^k = -A ( - A^{-1}b + x^k) = -A (- x^* + x^k)
+    \end{equation}
+    Où $x^*$ est la solution réelle du système. En normalisant le système ci-dessus de telle sorte que $D = I$. Alors, nous pouvons écrire la solution au rang k+1, comme celle au rang k plus le résidu : 
+    \begin{eqnarray}
+    x^{k+1} &=& x^k + r^k\\
+    \Leftrightarrow x^{k+1} - x^* &=& x^k - x^* + r^k\\
+    \Leftrightarrow -A( x^{k+1} - x^*) &=& -A(x^k - x^*) - Ar^k\\
+    \Leftrightarrow r^{k+1} &=& r^k - Ar^k
+    \end{eqnarray}
+
+\end{frame}
+
+\begin{frame}
+    Nous reconnaissons une combinaison linéaire. En effet,  $r^{k+1}$ est une combinaison linéaire des $A^kr^0$ précédent. Cela mène à la contruction du sous-espace de krylov : 
+    \begin{equation}
+        x^k \in x^0 + Vect\{r^0, Ar^0, ..., A^kr^0\}
+    \end{equation}
+    Où $Vect\{r^0, Ar^0, ..., A^kr^0\}$ est le k-ième espace de Krylov généré par A à partir de $r^0$ noté $\mathcal{K}_k(A, r^0)$
+\end{frame}
+
+\begin{frame}
+     Les espaces de krylov sont énormément utilisés pour plusieurs de leurs propriétés :
+     \begin{itemize}
+        \item La solution de notre problème appartient à l'espace de krylov de dimension n si l'on pose $r_0 = b$ (met un lien vers la démo slide suivante)
+        \item L'algorithme à base de sous espaces de kylov converge en n itérations maximale  (met un lien vers la slide d'encore après)
+     \end{itemize}
+\end{frame}
+\begin{frame}
+\begin{equation}
+Ax = b \label{pb}
+\end{equation}
+D'après la définition du problème, la matrice A est inversible. Nous supposons que l'on a le polynôme caractéristique de A :
+\begin{equation}
+P(\lambda) = \sum_{j = 0}^{n} \alpha_j t^j \Rightarrow P(0) = \alpha_0 = det(A) \neq 0
+\end{equation}
+Par le théorème de Cayley-Hamilton\footnote{\url{http://www.logique.jussieu.fr/~alp/Cayley_Hamilton.pdf}}, nous pouvons obtenir la valeur de $A^{-1}$ :
+\begin{eqnarray}
+P(A) = \alpha_0 I + \alpha_1 A + ... + \alpha_n A^n &=& 0 \\
+\alpha_0 A^{-1}A + \alpha_1 A + ... + \alpha_n A^n &=& 0 \\
+(\alpha_0 A^{-1} + \alpha_1  + ... + \alpha_n A^{n - 1})A &=& 0 \\
+\alpha_0 A^{-1} + \alpha_1  + ... + \alpha_n A^{n - 1} &=& 0
+\end{eqnarray}
+Ce qui donne finalement :
+\begin{equation}
+ A^{-1} = - \frac{1}{\alpha_0} \times \sum_{j=0}^{n-1} \alpha_{j+1} A^j
+\end{equation}
+Or, la solution du problème \ref{pb} est : $x^* = A^{-1}b$. Ce qui peut s'écrire de la façon suivante : 
+\begin{equation}
+x^* = - \frac{1}{\alpha_0} \sum_{j=0}^{n-1} \alpha_{j+1} A^j b
+\end{equation}
+Ce vecteur appartient clairement à l'espace de Krylov défini par : 
+\begin{equation}
+x^* \in \mathcal{K}(A, b)
+\end{equation}
+\end{frame}
+\begin{frame}
+    Dans cette partie, nous allons étudié un des algorithmes qui utilisent les principes précédents. Cet algorithme est l'algorithme GMRES. 
+    Cet algorithme se base sur la projection de sous espaces et la condition de Petrov-Galerkin :
+    \begin{equation}
+        b - Ax \perp \mathbb{L} \Rightarrow \ <Au, v> = <b, v>, v \in \mathbb{L}
+        \label{Petrov-Galerkin}
+    \end{equation}
+    Il nous faut maintenant trouver la solution de $ x = x_0 + Vy \in \K$. Alors, nous écrivons : 
+    \begin{eqnarray}
+    <Av, w> &=& <r0, w> \forall w \in L\\
+    <AVy, Wz> &=& <r0, Wz> \forall z \in \mathbb{R}^m \\
+    Avy &=& r0 \\
+    y &=& (W^t A V)^{-1} W^tr^0
+    \end{eqnarray}
+    Nous obtenons donc la solution : 
+    \begin{equation}
+    x = x_0 + V (W^t A V)^{-1} W^tr^0
+    \end{equation}
+\end{frame}
+\begin{frame}
+    \begin{itemize}
+        \item construire les sous-espaces K et L
+        \item chercher la nouvelle itération dans $u + K$ par le procédé exposé ci-dessus.
+    \end{itemize}
+    Voici donc le principe général des méthodes de projection : 
+    \begin{enumerate}
+        \item Choisir $\K^m$ et $\mathbb{L}^m$ : deux sous-espaces de $\mathbb{R}^n$ de même dimension m
+        \item Construire $V_m$ et $W_m$
+        \item Calculer le résidu : $r = b - Ax^{(k)}$
+        \item Résoudre le système $y = (W^t_m A V_m)^{-1} W^t_mr$
+        \item Créer la nouvelle solution : $x = x + V_m y$
+    \end{enumerate}
+\end{frame}
+\begin{frame}
+    photo algo GMRES + code python
+\end{frame}
+\begin{frame}
+    resultat avec erreurs + je parle des applications que j'ai fait
+\end{frame}
+\end{document}
