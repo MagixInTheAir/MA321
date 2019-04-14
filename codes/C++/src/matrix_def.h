@@ -14,12 +14,12 @@ public:
 	// CONSTRUCTORS & DESTRUCTORS
 	Matrix() : data{ {T{}} } {}; // Implemented
 	Matrix(std::vector<std::vector<T>> _data) : data(_data) {}; // Implemented
-	Matrix(unsigned int const lines, unsigned int const cols) : data(lines, std::vector<T>(cols, T())) {}; // Implemented
+	Matrix(size_t const lines, size_t const cols) : data(lines, std::vector<T>(cols, T())) {}; // Implemented
 	template<class T2> Matrix(Matrix<T2> const& other) : data(other.data) {}; // Implemented
 
 	// UTILITIES
-	unsigned int cols() const; // Implemented
-	unsigned int lines() const; // Implemented
+	size_t cols() const; // Implemented
+	size_t lines() const; // Implemented
 	std::string str() const; // Implemented
 
 	// OPERATORS
@@ -30,7 +30,7 @@ public:
 	template<class T2> Matrix<T> operator=(Matrix<T2> const& other); // Implemented
 	template<class T2> auto operator*(T2 const& other) const; // Implemented
 	auto operator*(T const& other) const; // Implemented
-	std::vector<T>& operator[](unsigned pos); // Implemented
+	std::vector<T>& operator[](size_t pos); // Implemented
 
 	// MATHEMATICS
 	T det() const; // Implemented, tested
@@ -49,7 +49,7 @@ public:
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> decomp_PLU() const; // Implemented, tested
 	Matrix<T> decomp_cholesky() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>> decomp_QR() const;
-	// TODO : ?? decomp_SVD() const;
+	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> decomp_SVD() const;
 	bool isDiagonal() const; // Implemented
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> diagonalize() const;
 	Matrix<T> eigenvects() const;
@@ -59,13 +59,13 @@ public:
 	Matrix<T> pivot() const; // Implemented
 
 	// GENERATORS
-	static Matrix<T> gen_random(unsigned int size, T min, T max); // Implemented
-	static Matrix<T> gen_random(unsigned int lines, unsigned int cols, T min, T max); // Implemented
-	static Matrix<T> gen_diag(unsigned int size, T value = T()); // Implemented
-	static Matrix<T> gen_diag(unsigned int lines, unsigned int cols, T value = T()); // Implemented
+	static Matrix<T> gen_random(size_t size, T min, T max); // Implemented
+	static Matrix<T> gen_random(size_t lines, size_t cols, T min, T max); // Implemented
+	static Matrix<T> gen_diag(size_t size, T value = T()); // Implemented
+	static Matrix<T> gen_diag(size_t lines, size_t cols, T value = T()); // Implemented
 	static Matrix<T> gen_diag(std::vector<T> values); // Implemented
-	static Matrix<T> gen_full(unsigned int size, T value = T()); // Implemented
-	static Matrix<T> gen_full(unsigned int lines, unsigned int cols, T value = T()); // Implemented
+	static Matrix<T> gen_full(size_t size, T value = T()); // Implemented
+	static Matrix<T> gen_full(size_t lines, size_t cols, T value = T()); // Implemented
 	static Matrix<T> gen_col(std::vector<T> values); // Implemented
 	static Matrix<T> gen_line(std::vector<T> values); // Implemented
 

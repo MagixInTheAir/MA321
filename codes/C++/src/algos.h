@@ -5,6 +5,7 @@
 #include "iter_generale.h"
 #include "gauss-seidel.h"
 #include "jacobi.h"
+#include "sor.h"
 
 template<typename T>
 void test_gaussSeidel() {

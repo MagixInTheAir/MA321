@@ -21,10 +21,10 @@
 
 
 template<class T>
-unsigned int Matrix<T>::cols() const { return this->data[0].size(); };
+size_t Matrix<T>::cols() const { return this->data[0].size(); };
 
 template<class T>
-unsigned int Matrix<T>::lines() const { return this->data.size(); };
+size_t Matrix<T>::lines() const { return this->data.size(); };
 
 
 template<class T>
@@ -65,7 +65,7 @@ Matrix<T> Matrix<T>::transp() const {
 };
 
 template<class T>
-Matrix<T> Matrix<T>::gen_random(unsigned int lines, unsigned int cols, T min, T max) {
+Matrix<T> Matrix<T>::gen_random(size_t lines, size_t cols, T min, T max) {
 	std::random_device dev;
 	std::mt19937 rng(dev());
 	std::uniform_real_distribution<T> distribution(min, max);
@@ -83,10 +83,10 @@ Matrix<T> Matrix<T>::gen_random(unsigned int lines, unsigned int cols, T min, T 
 }
 
 template<class T>
-Matrix<T> Matrix<T>::gen_random(unsigned int size, T min, T max) { return Matrix<T>::gen_random(size, size, min, max); };
+Matrix<T> Matrix<T>::gen_random(size_t size, T min, T max) { return Matrix<T>::gen_random(size, size, min, max); };
 
 template<class T>
-Matrix<T> Matrix<T>::gen_diag(unsigned int lines, unsigned int cols, T value) {
+Matrix<T> Matrix<T>::gen_diag(size_t lines, size_t cols, T value) {
     Matrix<T> result(lines, cols);
     
     for(unsigned int i = 0; i < lines; i++) {
@@ -103,13 +103,13 @@ Matrix<T> Matrix<T>::gen_diag(unsigned int lines, unsigned int cols, T value) {
 };
 
 template<class T>
-Matrix<T> Matrix<T>::gen_diag(unsigned int size, T value) {
+Matrix<T> Matrix<T>::gen_diag(size_t size, T value) {
     return Matrix<T>::gen_diag(size, size, value);
 }
 
 template<class T>
 Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
-	auto size = values.size();
+	size_t size(values.size());
     Matrix<T> result(size, size);
     unsigned int pos = 0;
 
@@ -129,7 +129,7 @@ Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::gen_full(unsigned int lines, unsigned int cols, T value){
+Matrix<T> Matrix<T>::gen_full(size_t lines, size_t cols, T value){
 	std::vector<std::vector<T>> res_data;
 
     for(unsigned int i = 0; i < lines; i++) {
@@ -144,7 +144,7 @@ Matrix<T> Matrix<T>::gen_full(unsigned int lines, unsigned int cols, T value){
 };
 
 template<class T>
-Matrix<T> Matrix<T>::gen_full(unsigned int size, T value) {
+Matrix<T> Matrix<T>::gen_full(size_t size, T value) {
     return Matrix<T>::gen_full(size, size, value);
 }
 
@@ -250,8 +250,8 @@ inline Matrix<T> Matrix<T>::solve_LU(Matrix<T> A, Matrix<T> B) {
 
 
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> PLU(A.decomp_PLU());
-	Matrix<T> Y(Matrix<T>::solve_descent(L, P.dot(B));
-	Matrix<T> X(Matrix<T>::solve_climb(U, Y));
+	Matrix<T> Y(Matrix<T>::solve_descent(std::get<1>(PLU), std::get<0>(PLU).dot(B)));
+	Matrix<T> X(Matrix<T>::solve_climb(std::get<2>(PLU), Y));
 
 	return X;
 }
@@ -512,7 +512,7 @@ bool Matrix<T>::allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision
 template<class T>
 Matrix<T> Matrix<T>::gen_col(std::vector<T> values) {
 	Matrix<T> res(values.size(), 1);
-	for (unsigned i = 0; i < values.size(); i++) {
+	for (size_t i = 0; i < values.size(); i++) {
 		res[i][0] = values[i];
 	}
 	return res;
@@ -535,7 +535,7 @@ std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> Matrix<T>::decomp_PLU() const {
 		throw std::logic_error("LUP decomposition impossible on non-square matrix");
 	}
 
-	unsigned n = this->lines();
+	size_t n = this->lines();
 
 	Matrix<T> L(Matrix<T>::gen_full(n, T(0)));
 	Matrix<T> U(Matrix<T>::gen_full(n, T(0)));
@@ -673,10 +673,10 @@ std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> A, std::vector<T> B) {
 
 	// Solving
 	std::vector<T> X(Taug.lines(), 0);
-	for (long int ip = Taug.lines(); ip > 0; ip--) {
-		unsigned i = ip - 1;
+	for (size_t ip = Taug.lines(); ip > 0; ip--) {
+		size_t i = ip - 1;
 		T somme(0);
-		for (unsigned k = i; k < Taug.lines(); k++) {
+		for (size_t k = i; k < Taug.lines(); k++) {
 			somme += X[k] * Taug[i][k];
 		}
 		X[i] = (Taug[i][Taug.cols()-1] - somme) / Taug[i][i];
@@ -707,7 +707,7 @@ std::string Matrix<T>::str() const {
 }
 
 template<class T>
-std::vector<T>& Matrix<T>::operator[](unsigned pos) {
+std::vector<T>& Matrix<T>::operator[](size_t pos) {
 	return this->data[pos];
 }
 
@@ -716,7 +716,7 @@ Matrix<T> Matrix<T>::pivot() const {
 	if (this->lines() != this->cols()) {
 		throw std::logic_error("Matrix must be square");
 	}
-	unsigned m = this->lines();
+	size_t m = this->lines();
 	Matrix<T> Id_mat(Matrix<T>::gen_diag(m, T(1)));
 
 	for (unsigned j = 0; j < m; j++) {
