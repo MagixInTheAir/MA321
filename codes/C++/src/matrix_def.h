@@ -37,7 +37,7 @@ public:
 	template<class T2> auto dot(Matrix<T2> const& other) const;  // Implemented, tested
 	Matrix<T> transp() const; // Implemented, tested
 	std::vector<T> diag() const; // Implemented, tested
-	Matrix<T> inv() const; // Implemented, tested
+	Matrix<T> inv_LU() const; // Implemented, tested
 	Matrix<T> tri_lo(bool include_diag = false) const; // Implemented, tested
 	Matrix<T> tri_up(bool include_diag = false) const; // Implemented, tested
 	T highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const; // Implemented, tested

@@ -216,7 +216,7 @@ Matrix<T> Matrix<T>::adj() const {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::inv() const {
+Matrix<T> Matrix<T>::inv_LU() const {
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> PLU(this->decomp_PLU());
 	Matrix<T> P(std::get<0>(PLU));
 	Matrix<T> L(std::get<1>(PLU));
@@ -418,7 +418,7 @@ T Matrix<T>::highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsi
 
 template<typename T>
 T Matrix<T>::lowest_eigenval_invIteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const {
-	return this->inv().highest_eigenval_iteratedPower(x0, precision, maxiter);
+	return this->inv_LU().highest_eigenval_iteratedPower(x0, precision, maxiter);
 };
 
 template<typename T>

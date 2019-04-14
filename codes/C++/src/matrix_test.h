@@ -178,10 +178,10 @@ void Matrix_test<T>::test_mathematics() {
 	{
 		Matrix<T> A(Matrix<T>::gen_random(3, 3, -100, 100));
 		Matrix<T> I(Matrix<T>::gen_diag(3, T(1)));
-		Matrix<T> res(A.dot(A.inv()));
+		Matrix<T> res(A.dot(A.inv_LU()));
 		
 		if (!res.allclose(I, 1e-9, 1e-9)) {
-			throw std::logic_error("Test of Matrix::inv failed");
+			throw std::logic_error("Test of Matrix::inv_LU failed");
 		}
 	}
 
@@ -190,8 +190,8 @@ void Matrix_test<T>::test_mathematics() {
 		Matrix<T> conf({ {-5./12., 3./12., 4./12.}, {7./12., 3./12., -8./12.}, {1./12., -3./12., 4./12.} });
 
 
-		if (!A.inv().allclose(conf, 1e-3, 1e-3)) {
-			throw std::logic_error("Test of Matrix::inv failed");
+		if (!A.inv_LU().allclose(conf, 1e-3, 1e-3)) {
+			throw std::logic_error("Test of Matrix::inv_LU failed");
 		}
 	}
 
