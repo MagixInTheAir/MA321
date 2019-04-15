@@ -111,3 +111,6 @@ venv.bak/
 
 .vscode
 .vs
+codes/Data/gauss-seidel_bench.txt
+codes/Data/jacobi_bench.txt
+codes/Data/sor_bench.txt
