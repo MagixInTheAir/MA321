@@ -1,0 +1,86 @@
+\documentclass[10pt]{beamer}
+\usepackage[french]{babel}
+\uselanguage{French}
+\languagepath{French}
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{pgfplots}
+\usepackage{xspace}
+\usepgfplotslibrary{dateplot}
+
+
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\setbeamertemplate{frame footer}{Julien Huynh}
+\title{Richardson, SOR et conclusion}
+\subtitle{Beamer}
+\date{\today}
+\author{Julien Huynh}
+\institute{Cyb'Air}
+
+\begin{document}
+	{
+	\usebackgroundtemplate{}
+	\maketitle
+}
+	\begin{frame}{Les limites de Jacobi et Gauss-Seidel}
+	\begin{itemize}
+		\item[$\bullet$]Problème de \alert{fiabilité} avec Jacobi et Gauss-Seidel au niveau de la \alert{convergence}.\pause
+		
+		\item [$\bullet$]Nécessité de garantir une convergence.
+	\end{itemize}
+	
+	\pause
+	
+	
+	
+\end{frame}
+\begin{frame}{Garantie d'une convergence}
+	\begin{center}
+		\LARGE \fbox{Méthode de \alert{Richardson}}\\
+		\pause
+		$AX=b$ \pause $\Leftrightarrow$ $PX=(P-A)X+b$\\ % Fous toute la partie démo en toggle si tu peux
+		Avec $P = \beta I$, $\beta \in \mathbb{R}^*$\\
+		$\Leftrightarrow X^{k+1}=(I-\gamma A)X^k+\gamma b$\\
+		Avec $\gamma=\frac{1}{\beta}$
+	\end{center}
+
+\end{frame}
+\begin{frame}{Méthode de \alert{Richardson}}
+Modèle : 
+	\begin{center}
+		$X^{k+1}=RX^k+K $\\
+	\end{center}
+\pause
+Caractéristiques :
+\begin{itemize}
+	\item [$\bullet$] Matrice d'itération : $R = (I-\gamma A)$ \pause
+	\item[$\bullet$] $K = \gamma b$
+\end{itemize}
+\end{frame}
+\begin{frame}{Intérêt de la méthode}
+La condition de convergence reste inchangée  \pause
+\begin{center}
+	$\rho(R)<1$ 
+\end{center}
+
+\pause
+	Pour Richardson, la matrice d'itération dépend de $\gamma$ \pause
+	\begin{center}
+		\fbox{Possibilité de \alert{choisir} un \alert{$\gamma$} pour lequel la méthode converge}
+	\end{center}
+\end{frame}
+\begin{frame}{Choix du paramètre $\gamma$}
+Objectifs
+\begin{enumerate}
+	\item Assurer la convergence\pause
+	\item Minimiser le temps de convergence
+\end{enumerate}
+\pause
+\begin{center}
+	$\rho(R(\gamma))=\underset{i}{max}(|1-\gamma\lambda_i|)$\pause \\
+	$\gamma_{optimal}=\frac{2}{\lambda_1+\lambda_n}$
+\end{center}
+\end{frame}
+\end{document}
