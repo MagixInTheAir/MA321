@@ -37,15 +37,12 @@ auto Matrix<T>::dot(Matrix<T2> const& other) const {
     using T3 = decltype(std::declval<T>() * std::declval<T2>());
 	Matrix<T3> result(this->lines(), other.cols());
 
-
-	Matrix<T> other_transp(other.transp()); // for optimization
-
     for(unsigned i = 0; i < result.lines(); i++) {
         for(unsigned j = 0; j < result.cols(); j++) {
 
             T3 total(0);
             for(unsigned pos = 0; pos < this->cols(); pos++) {
-                total += this->data[i][pos] * other_transp[j][pos];
+                total += this->data[i][pos] * other.get(pos,j);
             }
             result[i][j] = total;
         }
@@ -234,18 +231,19 @@ Matrix<T> Matrix<T>::inv_LU() const {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::solve_climb(Matrix<T> A, Matrix<T> B) {
+Matrix<T> Matrix<T>::solve_climb(Matrix<T> const& A, Matrix<T> const& B) {
 	if (A.lines() != A.cols()) { throw std::logic_error("Matrix must be square"); }
 
 	Matrix<T> X(B.cols(), B.lines());
+	Matrix<T> B_transp(B.transp());
 	for (unsigned i = 0; i < B.cols(); i++) {
-		X[i] = Matrix<T>::solve_climb_col(A, B.transp().data[i]); // Compute UX=Y for each column vector
+		X[i] = Matrix<T>::solve_climb_col(A, B_transp.data[i]); // Compute UX=Y for each column vector
 	}
 	return X.transp();
 }
 
 template<class T>
-inline Matrix<T> Matrix<T>::solve_LU(Matrix<T> A, Matrix<T> B) {
+inline Matrix<T> Matrix<T>::solve_LU(Matrix<T> const& A, Matrix<T> const& B) {
 	// Ax = b
 	// PAx = Pb
 	// LUx = Pb
@@ -260,7 +258,7 @@ inline Matrix<T> Matrix<T>::solve_LU(Matrix<T> A, Matrix<T> B) {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::solve_descent(Matrix<T> A, Matrix<T> B) {
+Matrix<T> Matrix<T>::solve_descent(Matrix<T> const& A, Matrix<T> const& B) {
 	if (A.lines() != A.cols() || B.lines() != B.lines() || A.lines() != B.lines()) {
 		throw std::logic_error("Matrices must be square and have the same dimension for solve_descent"); 
 	}
@@ -408,7 +406,7 @@ Matrix<T> Matrix<T>::operator=(Matrix<T2> const& other) {
 };
 
 template<typename T>
-T Matrix<T>::highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const {
+T Matrix<T>::highest_eigenval_iteratedPower(std::vector<T> const& x0, T precision, unsigned long long maxiter) const {
 	if (x0.size() != this->cols()) {
 		throw std::logic_error("x0 is not a valid vector");
 	}
@@ -435,7 +433,7 @@ T Matrix<T>::highest_eigenval_iteratedPower(std::vector<T> x0, T precision, unsi
 };
 
 template<typename T>
-T Matrix<T>::lowest_eigenval_invIteratedPower(std::vector<T> x0, T precision, unsigned long long maxiter) const {
+T Matrix<T>::lowest_eigenval_invIteratedPower(std::vector<T> const& x0, T precision, unsigned long long maxiter) const {
 	return this->inv_LU().highest_eigenval_iteratedPower(x0, precision, maxiter);
 };
 
@@ -496,7 +494,7 @@ bool Matrix<T>::close(T lhs, T rhs, T abs_precision, T rel_precision) {
 }
 
 template<class T>
-bool Matrix<T>::allclose(std::vector<T> lhs, std::vector<T> rhs, T abs_precision, T rel_precision) {
+bool Matrix<T>::allclose(std::vector<T> const& lhs, std::vector<T> const& rhs, T abs_precision, T rel_precision) {
 	if (lhs.size() != rhs.size()) {
 		return false;
 	}
@@ -628,7 +626,7 @@ Matrix<T> Matrix<T>::decomp_cholesky() const {
 };
 
 template<class T>
-std::vector<T> Matrix<T>::solve_descent_col(Matrix<T> A, std::vector<T> B) {
+std::vector<T> Matrix<T>::solve_descent_col(Matrix<T> const& A, std::vector<T> const& B) {
 	if (A.lines() != A.cols() || B.size() != A.lines()) {
 		throw std::logic_error("Matrix dimensions failed for solve_descent_col");
 	}
@@ -637,7 +635,7 @@ std::vector<T> Matrix<T>::solve_descent_col(Matrix<T> A, std::vector<T> B) {
 	Matrix<T> Taug(A.lines(), A.cols() + 1);
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
-			Taug[i][j] = A[i][j];
+			Taug[i][j] = A.get(i, j);
 		}
 	}
 	for (unsigned k = 0; k < A.lines(); k++) {
@@ -658,7 +656,7 @@ std::vector<T> Matrix<T>::solve_descent_col(Matrix<T> A, std::vector<T> B) {
 }
 
 template<class T>
-std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> A, std::vector<T> B) {
+std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> const& A, std::vector<T> const& B) {
 	if (A.lines() != A.cols() || B.size() != A.lines()) {
 		throw std::logic_error("Matrix dimensions failed for solve_climb_col");
 	}
@@ -667,7 +665,7 @@ std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> A, std::vector<T> B) {
 	Matrix<T> Taug(A.lines(), A.cols() + 1);
 	for (unsigned i = 0; i < A.lines(); i++) {
 		for (unsigned j = 0; j < A.cols(); j++) {
-			Taug[i][j] = A[i][j];
+			Taug[i][j] = A.get(i, j);
 		}
 	}
 	for (unsigned k = 0; k < A.lines(); k++) {
@@ -715,6 +713,11 @@ std::vector<T>& Matrix<T>::operator[](size_t pos) {
 }
 
 template<class T>
+T const& Matrix<T>::get(size_t line, size_t col) const {
+	return const_cast<T const&>(this->data[line][col]);
+}
+
+template<class T>
 Matrix<T> Matrix<T>::pivot() const {
 	if (this->lines() != this->cols()) {
 		throw std::logic_error("Matrix must be square");
@@ -738,6 +741,11 @@ Matrix<T> Matrix<T>::pivot() const {
 	}
 
 	return Id_mat;
+}
+
+template<typename T>
+std::tuple<T, T, T> Matrix<T>::linearRegression(Matrix<T> const& A, Matrix<T> const& B) {
+
 }
 
 #endif

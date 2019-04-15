@@ -26,6 +26,6 @@ std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> gmres(Matrix<T> const& A, Matrix<T> 
 	}
 	auto be1(Matrix<T>::gen_full(A.lines() + 1));
 	be1[0] = r0.norm();
-	auto ym = Matrix<T>::leastSquares(h, be1)[0];
+	auto ym = Matrix<T>::linearRegression(h, be1)[0];
 	return x0 + ym.dot(v);
 }
