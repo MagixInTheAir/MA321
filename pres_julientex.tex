@@ -24,6 +24,7 @@
 	\usebackgroundtemplate{}
 	\maketitle
 }
+\section{Richardson}
 	\begin{frame}{Les limites de Jacobi et Gauss-Seidel}
 	\begin{itemize}
 		\item[$\bullet$]Problème de \alert{fiabilité} avec Jacobi et Gauss-Seidel au niveau de la \alert{convergence}.\pause
@@ -82,5 +83,49 @@ Objectifs
 	$\rho(R(\gamma))=\underset{i}{max}(|1-\gamma\lambda_i|)$\pause \\
 	$\gamma_{optimal}=\frac{2}{\lambda_1+\lambda_n}$
 \end{center}
+\end{frame}
+\begin{frame}{Limite de la méthode}
+	\centering \Huge Calcul de \alert{valeurs propres} !\\ \pause
+	\normalsize Puissance itérée, puissance inverse...  
+\end{frame}
+\section{Successive Over Relaxation (SOR)}
+\begin{frame}{Nécessité de trouver une autre méthode}
+	Lorsque le calcul des valeurs propres est difficile, le choix de $\gamma$ l'est aussi\pause
+	\vspace{1cm}
+	\alert{Objectif} \\
+	\centering Avoir une méthode qui ne nécessite pas le calcul de valeurs propres
+	\vspace{1cm}
+	\flushleft
+	\alert{Solution} \\
+	\centering Successive over-relaxation (SOR)
+\end{frame}
+\begin{frame}{Principe}
+	\begin{center}
+		Décomposition de la matrice $A$ :\\
+		$A=M-N$\\\pause
+		$M=\frac{1}{\alert{\omega}}D-E$ et $N=(\frac{1}{\alert{\omega}}-1)D+F$\\
+		Avec : $D$ diagonale, $E$ triangulaire inférieure et $F$ triangulaire supérieure \pause\\
+		\alert{$\omega$} : Paramètre de relaxation, réel non nul
+	\end{center}
+\end{frame}
+\begin{frame}{Caractéristiques et intérêt}
+	\begin{center}
+		$X^{k+1}=BX^k+C$
+	\end{center}
+\begin{itemize}
+	\item[$\bullet$] $B=M^{-1}N$ la matrice d'itération .
+	\item[$\bullet$] $C=M^{-1}b$ 
+\end{itemize}\pause
+\centering Choix facile de $\omega$ pour assurer la \alert{convergence}\pause\\
+Condition nécessaire et suffisante de convergence : $\omega \in ]0;2[$\pause \\
+\footnotesize Théorème de \alert{Kahan} et théorème d'\alert{Ostrowski-Reich}
+\end{frame}
+\begin{frame}{Limites de la méthode}
+\begin{itemize}
+	\item[$\bullet$]Faible vitesse de convergence
+	
+	\item[$\bullet$]Choix $\omega_{optimal}$ difficile et très situationnel
+\end{itemize}
+	
 \end{frame}
 \end{document}
