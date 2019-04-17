@@ -17,7 +17,7 @@ with open('bench1_gs_test.txt') as csv_file:
             rows.append(row)
             index.append(int(row[0]))
             errors.append(float(row[3]))
-            iterations.append(int(row[7]))
+            # iterations.append(int(row[8]))
             print('Pour la matrice ', row[0], 'L\'erreur est ', row[3])
             line_count += 1
     print('Processed', line_count, 'lines.')
