@@ -21,6 +21,15 @@ public:
 	size_t cols() const; // Implemented
 	size_t lines() const; // Implemented
 	std::string str() const; // Implemented
+	Matrix<T> line(size_t pos) const; // Implemented
+	Matrix<T> col(size_t pos) const; // Implemented
+	void setLine(size_t pos, std::vector<T> data); // Implemented
+	void setCol(size_t pos, std::vector<T> data); // Implemented
+	void setLine(size_t pos, Matrix<T> data); // Implemented
+	void setCol(size_t pos, Matrix<T> data); // Implemented
+	Matrix<T> truncate(size_t x, size_t y) const; // Implemented
+	std::vector<std::vector<T>> const& getData() const; // Implemented
+
 
 	// OPERATORS
 	template<class T2> auto operator+(Matrix<T2> const& other) const; // Implemented
@@ -29,6 +38,7 @@ public:
 	template<class T2> bool operator==(Matrix<T2> const& other) const; // Implemented
 	template<class T2> Matrix<T> operator=(Matrix<T2> const& other); // Implemented
 	template<class T2> auto operator*(T2 const& other) const; // Implemented
+	template<class T2> auto operator/(T2 const& other) const; // Implemented
 	auto operator*(T const& other) const; // Implemented
 	std::vector<T> & operator[](size_t pos); // Implemented
 	T const& get(size_t line, size_t col) const; // Implemented
@@ -91,7 +101,7 @@ public:
 	static Matrix<T> solve_richardson(Matrix<T> const& A, Matrix<T> const& B);
 	static Matrix<T> solve_sor(Matrix<T> const& A, Matrix<T> const& B, T const& omega);
 	static Matrix<T> solve_gmres(Matrix<T> const& A, Matrix<T> const& B);
-	static std::tuple<T, T, T> linearRegression(Matrix<T> const& A, Matrix<T> const& B);
+	static std::vector<std::tuple<T, T, T>> linearRegression(Matrix<T> const& A, Matrix<T> const& B);
 
 	// MISC
 	static void run_tests(); // Implemented

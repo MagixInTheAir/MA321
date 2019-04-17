@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <complex>
 #include <tuple>
+#include <iomanip>
 
 #include "matrix_def.h"
 #include "matrix_test_def.h"
@@ -42,9 +43,10 @@ auto Matrix<T>::dot(Matrix<T2> const& other) const {
 
             T3 total(0);
             for(unsigned pos = 0; pos < this->cols(); pos++) {
-                total += this->data[i][pos] * other.get(pos,j);
+                total += this->data[i][pos] * other.get(pos, j);
             }
-            result[i][j] = total;
+			result[i][j] = total;
+
         }
     }
 
@@ -130,17 +132,7 @@ Matrix<T> Matrix<T>::gen_diag(std::vector<T> values) {
 
 template<class T>
 Matrix<T> Matrix<T>::gen_full(size_t lines, size_t cols, T value){
-	std::vector<std::vector<T>> res_data;
-
-    for(unsigned int i = 0; i < lines; i++) {
-        std::vector<T> line;
-        for(unsigned int j = 0; j < cols; j++) {
-            line.push_back(value);
-        }
-        res_data.push_back(line);
-    }
-
-	return Matrix<T>(res_data);
+	return Matrix<T>(std::vector<std::vector<T>>(lines, std::vector<T>(cols, value)));
 };
 
 template<class T>
@@ -473,6 +465,21 @@ auto Matrix<T>::operator*(T2 const& other) const {
 }
 
 template<class T>
+template<class T2>
+auto Matrix<T>::operator/(T2 const& other) const {
+	using T3 = decltype(std::declval<T>() / std::declval<T2>());
+	Matrix<T3> res(this->lines(), this->cols());
+	for (unsigned i = 0; i < this->lines(); i++) {
+		for (unsigned j = 0; j < this->cols(); j++) {
+			res[i][j] = this->data[i][j] / other;
+		}
+	}
+
+	return res;
+}
+
+
+template<class T>
 auto Matrix<T>::operator*(T const& other) const {
 	Matrix<T> res(this->lines(), this->cols());
 	for (unsigned i = 0; i < this->lines(); i++) {
@@ -688,23 +695,25 @@ std::vector<T> Matrix<T>::solve_climb_col(Matrix<T> const& A, std::vector<T> con
 
 template<class T>
 std::string Matrix<T>::str() const {
-	std::string str;
-	str += "{";
+	std::ostringstream out;
+	out << std::scientific;
+
+	out <<  "{";
 	for (unsigned i = 0; i < this->lines(); i++) {
-		str += "{";
+		out << "{";
 		for (unsigned j = 0; j < this->cols(); j++) {
-			str += std::to_string(this->data[i][j]);
+			out << this->data[i][j];
 			if (j != this->cols() - 1) {
-				str += ",";
+				out <<  ";";
 			}
 		}
-		str += "}";
+		out <<  "}";
 		if (i != this->lines() - 1) {
-			str += ",";
+			out << ";";
 		}
 	}
-	str += "}";
-	return str;
+	out <<  "}";
+	return out.str();
 }
 
 template<class T>
@@ -744,8 +753,106 @@ Matrix<T> Matrix<T>::pivot() const {
 }
 
 template<typename T>
-std::tuple<T, T, T> Matrix<T>::linearRegression(Matrix<T> const& A, Matrix<T> const& B) {
+std::vector<std::tuple<T, T, T>> Matrix<T>::linearRegression(Matrix<T> const& A, Matrix<T> const& b) {
+	// FROM https://stackoverflow.com/questions/5083465
 
+	std::vector<std::tuple<T, T, T>> res;
+	for (unsigned k = 0; k < b.cols(); k++) {
+		T sumx(0.0);                      /* sum of x     */
+		T sumx2(0.0);                     /* sum of x**2  */
+		T sumxy(0.0);                     /* sum of x * y */
+		T sumy(0.0);                      /* sum of y     */
+		T sumy2(0.0);                     /* sum of y**2  */
+
+		T n(A.lines());
+		Matrix<T> B(b.col(k));
+
+		for (size_t i = 0; i < n; i++) {
+			sumx += A[i];
+			sumx2 += std::pow(A[i], 2);
+			sumxy += A[i] * B[i];
+			sumy += B[i];
+			sumy2 += std::pow(B[i], 2);
+		}
+
+		T denom = (n * sumx2 - std::pow(sumx, 1));
+		if (Matrix<T>::close(denom, 0, 1e-9, 1e-9)) {
+			throw std::logic_error("singular matrix");
+		}
+
+		T m = (n * sumxy - sumx * sumy) / denom;
+		T b = (sumy * sumx2 - sumx * sumxy) / denom;
+		T r = (sumxy - sumx * sumy / n) / std::sqrt((sumx2 - std::pow(sumx, 2) / n) * (sumy2 - std::pow(sumy, 2) / n));
+
+		res.push_back(std::make_tuple(m, b, r));
+	}
+
+	return res;
 }
 
+template<typename T>
+Matrix<T> Matrix<T>::line(size_t pos) const {
+	return Matrix<T>::gen_line(this->data[pos]);
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::col(size_t pos) const {
+	return Matrix<T>::gen_col(this->transp().data[pos]);
+}
+
+template<typename T>
+void Matrix<T>::setLine(size_t pos, std::vector<T> data) {
+	if(data.size() != this->cols()) {
+		throw std::logic_error("Bad dimensions for setLine");
+	}
+
+	this->data[pos] = data;
+}
+
+template<typename T>
+void Matrix<T>::setCol(size_t pos, std::vector<T> data) {
+	if (data.size() != this->lines()) {
+		throw std::logic_error("Bad dimensions for setCol");
+	}
+
+	for (size_t i = 0; i < this->lines(); i++) {
+		this->data[i][pos] = data[i];
+	}
+}
+
+template<typename T>
+void Matrix<T>::setLine(size_t pos, Matrix<T> data) {
+	if (data.lines() != 1 || data.cols() != this->cols()) {
+		throw std::logic_error("Bad dimensions for setLine");
+	}
+	this->data[pos] = data[pos];
+}
+
+template<typename T>
+void Matrix<T>::setCol(size_t pos, Matrix<T> other) {
+	if (other.cols() != 1 || other.lines() != this->lines() || pos > this->cols()) {
+		throw std::logic_error("Bad dimensions for setCol");
+	}
+
+	for (size_t i = 0; i < this->lines(); i++) {
+		this->data[i][pos] = other[i][0];
+	}
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::truncate(size_t x, size_t y) const {
+	Matrix<T> res(*this);
+	for (size_t i = 0; i < res.lines(); i++) {
+		res[i].resize(y);
+	}
+	res.data.resize(x);
+
+	return res;
+}
+
+template<class T>
+inline std::vector<std::vector<T>> const& Matrix<T>::getData() const
+{
+	return const_cast<std::vector<std::vector<T>> const&>(this->data);
+}
 #endif

@@ -45,7 +45,7 @@ void Matrix_test<T>::test_mathematics() {
 		Matrix<T> B({ {1,2,3}, {4,5,6},{7,8,9} });
 		Matrix<T> conf(Matrix<T>({ {10,12,14}, {22,27,32}, {34,42,50} }) * 3);
 		
-		if (!A.dot(B).allclose(conf, 0.001, 0.001)) {
+		if (!A.dot(B).allclose(conf, 1e-9, 1e-9)) {
 			throw std::logic_error("Test of Matrix::dot failed");
 		}
 	}

@@ -6,6 +6,7 @@
 #include "gauss-seidel.h"
 #include "jacobi.h"
 #include "sor.h"
+#include "gmres.h"
 
 template<typename T>
 void test_gaussSeidel() {

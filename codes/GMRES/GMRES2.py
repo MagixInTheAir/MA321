@@ -19,6 +19,7 @@ def GMRES(A, b, espilon):
         mat_h[j + 1, j] = np.linalg.norm(mat_q[:, j + 1])
         mat_q[:, j + 1] /= mat_h[j + 1, j]
         y = np.linalg.lstsq(mat_h, be1, rcond=None)[0]
+        print(np.linalg.norm(mat_h@y-be1)
         residue = np.linalg.norm(y) / norm_b
         if residue < espilon:
             return mat_q[:max_iter, :max_iter] @ y, residue

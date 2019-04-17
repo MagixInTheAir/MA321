@@ -18,12 +18,16 @@ std::tuple<Matrix<T>, long long, T> iter_generale(Matrix<T> const& m_inv, Matrix
         xp = iter.dot(xs) + m_inv.dot(b);
         nb_iter++;
 		errp = err;
-        err = (xp - xs).norm();
+		Matrix<T> err_m(xp - xs);
+        err = err_m.norm();
+
+		// std::cout << err << std::endl;
 
 		if (err > errp) {
 			throw std::logic_error("Method is not convergent");
 		}
     }
+
 
     return std::make_tuple(xp, nb_iter, err);
 }
