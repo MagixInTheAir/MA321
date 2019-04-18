@@ -376,8 +376,8 @@ auto Matrix<T>::operator-(Matrix<T2> const& other) const {
 template<class T>
 Matrix<T> Matrix<T>::operator-() const {
 	Matrix<T> res(*this);
-	for (unsigned int const i = 0; i < this->lines(); i++) {
-		for (unsigned int const j = 0; j < this->cols(); j++) {
+	for (unsigned int i = 0; i < this->lines(); i++) {
+		for (unsigned int j = 0; j < this->cols(); j++) {
 			res[i][j] *= -1;
 		}
 	}
