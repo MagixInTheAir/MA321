@@ -78,7 +78,7 @@ def prepareBars(fileToOpen, fileToGenerate):
                         errors_size5000.append(float(line[3]))
                         times_size5000.append(float(line[4]))
                         iter_size5000.append(int(line[5]))
-                    if int(line[1]) == 10000:
+                    if int(line[1]) == 1000:
                         errors_size10000.append(float(line[3]))
                         times_size10000.append(float(line[4]))
                         iter_size10000.append(int(line[5]))

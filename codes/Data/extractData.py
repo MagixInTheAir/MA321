@@ -14,7 +14,7 @@ def generateFile(fileToOpen, fileToGenerate):
         errors = []
         times = []
         iterations = []
-        while line_count <= 2500:
+        while line_count <= 220:
             if line_count == 0:
                 line = csv_file.readline()
                 print('Column names are'.format(line_count, line.split(',')))
@@ -29,7 +29,7 @@ def generateFile(fileToOpen, fileToGenerate):
                 precisions.append(np.log10(float(row[2])))
                 errors.append(float(row[3]))
                 times.append(1e-6 * float(row[4]))
-                iterations.append(int(row[8]))
+                iterations.append(int(row[5]))
                 print('Pour la matrice ', row[0], 'L\'erreur est ', row[3])
                 line_count += 1
 
