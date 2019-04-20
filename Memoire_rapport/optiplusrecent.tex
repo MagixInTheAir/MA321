@@ -44,7 +44,6 @@ $$
 
 Bien que les méthodes d'optimisation numérique vues précédemment permettent d'améliorer de manière significative les performances d'un algorithme (plus particulièrement celui du gradient conjugué dans le cas précédent), cela peut ne pas être suffisant lorsque nous avons affaire à des systèmes de grande taille avec des coefficients élevés dans la matrice liée au système. Il est donc nécessaire de coupler l'optimisation mathématique (par les méthodes de préconditionnement), à des études de performances numériques avec des méthodes d'optimisation lors de l'implémentation de ces algorithmes sur nos machines.
 
-\newpage
 \section{Étude des performances}
 
 \subsection{Implémentation}
@@ -126,7 +125,7 @@ Nous avons souhaité comparer les différents algorithmes en faisant varier un c
 
 %-> graphes 3D
 
-\begin{figure}[H]
+\begin{figure}
 	\begin{minipage}[t]{0.5\linewidth}
 	\includegraphics[width=\linewidth]{../codes/Data/gauss-seidel3D.png}
 	\end{minipage}
@@ -162,23 +161,27 @@ Nous avons souhaité comparer les différents algorithmes en faisant varier un c
 Il ressort une nette domination en terme de temps de calcul pour les matrices d'une taille supérieure à 250, la méthode de Jacobi a un temps de résolution plus faible pour les matrices de taille inférieure. La méthode SOR est extrêmement lente pour les petites matrices (paramètre $\omega$ tiré aléatoirement) mais la différence s'atténue pour les grandes matrices. Le temps de calcul de la méthode GMRES semble linéaire sur 
 la représentation graphique logarithmique, il est donc probablement exponentiel, tout comme celui des autres méthodes, mais son taux d'accroissement semble bien plus faible.
 \subsubsection{Analyse : itérations}
-% 3. itération à 1 pour GMRES
+La méthode SOR fait un très grand nombre d'itérations, ceci probablement causé par le mauvais choix systématique de son paramètre $omega$ (tiré aléatoirement entre 0 et 2, distribution uniforme). La méthode GMRES a un nombre d'itération constant de 1, étant une méthode à mi-chemin entre les méthodes directes et itératives. Des la première itération, les erreurs sont de l'ordre de $10^{-20}$ et l'algorithme s'arrête car la tolérance souhaitée est atteinte (voir sous-section suivante).
+
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{images/nbIters.PNG}
+	\centering
+	\includegraphics[width=0.8\linewidth]{images/nbIters.PNG}
 	\caption{Représentation graphique du nombre d'itérations des différentes méthodes selon la taille de matrice}
 \end{figure}
 
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{images/nbItersSansSOR.PNG}
+	\centering
+	\includegraphics[width=0.8\linewidth]{images/nbItersSansSOR.PNG}
 	\caption{Représentation graphique du nombre d'itérations des différentes méthodes selon la taille de matrice, méthode SOR exclue}
 \end{figure}
 
-La méthode SOR fait un très grand nombre d'itérations, ceci probablement causé par le mauvais choix systématique de son paramètre $omega$ (tiré aléatoirement entre 0 et 2, distribution uniforme). La méthode GMRES a un nombre d'itération constant de 1, étant une méthode à mi-chemin entre les méthodes directes et itératives. Des la première itération, les erreurs sont de l'ordre de $10^{-20}$ et l'algorithme s'arrête car la tolérance souhaitée est atteinte (voir sous-section suivante).
+
 
 \subsubsection{Analyse : erreur}
 % 4. évolution des erreurs
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{images/errors.PNG}
+	\centering
+	\includegraphics[width=0.8\linewidth]{images/errors.PNG}
 	\caption{Représentation graphique des erreurs des différentes méthodes selon la taille de matrice}
 \end{figure}
 
