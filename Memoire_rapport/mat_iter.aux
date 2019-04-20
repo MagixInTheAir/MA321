@@ -1,23 +1,37 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Optimisation du choix de la matrice d'it\IeC {\'e}ration}{7}{chapter.3}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Optimisation du choix de la matrice d'it\IeC {\'e}ration}{10}{chapter.3}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}M\IeC {\'e}thode SOR}{7}{section.3.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode SOR}{7}{subsection.3.1.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Int\IeC {\'e}r\IeC {\^e}t de la m\IeC {\'e}thode}{8}{subsection.3.1.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{9}{subsection.3.1.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Les sous-espaces de Krylov}{9}{section.3.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Pr\IeC {\'e}sentation th\IeC {\'e}orique}{9}{subsection.3.2.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES}{9}{subsection.3.2.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}M\IeC {\'e}thode SOR}{10}{section.3.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Pr\IeC {\'e}sentation de la m\IeC {\'e}thode SOR}{10}{subsection.3.1.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Int\IeC {\'e}r\IeC {\^e}t de la m\IeC {\'e}thode}{11}{subsection.3.1.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Impl\IeC {\'e}mentation num\IeC {\'e}rique}{13}{subsection.3.1.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Les espaces de Krylov}{13}{section.3.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Pr\IeC {\'e}sentation th\IeC {\'e}orique}{13}{subsection.3.2.1}}
+\@writefile{toc}{\contentsline {subsubsection}{De Jacobi \IeC {\`a} Krylov}{13}{section*.3}}
+\@writefile{toc}{\contentsline {subsubsection}{De nouvelles propri\IeC {\'e}t\IeC {\'e}s}{14}{section*.4}}
+\newlabel{pb}{{3.15}{14}{De nouvelles propriétés}{equation.3.2.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}L'algorithme GMRES : Generalized Minimal RESidual method}{15}{subsection.3.2.2}}
+\@writefile{toc}{\contentsline {subsubsection}{G\IeC {\'e}n\IeC {\'e}ralit\IeC {\'e}}{15}{section*.5}}
+\newlabel{pb_res}{{3.26}{15}{Généralité}{equation.3.2.26}{}}
+\newlabel{Petrov-Galerkin}{{3.28}{15}{Généralité}{equation.3.2.28}{}}
+\newlabel{moindrecarre}{{3.38}{17}{Généralité}{equation.3.2.38}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Explication de l'algorithme GMRES}{17}{section*.6}}
+\@writefile{toc}{\contentsline {subsubsection}{R\IeC {\'e}sultat de l'algorithmes}{18}{section*.8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Algorithme GMRES\relax }}{19}{figure.caption.7}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:gmres}{{3.1}{19}{Algorithme GMRES\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Erreur sur la r\IeC {\'e}solution des syst\IeC {\`e}mes avec l'algorithme GMRES\relax }}{19}{figure.caption.9}}
+\newlabel{fig:err}{{3.2}{19}{Erreur sur la résolution des systèmes avec l'algorithme GMRES\relax }{figure.caption.9}{}}
 \@setckpt{mat_iter}{
-\setcounter{page}{10}
-\setcounter{equation}{4}
-\setcounter{enumi}{2}
+\setcounter{page}{20}
+\setcounter{equation}{44}
+\setcounter{enumi}{4}
 \setcounter{enumii}{0}
 \setcounter{enumiii}{0}
 \setcounter{enumiv}{0}
-\setcounter{footnote}{0}
+\setcounter{footnote}{6}
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
 \setcounter{chapter}{3}
@@ -26,7 +40,7 @@
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{0}
+\setcounter{figure}{2}
 \setcounter{table}{0}
 \setcounter{ContinuedFloat}{0}
 \setcounter{KVtest}{0}
@@ -36,11 +50,22 @@
 \setcounter{subtable}{0}
 \setcounter{subtable@save}{0}
 \setcounter{lotdepth}{1}
-\setcounter{Item}{2}
-\setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{18}
-\setcounter{float@type}{4}
+\setcounter{Item}{11}
+\setcounter{Hfootnote}{7}
+\setcounter{bookmark@seq@number}{17}
+\setcounter{float@type}{8}
 \setcounter{parentequation}{0}
+\setcounter{FancyVerbLine}{20}
+\setcounter{linenumber}{1}
+\setcounter{LN@truepage}{22}
+\setcounter{FV@TrueTabGroupLevel}{0}
+\setcounter{FV@TrueTabCounter}{0}
+\setcounter{FV@HighlightLinesStart}{0}
+\setcounter{FV@HighlightLinesStop}{0}
+\setcounter{FancyVerbLineBreakLast}{2}
+\setcounter{minted@FancyVerbLineTemp}{0}
+\setcounter{minted@pygmentizecounter}{1}
+\setcounter{listing}{0}
 \setcounter{definition}{0}
 \setcounter{theoreme}{0}
 \setcounter{remarque}{0}
@@ -49,5 +74,5 @@
 \setcounter{su@anzahl}{0}
 \setcounter{LT@tables}{0}
 \setcounter{LT@chunks}{0}
-\setcounter{section@level}{2}
+\setcounter{section@level}{3}
 }

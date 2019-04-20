@@ -102,3 +102,15 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+*.aux
+*.glo
+*.idx
+*.lof
+*.lot
+*.out
+
+.vscode
+.vs
+codes/Data/gauss-seidel_bench.txt
+codes/Data/jacobi_bench.txt
+codes/Data/sor_bench.txt

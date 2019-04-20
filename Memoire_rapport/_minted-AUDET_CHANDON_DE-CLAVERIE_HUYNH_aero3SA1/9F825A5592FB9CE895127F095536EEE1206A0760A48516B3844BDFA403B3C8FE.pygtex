@@ -1,0 +1,22 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{GMRES}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{b}\PYG{p}{,} \PYG{n}{espilon}\PYG{p}{):}
+	\PYG{n}{max\PYGZus{}iter} \PYG{o}{=} \PYG{n}{A}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{c+c1}{\PYGZsh{}Number of maxiter}
+	\PYG{n}{mat\PYGZus{}q} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{max\PYGZus{}iter}\PYG{p}{,} \PYG{n}{max\PYGZus{}iter} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{))}
+	\PYG{n}{mat\PYGZus{}h} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{max\PYGZus{}iter} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{max\PYGZus{}iter}\PYG{p}{))}
+	\PYG{n}{norm\PYGZus{}b} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{b}\PYG{p}{)}
+	\PYG{n}{be1} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{max\PYGZus{}iter} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+	\PYG{n}{be1}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{norm\PYGZus{}b}
+	\PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{o}{/} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{b}\PYG{p}{)} \PYG{o}{*} \PYG{n}{b}\PYG{o}{.}\PYG{n}{T} \PYG{c+c1}{\PYGZsh{} On définit ici que l\PYGZsq{}on a forcément x0 = 0 (r0 = b)}
+	\PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{max\PYGZus{}iter}\PYG{p}{):}
+		\PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{A} \PYG{err}{@} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j}\PYG{p}{]}
+		\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+			\PYG{n}{mat\PYGZus{}h}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{i}\PYG{p}{]} \PYG{err}{@} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]}
+			\PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{\PYGZhy{}=} \PYG{n}{mat\PYGZus{}h}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]} \PYG{o}{*} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{i}\PYG{p}{]}
+	\PYG{n}{mat\PYGZus{}h}\PYG{p}{[}\PYG{n}{j} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{])}
+	\PYG{n}{mat\PYGZus{}q}\PYG{p}{[:,} \PYG{n}{j} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{/=} \PYG{n}{mat\PYGZus{}h}\PYG{p}{[}\PYG{n}{j} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]}
+	\PYG{n}{y} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{lstsq}\PYG{p}{(}\PYG{n}{mat\PYGZus{}h}\PYG{p}{,} \PYG{n}{be1}\PYG{p}{,} \PYG{n}{rcond}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)[}\PYG{l+m+mi}{0}\PYG{p}{]}
+	\PYG{n}{residue} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)} \PYG{o}{/} \PYG{n}{norm\PYGZus{}b}
+	\PYG{k}{if} \PYG{n}{residue} \PYG{o}{\PYGZlt{}} \PYG{n}{espilon}\PYG{p}{:}
+	\PYG{k}{return} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:}\PYG{n}{max\PYGZus{}iter}\PYG{p}{,} \PYG{p}{:}\PYG{n}{max\PYGZus{}iter}\PYG{p}{]} \PYG{err}{@} \PYG{n}{y}\PYG{p}{,} \PYG{n}{residue}
+	\PYG{k}{return} \PYG{n}{mat\PYGZus{}q}\PYG{p}{[:}\PYG{n}{max\PYGZus{}iter}\PYG{p}{,} \PYG{p}{:}\PYG{n}{max\PYGZus{}iter}\PYG{p}{]} \PYG{err}{@} \PYG{n}{y}
+\end{Verbatim}

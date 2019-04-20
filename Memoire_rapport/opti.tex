@@ -1,5 +1,63 @@
-\chapter{Optimisation et Comparaison des méthodes}
+\chapter{Des algorithmes complexes...}
 \section{Optimisation des méthodes}
-\subsection{Optimisation mathématique}
+\subsection{Optimisation mathématique : Préconditionnement}
+
+On peut illustrer les problèmes des méthodes itératives à travers de la méthode du gradient conjugué. En effet, les conditionnements des matrices étudiées sont parfois très grands et il est ainsi nécessaire d'effectuer une opération dite de préconditionnement afin de minimiser les résidus des itérations.\\
+
+Afin de préconditionner une matrice, on introduit une matrice de préconditionnement que l'on note $C$. Cette matrice interviendra dans l'algorithme du gradient conjugué afin de l'optimiser. La matrice $C$ diffèrera selon la méthode de préconditionnement choisie. Dans ce mémoire, nous nous focaliserons sur la méthode SSOR. \\
+
+L'objectif mathématique de l'introduction de la matrice $C$ est de mieux répartir les valeurs propres du système linéaire étudié, ce qui va permettre d'accélérer la méthode du gradient conjugué. \\
+
+En effet, une meilleure répartition des valeurs propres de la matrice liée au système étudié permet de faire rapprocher les lignes de niveau de la fonction associée au système vers des cercles. Cela permettra ensuite d'avoir moins d'itérations pour la méthode de descente du gradient conjugué.\\
+
+Nous aborderons dans ce mémoire, deux méthode de préconditionnement, celle de Jacobi et celle dite SSOR. Les méthodes de préconditionnement du gradient conjugué introduisent une suite $z_k$, résultant du produit matriciel entre $C$ et le résidu à l'ordre $k$, noté $r_k$. Ensuite, les calculs des coefficients nécessaires à l'application de la méthode utiliseront à la fois la suite $z_k$ et le résidu $r_k$. 
+\subsubsection{Préconditionnement de Jacobi}
+Le préconditionnement de Jacobi est le plus simple pour le gradient conjugué. Cette méthode est donc intéressante lorsqu'une grande précision n'est pas requise. Étant moins précise, elle est plus facile à  implémenter numériquement mais n'améliore pas autant la résolution du problème par méthode du gradient conjugué que la SSOR par exemple.\\
+
+Le préconditionnement de Jacobi consiste à prendre pour matrice de préconditionnement $C$ suivante. Soit $K=\min(m,n)$. On a donc :
+$$
+(C_{i,j})=
+\begin{cases}
+A_{i,i}\text{ si }i=j\\
+0\text{ sinon }
+\end{cases}
+\text{ et }
+C^{-1}
+\begin{pmatrix}
+\frac{1}{a_{1,1}}&0&...&0&0\\
+0&\frac{1}{a_{2,2}}&...&0&0\\
+:&0&...&:&0\\
+0&...&...&0&\frac{1}{a_{K,K}}
+\end{pmatrix}
+$$
+$$
+C_{i,j}
+\begin{cases}
+A_{i,i}\text{ si } i=j\\
+0 \text{ sinon}
+\end{cases}
+$$
+
+La matrice $C$ correspond donc à la diagonale de $A$ et, le produit entre $C$ et le résidu se fait aisément puisque tous les termes extradiagonaux sont nuls. Cependant, si l'on souhaite avoir une méthode de préconditionnement améliorant grandement les performances de l'algorithme du gradient conjugué, le préconditionnement de Jacobi n'est pas adapté. Pour ces cas de figure, nous pouvons utiliser la méthode SSOR.
+\subsubsection{Préconditionnement SSOR}
+La méthode SSOR (Symetric Successive Over Relaxation) permet d'améliorer le gradient conjugué de meilleure manière que la méthode de Jacobi mais elle est plus difficile à mettre en place. En effet, la matrice $A$ du système $Ax=b$ doit être symétrique.\\
+
+Une méthode simple de décrire cette méthode est de la présenter comme étant deux applications de la méthode SOR (décrite auparavant), successives, dans des sens contraires. La première application permet de préconditionner le système et la deuxième permet de le résoudre.\\
+
+Concrètement, on décompose la matrice $A$ en :
+$$
+A=L+D+L^T
+$$
+$D$ étant la matrice comportant la diagonale de $A$ et $L$ une matrice triangulaire inférieure. La matrice $C$ est donc donnée par :
+$$
+C(\omega)=\frac{\omega}{2-\omega}(\frac{D}{\omega}+L)D^{-1}(\frac{D}{\omega}+L^T)
+$$
+
+Étant donné que cette méthode consiste en deux SOR successives, la condition nécessaire et suffisante de convergence de la méthode est identique à celle de la SOR. Il suffit que le paramètre de relaxation $\omega$ soit dans l'intervalle $]0;2[$.\\
+
+\subsubsection{Les limites de l'optimisation mathématique}
+
+Bien que les méthodes d'optimisation numérique vues précédemment permettent d'améliorer de manière significative les performances d'un algorithme (plus particulièrement celui du gradient conjugué dans le cas précédent), cela peut ne pas être suffisant lorsque nous avons affaire à des systèmes de grande taille avec des coefficients élevés dans la matrice liée au système. Il est donc nécessaire de coupler l'optimisation mathématique (par les méthodes de préconditionnement), à des études de performances numériques avec des méthodes d'optimisation lors de l'implémentation de ces algorithmes sur nos machines.
 \subsection{Optimisation numérique}
-\section{Comparaison des méthodes}
+
+\section{Étude de la complexité}

@@ -72,6 +72,16 @@ urlcolor=black}
   \if@twocolumn\hbox{}\newpage\fi\fi\fi}
 \makeatother
 
+\newcommand{\mycontour}[1]{%
+	\contour{red}{#1}%
+}
+
+\newcommand{\myuline}[1]{%
+	\uline{\phantom{#1}}%
+	\llap{\contour{white}{#1}}%
+}
+
+
 \usepackage{amsthm}
 \usepackage{amssymb,amsmath,bbm}
 \usepackage{array}
@@ -88,7 +98,8 @@ urlcolor=black}
 \usepackage{supertabular}
 %\usepackage{geometry}
 \usepackage{pdflscape}
-
+\usepackage{calrsfs}
+\usepackage{minted}
 \newcommand*{\SET}[1]  {\ensuremath{\mathbf{#1}}}
 \newcommand*{\VEC}[1]  {\ensuremath{\boldsymbol{#1}}}
 \newcommand*{\FAM}[1]  {\ensuremath{\boldsymbol{#1}}}
@@ -223,7 +234,7 @@ urlcolor=black}
 \vfill
 
 % Bottom of the page
-{\large Version 0.0 du\\ \today}
+{\large Version 1.0 du\\ \today}
 
 \end{center}
 \end{titlepage}
@@ -236,6 +247,13 @@ urlcolor=black}
 
 \chapter*{Remerciements}
 
+Nous tenons à remercier toutes les personnes qui nous ont aidé dans notre travail de recherche et de rédaction de ce mémoire. \\
+
+Dans un premier temps, nous remercions M. Bletzacker qui nous a grandement aidé et guidé lors de notre travail de recherche avec toujours le bon conseil pour débloquer une situation.\\
+
+Nous tenons aussi à remercier M. Peschard pour son aide à la compréhension des mathématiques théoriques derrière ce rapport et notamment pour ses explications au sujet des algorithmes basés sur les méthodes de Krylov. \\
+
+Enfin, nous remercions aussi M. Ciril pour nous avoir partagé de la documentation sur le sujet que l'on étudie. 
 
 \tableofcontents
 
@@ -250,7 +268,7 @@ urlcolor=black}
 \include{intro}
 \include{meth}
 \include{mat_iter}
-\include{opti}
+\include{optiplusrecent}
 \include{conclusion}
 
 
@@ -271,16 +289,7 @@ urlcolor=black}
 
 %\printbibliography
 
-
-\chapter*{Liste des sigles et acronymes}
-\begin{acronym}[EHPAD] % Give the longest acronym here
-
-\end{acronym}
-
-\include{lexique_an_fr}
 \listoffigures
-
-\listoftables
 \nopagebreak
 \include{annexes}
 
