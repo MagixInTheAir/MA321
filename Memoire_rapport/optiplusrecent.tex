@@ -79,14 +79,14 @@ En C++, les bibliothèques d'algèbre linéaire globalement disponibles ont plus
 
 Ces points, ajoutés à notre besoin d'apprentissage et d'expérience, nous ont mené à choisir d'implémenter par nous-mêmes l'ensemble des fonctionnalités dont nous aurons besoin pour implémenter les différents algorithmes.\\
 
-L'implémentation des opérations basiques sur les matrices (multiplication, somme, transposée, extraction d'une diagonale, génération aléatoire, rang, etc...) a posé un ensemble de problèmes qui n'avait pas été anticipé, donc une charge de travail plus grande que prévu. Par exemple, la vérification des résultats des différents algorithmes est faite en cherchant la matrice inverse de A : $A^{-1}$ qui doit être trouvée grâce à une décomposition PLU et non par une implémentation naïve $A^{-1} = \frac{1}{det(1)} * comatrice(A)^{T}$ qui, à cause de sa complexité en $n!$, impose une charge processeur bien trop grande. \\
+L'implémentation des opérations basiques sur les matrices (multiplication, somme, transposée, extraction d'une diagonale, génération aléatoire, rang, etc...) a posé un ensemble de problèmes qui n'avaient pas été anticipés, donc une charge de travail plus grande que prévue. Par exemple, la vérification des résultats des différents algorithmes est faite en cherchant la matrice inverse de A : $A^{-1}$ qui doit être trouvée grâce à une décomposition PLU et non par une implémentation naïve $A^{-1} = \frac{1}{det(1)} * comatrice(A)^{T}$ qui, à cause de sa complexité en $n!$, impose une charge processeur bien trop grande. \\
 
 % LSTSQR
 Après avoir implémenté toutes les bases, il nous a fallu implémenter les différents algorithmes étudiés : Jacobi, Gauss-Seidel, Richardson (non-mesuré car redondant avec les méthodes précédentes), SOR, GMRES. En particulier, une difficulté s'est posée lors de l'implémentation de l'algorithme GMRES, celui-ci nécessitant de résoudre un problème de minimisation des moindres carrés en dimension N. Il nous a fallu nous tourner vers une bibliothèque externe, ne connaissant - pour l'instant - pas les approches de résolution adaptées.
 
 %-> méthode de mesure 
 \subsubsection{Méthode de mesure}
-Les processeurs actuelles disposent d'une horloge de haute précision, basée sur le nombre de cycles d'horloge écoulés. Celle-ci est fiable à la nanoseconde près, et c'est donc celle-ci que nous avons choisi d'utiliser afin de garantir une bonne précision. Le code suivant permet la mesure en utilisant l'horloge la plus précise que le système peut supporter :
+Les processeurs actuels disposent d'une horloge de haute précision, basée sur le nombre de cycles d'horloge écoulés. Celle-ci est fiable à la nanoseconde près, et c'est donc celle-ci que nous avons choisi d'utiliser afin de garantir une bonne précision. Le code suivant permet la mesure en utilisant l'horloge la plus précise que le système peut supporter :
 
 \begin{minted}{cpp}
 	//START TIME MEASUREMENT
@@ -193,7 +193,7 @@ La méthode GMRES a toujours une erreur bien inférieure aux autres méthodes, d
 Un certain nombre d'optimisations n'ont pas été mises en place dans le code C++, notamment à cause d'un manque de ressources temporelles. Les performances des algorithmes ont probablement encore une marge de progression en terme de performances située entre 5 et 10 fois la vitesse actuelle, ceci étant lié à une possible réduction du nombre de copies de matrices effectuées, une optimisation des lignes d'exécution sur les boucles critiques (i.e dans lesquelles le processeur passe le plus de temps), et une meilleure gestion du parallélisme.
 
 
-\subsubsection{méthode des moindres carrés}
+\subsubsection{Méthode des moindres carrés}
 %-> least squares
 L'implémentation de l'algorithme nécessitant de résoudre un problème des moindres carrés, nous avons fait le choix de faire appel à une bibliothèque externe. Celle-ci ajoute considérablement au temps d'exécution, de par le besoin de copie de données (structure de données différente), et malgré cela, la méthode GMRES est largement supérieure en terme de performances. Une implémentation par nos soins d'un algorithme tel que L-BFGS, OWL-QN (quasi-Newton) ou autres pourrait encore diviser le temps mesuré.
 
@@ -201,7 +201,7 @@ L'implémentation de l'algorithme nécessitant de résoudre un problème des moi
 \subsubsection{Méthode SOR}
 Ici, les performances de la méthode SOR ont été mesurées dans les conditions les plus simples d'un choix aléatoire du paramètre $\omega$. Il serait intéressant de mesurer les performances dans un cas plus concret om l'on cherche d'abord le paramètre $\omega$ optimal, puis résoudre le système. Il est probable que, dans ce cas, la méthode SOR soit plus attirante, considérant bien sûr une optimisation suffisante de l'algorithme de recherche de $\omega$.
 
-\subsubsection{mesure}
+\subsubsection{Mesures}
 %-> Variance induite par CPU et solution
 Le simple fait d'exécuter ce test sur un PC muni d'un système d'exploitation impose une variance sur nos mesures, celui-ci étant en mesure d'interrompre notre programme au profit d'un processus d'importance supérieure à tout moment. C'est pourquoi il nous a fallu prendre un échantillon de 100 mesures par combinaison d'algorithme, de précision et de taille de matrices.\\
 
