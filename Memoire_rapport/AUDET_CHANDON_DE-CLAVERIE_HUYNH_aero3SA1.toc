@@ -40,7 +40,7 @@
 \contentsline {subsubsection}{Analyse : erreur}{31}{section*.24}
 \contentsline {subsection}{\numberline {4.2.3}Ouverture et discussion}{31}{subsection.4.2.3}
 \contentsline {subsubsection}{Optimisation num\IeC {\'e}rique}{31}{section*.26}
-\contentsline {subsubsection}{m\IeC {\'e}thode des moindres carr\IeC {\'e}s}{31}{section*.27}
+\contentsline {subsubsection}{M\IeC {\'e}thode des moindres carr\IeC {\'e}s}{31}{section*.27}
 \contentsline {subsubsection}{M\IeC {\'e}thode SOR}{32}{section*.28}
-\contentsline {subsubsection}{mesure}{32}{section*.29}
+\contentsline {subsubsection}{Mesures}{32}{section*.29}
 \contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{33}{chapter.5}
