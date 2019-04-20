@@ -34,8 +34,13 @@
 \contentsline {subsubsection}{Probl\IeC {\`e}mes rencontr\IeC {\'e}s}{24}{section*.14}% 
 \contentsline {subsubsection}{M\IeC {\'e}thode de mesure}{25}{section*.15}% 
 \contentsline {subsection}{\numberline {4.2.2}Analyse des mesures}{26}{subsection.4.2.2}% 
-\contentsline {subsection}{\numberline {4.2.3}Ouverture et discussion}{29}{subsection.4.2.3}% 
-\contentsline {subsubsection}{Optimisation num\IeC {\'e}rique}{29}{section*.20}% 
-\contentsline {subsubsection}{m\IeC {\'e}thode des moindres carr\IeC {\'e}s}{30}{section*.21}% 
-\contentsline {subsubsection}{mesure}{30}{section*.22}% 
-\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{31}{chapter.5}% 
+\contentsline {subsubsection}{Repr\IeC {\'e}sentation graphique tridimensionnelle}{26}{section*.16}% 
+\contentsline {subsubsection}{Analyse : temps de calcul}{28}{section*.18}% 
+\contentsline {subsubsection}{Analyse : it\IeC {\'e}rations}{29}{section*.21}% 
+\contentsline {subsubsection}{Analyse : erreur}{31}{section*.24}% 
+\contentsline {subsection}{\numberline {4.2.3}Ouverture et discussion}{31}{subsection.4.2.3}% 
+\contentsline {subsubsection}{Optimisation num\IeC {\'e}rique}{31}{section*.26}% 
+\contentsline {subsubsection}{m\IeC {\'e}thode des moindres carr\IeC {\'e}s}{31}{section*.27}% 
+\contentsline {subsubsection}{M\IeC {\'e}thode SOR}{32}{section*.28}% 
+\contentsline {subsubsection}{mesure}{32}{section*.29}% 
+\contentsline {chapter}{\numberline {5}Conclusion \& ouverture}{33}{chapter.5}% 

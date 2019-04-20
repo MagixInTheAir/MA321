@@ -50,9 +50,9 @@ Bien que les méthodes d'optimisation numérique vues précédemment permettent 
 \subsection{Implémentation}
 % -> pourquoi C++ ?
 \subsubsection{Pourquoi C++ ?}
-Au premier abord, une implémentation optimisée doit être écrite pour une plateforme en particulier, en utilisant le langage de programation de plus bas niveau afin de s'approcher au mieux de la réalité du matériel. Réalistiquement, une telle approche est coûteuse en temps de développement et en temps de documentation afin de comprendre réellement l'architecture et le set d'instructions. \\
+Au premier abord, une implémentation optimisée doit être écrite pour une plateforme en particulier, en utilisant le langage de programation de plus bas niveau afin de s'approcher au mieux de la réalité du matériel. Réalistiquement, une telle approche est coûteuse en temps de développement et en temps de documentation afin de comprendre réellement l'architecture et le jeu d'instructions. \\
 
-La meilleure solution est alors de s'abstraire d'une couche et d'adopter un langage tel que le C, le C++, le Fortran ou le Rust. Le choix est alors au développeur, est ici le langage C++ a fait l'objet de notre choix.\\
+La meilleure solution est alors de s'abstraire d'une couche et d'adopter un langage tel que le C, le C++, le Fortran ou le Rust. Le choix est alors au développeur, et ici le langage C++ a fait l'objet de notre choix.\\
 
 
 
@@ -79,10 +79,10 @@ En C++, les bibliothèques d'algèbre linéaire globalement disponibles ont plus
 
 Ces points, ajoutés à notre besoin d'apprentissage et d'expérience, nous ont mené à choisir d'implémenter par nous-mêmes l'ensemble des fonctionnalités dont nous aurons besoin pour implémenter les différents algorithmes.\\
 
-L'implémentation des opérations basiques sur les matrices (multiplication, somme, transposée, extraction d'une diagonale, génération aléatoire, rang, etc...) a posé un ensemble de problèmes qui n'avait pas été anticipé, donc une charge de travail plus grande que prévu. Par exemple, la vérification des résultats des différents algorithmes est faite en cherchant la matrice inverse de A : $A^{-1}$ qui doit être trouvée grâce à une décomposition PLU et non par une implémentation naïve $A^{-1} = \frac{1}{det(1)} * comatrice(A)^{T}$ qui, à cause de sa complexité en $n!$, impose une charge processeur bien trop grande.
+L'implémentation des opérations basiques sur les matrices (multiplication, somme, transposée, extraction d'une diagonale, génération aléatoire, rang, etc...) a posé un ensemble de problèmes qui n'avait pas été anticipé, donc une charge de travail plus grande que prévu. Par exemple, la vérification des résultats des différents algorithmes est faite en cherchant la matrice inverse de A : $A^{-1}$ qui doit être trouvée grâce à une décomposition PLU et non par une implémentation naïve $A^{-1} = \frac{1}{det(1)} * comatrice(A)^{T}$ qui, à cause de sa complexité en $n!$, impose une charge processeur bien trop grande. \\
 
 % LSTSQR
-Après avoir implémenté toutes les bases, il nous a fallu implémenter les différents algorithmes étudiés : Jacobi, Gauss-Seidel, Richardson (non-mesuré car redondant avec les méthodes précédentes), SOR, GMRES. En particulier, une difficulté s'est posée lors de l'implémentation de l'algorithme GMRES, celui-ci nécessitant une minimisation des moindres carrés en dimension N. Il nous a fallu nous tourner vers une bibliothèque externe, ne connaissant - pour l'instant - pas les méthodes de résolution adaptées.
+Après avoir implémenté toutes les bases, il nous a fallu implémenter les différents algorithmes étudiés : Jacobi, Gauss-Seidel, Richardson (non-mesuré car redondant avec les méthodes précédentes), SOR, GMRES. En particulier, une difficulté s'est posée lors de l'implémentation de l'algorithme GMRES, celui-ci nécessitant de résoudre un problème de minimisation des moindres carrés en dimension N. Il nous a fallu nous tourner vers une bibliothèque externe, ne connaissant - pour l'instant - pas les approches de résolution adaptées.
 
 %-> méthode de mesure 
 \subsubsection{Méthode de mesure}
@@ -95,55 +95,94 @@ Les processeurs actuelles disposent d'une horloge de haute précision, basée su
 	// CALL FUNCTION
 	std::tuple<Matrix<T>, Matrix<T>, Matrix<T>> res0(gaussSeidel(A));
 	std::tuple<Matrix<T>, long long, T> result(
-		iter_generale(std::get<1>(res0), std::get<2>(res0), b, x0, curprec, (long long)1e9)
+		iter_generale(std::get<1>(res0), // Matrix : M_inv
+					 std::get<2>(res0),  // Matrix : J
+					 b,                  // Matrix : b
+					 x0,                 // Matrix : x0
+					 curprec,            // wanted precision
+					 (long long)1e9      // max iteration count
+		)
 	);
 	
 	// END TIME MEASUREMENT
 	auto end(std::chrono::high_resolution_clock::now());
-	auto duration(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count());
+	auto duration(
+		std::chrono::duration_cast<std::chrono::nanoseconds>(
+			end - begin
+		).count()
+	);
 
 \end{minted}
 
-Il faut noter dans le code précédent, les variables de type automatique $begin$ et $end$ sont en pratique des instances de $std::time\_point$. Les fonction utilisées pour la mesure de temps sont définies dans $<chrono>$.\\
+Il faut noter dans le code précédent, les variables de type automatique $begin$ et $end$ sont en pratique des instances de $std::time\_point$. Les fonction utilisées pour la mesure de temps sont définies dans le fichier d'en-têtes $<chrono>$.\\
 
 
 
 \subsection{Analyse des mesures}
 
-
+\subsubsection{Représentation graphique tridimensionnelle}
 Nous avons souhaité comparer les différents algorithmes en faisant varier un certain nombre de paramètres, notamment la précision souhaitée et la taille des matrices. Dans les graphiques ci-dessous, l'ensemble des points de mesure que nous allons étudier sont représentés.
 
 
 %-> graphes 3D
-\begin{figure}[H]
-	\includegraphics{../codes/Data/gauss-seidel3D.png}
-	\caption{Représentation graphique tridimensionnelle des performances de l'algorithme de Gauss-Seidel}
-\end{figure}
 
 \begin{figure}[H]
-	\includegraphics{../codes/Data/jacobi3D.png}
-	\caption{Représentation graphique tridimensionnelle des performances de l'algorithme de Jacobi}
+	\begin{minipage}[t]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{../codes/Data/gauss-seidel3D.png}
+	\end{minipage}
+	\begin{minipage}[t]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{../codes/Data/jacobi3D.png}
+	\end{minipage}
+	\begin{minipage}[t]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{../codes/Data/sor3D.png}
+	\end{minipage}
+	\begin{minipage}[t]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{../codes/Data/gmres.png}
+	\end{minipage}
+	\caption{Représentation graphique tridimensionnelle des performances des différents algorithmes}
 \end{figure}
 
-\begin{figure}[H]
-	\includegraphics{../codes/Data/sor3D.png}
-	\caption{Représentation graphique tridimensionnelle des performances de l'algorithme SOR}
-\end{figure}
-
-\begin{figure}[H]
-	\includegraphics{../codes/Data/gmres.png}
-	\caption{Représentation graphique tridimensionnelle des performances de l'algorithme GMRES}
-\end{figure}
-
-Les performances de la méthode GMRES pour une précision $\epsilon = 10^{-15}$ sont représentés ci-dessous.
-%-> graphes 2D
 
 
 %-> analyse des mesures
 % 1. Précision ne change pas grand chose
+
+
+\subsubsection{Analyse : temps de calcul}
 % 2. Augmentation du temps de calcul en fonction de la taille
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{images/times.PNG}
+	\caption{Représentation graphique du temps de calcul des différentes méthodes selon la taille de matrice}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{images/timeGMRES.PNG}
+	\caption{Représentation graphique du temps de calcul de la méthode GMRES selon la taille de matrice}
+\end{figure}
+
+Il ressort une nette domination en terme de temps de calcul pour les matrices d'une taille supérieure à 250, la méthode de Jacobi a un temps de résolution plus faible pour les matrices de taille inférieure. La méthode SOR est extrêmement lente pour les petites matrices (paramètre $\omega$ tiré aléatoirement) mais la différence s'atténue pour les grandes matrices. Le temps de calcul de la méthode GMRES semble linéaire sur 
+la représentation graphique logarithmique, il est donc probablement exponentiel, tout comme celui des autres méthodes, mais son taux d'accroissement semble bien plus faible.
+\subsubsection{Analyse : itérations}
 % 3. itération à 1 pour GMRES
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{images/nbIters.PNG}
+	\caption{Représentation graphique du nombre d'itérations des différentes méthodes selon la taille de matrice}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{images/nbItersSansSOR.PNG}
+	\caption{Représentation graphique du nombre d'itérations des différentes méthodes selon la taille de matrice, méthode SOR exclue}
+\end{figure}
+
+La méthode SOR fait un très grand nombre d'itérations, ceci probablement causé par le mauvais choix systématique de son paramètre $omega$ (tiré aléatoirement entre 0 et 2, distribution uniforme). La méthode GMRES a un nombre d'itération constant de 1, étant une méthode à mi-chemin entre les méthodes directes et itératives. Des la première itération, les erreurs sont de l'ordre de $10^{-20}$ et l'algorithme s'arrête car la tolérance souhaitée est atteinte (voir sous-section suivante).
+
+\subsubsection{Analyse : erreur}
 % 4. évolution des erreurs
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{images/errors.PNG}
+	\caption{Représentation graphique des erreurs des différentes méthodes selon la taille de matrice}
+\end{figure}
+
+La méthode GMRES a toujours une erreur bien inférieure aux autres méthodes, de par sa nature quasi-directe. il est intéressant de remarquer que la méthode SOR est ici aussi la moins performante, encore une fois à cause du manque d'optimisation du paramètre $\omega$.
 
 
 %-> conclusion
@@ -158,6 +197,9 @@ Un certain nombre d'optimisations n'ont pas été mises en place dans le code C+
 %-> least squares
 L'implémentation de l'algorithme nécessitant de résoudre un problème des moindres carrés, nous avons fait le choix de faire appel à une bibliothèque externe. Celle-ci ajoute considérablement au temps d'exécution, de par le besoin de copie de données (structure de données différente), et malgré cela, la méthode GMRES est largement supérieure en terme de performances. Une implémentation par nos soins d'un algorithme tel que L-BFGS, OWL-QN (quasi-Newton) ou autres pourrait encore diviser le temps mesuré.
 
+
+\subsubsection{Méthode SOR}
+Ici, les performances de la méthode SOR ont été mesurées dans les conditions les plus simples d'un choix aléatoire du paramètre $\omega$. Il serait intéressant de mesurer les performances dans un cas plus concret om l'on cherche d'abord le paramètre $\omega$ optimal, puis résoudre le système. Il est probable que, dans ce cas, la méthode SOR soit plus attirante, considérant bien sûr une optimisation suffisante de l'algorithme de recherche de $\omega$.
 
 \subsubsection{mesure}
 %-> Variance induite par CPU et solution
