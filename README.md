@@ -1,2 +1,4 @@
 # MA321
-MA321 Memoire
+## Optimization of iterative methods for linear systems resolution
+
+Report for MA321 class with full code, references and dataset
